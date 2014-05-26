@@ -11,7 +11,6 @@ import tterrag.tppibot.runnables.ReminderProcess;
 
 public class TPPIBot extends PircBot
 {
-
     private Map<String, Boolean> reminderMap;
     private Queue reminders;
 
@@ -22,10 +21,8 @@ public class TPPIBot extends PircBot
         reminderMap = new HashMap<String, Boolean>();
 
         reminders = new Queue();
-        reminders
-                .add("[Reminder] You can open the chat and press tab to talk with us!");
-        reminders
-                .add("[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense.");
+        reminders.add("[Reminder] You can open the chat and press tab to talk with us!");
+        reminders.add("[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense.");
 
         runThreads();
     }
@@ -37,8 +34,7 @@ public class TPPIBot extends PircBot
     }
 
     @Override
-    protected void onMessage(String channel, String sender, String login,
-            String hostname, String message)
+    protected void onMessage(String channel, String sender, String login, String hostname, String message)
     {
         if (message.startsWith("`"))
         {
@@ -100,11 +96,14 @@ public class TPPIBot extends PircBot
         reminders.add(remind);
     }
 
-    public synchronized boolean areRemindersEnabledFor(String channel)
+    public boolean areRemindersEnabledFor(String channel)
     {
-        if (reminderMap == null)
-            return false;
-        else
-            return reminderMap.get(channel);
+        synchronized (reminderMap)
+        {
+            if (reminderMap == null)
+                return false;
+            else
+                return reminderMap.get(channel);
+        }
     }
 }
