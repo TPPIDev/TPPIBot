@@ -11,6 +11,8 @@ import tterrag.tppibot.runnables.ReminderProcess;
 
 public class TPPIBot extends PircBot
 {
+    public static String controlChar;
+    
     private Map<String, Boolean> reminderMap;
     private Queue reminders;
 
@@ -25,6 +27,8 @@ public class TPPIBot extends PircBot
         reminders.add("[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense.");
 
         runThreads();
+        
+        controlChar = "`";
     }
 
     private void runThreads()
@@ -36,7 +40,7 @@ public class TPPIBot extends PircBot
     @Override
     protected void onMessage(String channel, String sender, String login, String hostname, String message)
     {
-        if (message.startsWith("`"))
+        if (message.startsWith(controlChar))
         {
             message = pruneMessage(message);
             if (userIsOp(channel, sender))
@@ -61,7 +65,7 @@ public class TPPIBot extends PircBot
 
     private String pruneMessage(String message)
     {
-        return message.substring(1);
+        return message.substring(controlChar.length());
     }
 
     public static void main(String[] args)
