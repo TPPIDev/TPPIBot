@@ -14,7 +14,10 @@ import tterrag.tppibot.commands.EditCommand;
 import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
 import tterrag.tppibot.commands.Kill;
+import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
+import tterrag.tppibot.reactions.Cursewords;
+import tterrag.tppibot.reactions.ReactionRegistry;
 import tterrag.tppibot.runnables.ReminderProcess;
 
 public class Main
@@ -22,6 +25,7 @@ public class Main
     private static PircBotX bot;
 
     private static CommandRegistry commands;
+    private static ReactionRegistry reactions;
 
     public static ReminderProcess reminders;
 
@@ -34,6 +38,7 @@ public class Main
         System.setProperty(SimpleLogger.SHOW_LOG_NAME_KEY, "false");
         System.out.println("Starting");
 
+        
         commands = new CommandRegistry();
 
         commands.registerCommand(new Help());
@@ -44,6 +49,12 @@ public class Main
         commands.registerCommand(new AddReminder());
         commands.registerCommand(new DisableRemind());
 
+        
+        reactions = new ReactionRegistry();
+        
+        reactions.registerReaction(new Cursewords());
+        
+        
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
         System.out.println("Building config");
         builder.setName("TPPIBot");
@@ -53,10 +64,18 @@ public class Main
         builder.addAutoJoinChannel(args[1].startsWith("#") ? args[1] : "#" + args[1]);
         builder.setServer("irc.esper.net", 6667);
         builder.getListenerManager().addListener(new MessageListener());
+        builder.getListenerManager().addListener(new JoinListener());
 
         PircBotX bot = new PircBotX(builder.buildConfiguration());
         System.out.println("Built config");
 
+        reminders = new ReminderProcess(bot,
+
+        "[Reminder] You can open the chat and press tab to talk with us!", "[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense.");
+
+        Thread reminderThread = new Thread(reminders);
+        reminderThread.start();
+        
         try
         {
             System.out.println("Connecting to Server!");
@@ -66,13 +85,6 @@ public class Main
         {
             throw new RuntimeException(e);
         }
-
-        reminders = new ReminderProcess(bot,
-
-        "[Reminder] You can open the chat and press tab to talk with us!", "[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense.");
-
-        Thread reminderThread = new Thread(reminders);
-        reminderThread.start();
     }
 
     public static PircBotX getBot()
@@ -83,5 +95,10 @@ public class Main
     public static CommandRegistry getCommandRegistry()
     {
         return commands;
+    }
+
+    public static ReactionRegistry getReactionRegistry()
+    {
+        return reactions;
     }
 }

@@ -11,6 +11,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.Main;
 import tterrag.tppibot.commands.Command;
+import tterrag.tppibot.reactions.IReaction;
 import tterrag.tppibot.util.IRCUtils;
 
 public class MessageListener extends ListenerAdapter<PircBotX>
@@ -48,6 +49,11 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                     }
                 }
             }
+        }
+        
+        for (IReaction r : Main.getReactionRegistry().getReactions())
+        {
+            r.onMessage(event);
         }
     }
 

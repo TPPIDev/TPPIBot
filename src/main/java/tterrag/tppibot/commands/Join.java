@@ -2,8 +2,6 @@ package tterrag.tppibot.commands;
 
 import org.pircbotx.hooks.events.MessageEvent;
 
-import tterrag.tppibot.Main;
-
 public class Join extends Command
 {
     public Join()
@@ -18,7 +16,7 @@ public class Join extends Command
         {
             for (String s : args)
             {
-                Main.getBot().sendIRC().joinChannel(s);
+                event.getBot().sendIRC().joinChannel(s.startsWith("#") ? s : "#" + s);
             }
             return true;
         }

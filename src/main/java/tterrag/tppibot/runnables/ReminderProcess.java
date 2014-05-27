@@ -37,23 +37,30 @@ public class ReminderProcess implements Runnable
     {
         while (true)
         {
-            if (bot.isConnected())
+            try
             {
-                String reminder = reminders.poll();
-                for (Channel channel : bot.getUserBot().getChannels())
+                if (bot.isConnected())
                 {
-                    if (reminderMap.get(channel.getName()))
+                    String reminder = reminders.poll();
+                    for (Channel channel : bot.getUserBot().getChannels())
                     {
-                        remind(channel, reminder);
+                        if (reminderMap.get(channel.getName()))
+                        {
+                            remind(channel, reminder);
+                        }
                     }
+                    reminders.add(reminder);
+                    log("Sleeping reminder thread...");
+                    sleep(300000);
                 }
-                reminders.add(reminder);
-                log("Sleeping reminder thread...");
-                sleep(300000);
+                else
+                {
+                    log("Bot not connected, waiting...");
+                    sleep(10000);
+                }
             }
-            else
+            catch (Throwable t)
             {
-                log("Bot not connected, waiting...");
                 sleep(10000);
             }
         }
@@ -64,7 +71,7 @@ public class ReminderProcess implements Runnable
         synchronized (reminders)
         {
             log("Sending reminder!");
-            Main.getBot().sendIRC().message(channel.getName(), reminder);
+            channel.getBot().sendIRC().message(channel.getName(), reminder);
         }
     }
 
@@ -88,6 +95,9 @@ public class ReminderProcess implements Runnable
 
     public boolean isRemindEnabledFor(String channel)
     {
+        if (!channel.startsWith("#"))
+            channel = "#" + channel;
+
         return channel == null ? false : reminderMap.get(channel.toLowerCase());
     }
 
