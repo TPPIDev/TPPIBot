@@ -1,5 +1,7 @@
 package tterrag.tppibot.commands;
 
+import tterrag.tppibot.Main;
+
 public class Kill extends Command
 {
     public Kill()
@@ -21,7 +23,10 @@ public class Kill extends Command
             e.printStackTrace();
         }
         
+        Main.getBot().disconnect();
+        Main.getBot().dispose();
         System.exit(0);
+        
         return true;
     }
 }

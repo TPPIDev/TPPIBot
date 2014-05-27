@@ -2,6 +2,7 @@ package tterrag.tppibot;
 
 import tterrag.tppibot.commands.AddCommand;
 import tterrag.tppibot.commands.AddReminder;
+import tterrag.tppibot.commands.DisableRemind;
 import tterrag.tppibot.commands.EditCommand;
 import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
@@ -23,6 +24,7 @@ public class Main
         bot.registerCommand(new AddCommand());
         bot.registerCommand(new EditCommand());
         bot.registerCommand(new AddReminder());
+        bot.registerCommand(new DisableRemind());
         
         try
         {

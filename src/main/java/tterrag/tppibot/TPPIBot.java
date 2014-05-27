@@ -1,8 +1,6 @@
 package tterrag.tppibot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jibble.pircbot.PircBot;
@@ -17,28 +15,28 @@ public class TPPIBot extends PircBot
     
     private ArrayList<Command> commands;
     
-    private Map<String, Boolean> reminderMap;
-
+    public final ReminderProcess reminders;
+    
     public TPPIBot()
     {
         this.setName("TPPIBot");
 
-        reminderMap = new HashMap<String, Boolean>();
         commands = new ArrayList<Command>();
         
         runThreads();
         
         controlChar = "`";
+        
+        reminders = new ReminderProcess(this,
+                
+                "[Reminder] You can open the chat and press tab to talk with us!",
+                "[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense."
+        );
     }
 
     private void runThreads()
     {
-        Thread reminderThread = new Thread(new ReminderProcess(this,
-                
-                "[Reminder] You can open the chat and press tab to talk with us!",
-                "[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense."
-        ));
-        
+        Thread reminderThread = new Thread(reminders);
         reminderThread.start();
     }
 
@@ -77,20 +75,9 @@ public class TPPIBot extends PircBot
     public void join(String channel)
     {
         this.joinChannel(channel.startsWith("#") ? channel : "#" + channel);
-        this.reminderMap.put(channel, true);
+        this.reminders.enableRemindersFor(channel);
     }
-
-    public boolean areRemindersEnabledFor(String channel)
-    {
-        synchronized (reminderMap)
-        {
-            if (reminderMap == null)
-                return false;
-            else
-                return reminderMap.get(channel);
-        }
-    }
-
+    
     public void registerCommand(Command command)
     {
         commands.add(command);

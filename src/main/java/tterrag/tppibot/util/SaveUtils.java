@@ -1,4 +1,4 @@
-package tterrag.tppibot.saveutils;
+package tterrag.tppibot.util;
 
 import java.io.File;
 import java.io.FileWriter;

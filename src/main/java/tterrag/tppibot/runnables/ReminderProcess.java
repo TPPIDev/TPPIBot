@@ -1,5 +1,7 @@
 package tterrag.tppibot.runnables;
 
+import java.util.HashMap;
+
 import org.jibble.pircbot.Queue;
 
 import tterrag.tppibot.Main;
@@ -9,6 +11,8 @@ import static tterrag.tppibot.util.Logging.*;
 public class ReminderProcess implements Runnable
 {
     private TPPIBot bot;
+
+    private HashMap<String, Boolean> reminderMap;
 
     private static Queue reminders;
 
@@ -21,6 +25,8 @@ public class ReminderProcess implements Runnable
         {
             reminders.add(s);
         }
+        
+        reminderMap = new HashMap<String, Boolean>();
     }
 
     @Override
@@ -32,7 +38,7 @@ public class ReminderProcess implements Runnable
             {
                 for (String channel : bot.getChannels())
                 {
-                    if (channel != null)
+                    if (channel != null && reminderMap.get(channel))
                     {
                         remind(channel);
                     }
@@ -65,6 +71,21 @@ public class ReminderProcess implements Runnable
         {
             reminders.addFront(reminder);
         }
+    }
+    
+    public void disableRemindersFor(String channel)
+    {
+        reminderMap.put(channel, false);
+    }
+    
+    public void enableRemindersFor(String channel)
+    {
+        reminderMap.put(channel, true);
+    }
+    
+    public boolean isRemindEnabledFor(String channel)
+    {
+        return channel == null ? false : reminderMap.get(channel);
     }
 
     private void sleep(int millis)
