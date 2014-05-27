@@ -1,8 +1,7 @@
 package tterrag.tppibot.commands;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pircbotx.Channel;
-import org.pircbotx.User;
+import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.runnables.ReminderProcess;
 
@@ -14,16 +13,16 @@ public class AddReminder extends Command
     }
 
     @Override
-    public boolean onCommand(Channel channel, User user, String... args)
+    public boolean onCommand(MessageEvent<?> event, String... args)
     {
         if (args.length > 0)
         {
             String reminder = StringUtils.join(args, ' ');
             ReminderProcess.addReminder("[Reminder] " + reminder);
-            sendNotice(user, "Reminder added: " + reminder);
+            sendNotice(event.getUser(), "Reminder added: " + reminder);
             return true;
         }
-        sendNotice(user, "This requires a string argument!");
+        sendNotice(event.getUser(), "This requires a string argument!");
         return false;
     }
 }

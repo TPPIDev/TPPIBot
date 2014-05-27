@@ -59,38 +59,38 @@ public class SaveUtils
             return false;
         }
     }
-    
+
     public static boolean addToFile(String filename, String... strings)
     {
         try
         {
             File file = new File(filename);
             Scanner scan = new Scanner(file);
-            
+
             List<String> lines = new ArrayList<String>();
-            
+
             while (scan.hasNextLine())
             {
                 lines.add(scan.nextLine());
             }
-            
+
             for (String s : strings)
             {
                 lines.add(s);
             }
-            
+
             scan.close();
-            
+
             FileWriter fw = new FileWriter(file);
-            
+
             for (String s : lines)
             {
                 fw.write(s);
             }
-            
+
             fw.flush();
             fw.close();
-            
+
             return true;
         }
         catch (IOException e)

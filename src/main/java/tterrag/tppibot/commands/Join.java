@@ -1,7 +1,6 @@
 package tterrag.tppibot.commands;
 
-import org.pircbotx.Channel;
-import org.pircbotx.User;
+import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.Main;
 
@@ -13,7 +12,7 @@ public class Join extends Command
     }
 
     @Override
-    public boolean onCommand(Channel channel, User user, String... args)
+    public boolean onCommand(MessageEvent<?> event, String... args)
     {
         if (args.length > 0)
         {
@@ -23,9 +22,9 @@ public class Join extends Command
             }
             return true;
         }
-        else 
+        else
         {
-            sendNotice(user, "Must supply at least one channel!");
+            sendNotice(event.getUser(), "Must supply at least one channel!");
             return false;
         }
     }

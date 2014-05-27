@@ -28,7 +28,7 @@ public class ReminderProcess implements Runnable
         {
             reminders.add(s);
         }
-        
+
         reminderMap = new HashMap<String, Boolean>();
     }
 
@@ -39,7 +39,7 @@ public class ReminderProcess implements Runnable
         {
             if (bot.isConnected())
             {
-                String reminder = (String) reminders.poll();
+                String reminder = reminders.poll();
                 for (Channel channel : bot.getUserBot().getChannels())
                 {
                     if (reminderMap.get(channel.getName()))
@@ -67,7 +67,7 @@ public class ReminderProcess implements Runnable
             Main.getBot().sendIRC().message(channel.getName(), reminder);
         }
     }
-    
+
     public static void addReminder(String reminder)
     {
         synchronized (reminders)
@@ -75,17 +75,17 @@ public class ReminderProcess implements Runnable
             reminders.add(reminder);
         }
     }
-    
+
     public void disableRemindersFor(String channel)
     {
         reminderMap.put(channel, false);
     }
-    
+
     public void enableRemindersFor(String channel)
     {
         reminderMap.put(channel, true);
     }
-    
+
     public boolean isRemindEnabledFor(String channel)
     {
         return channel == null ? false : reminderMap.get(channel.toLowerCase());

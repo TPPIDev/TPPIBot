@@ -1,9 +1,6 @@
 package tterrag.tppibot.commands;
 
-import org.pircbotx.Channel;
-import org.pircbotx.User;
-
-import tterrag.tppibot.Main;
+import org.pircbotx.hooks.events.MessageEvent;
 
 public class Kill extends Command
 {
@@ -13,9 +10,21 @@ public class Kill extends Command
     }
 
     @Override
-    public boolean onCommand(Channel channel, User user, String... args)
+    public boolean onCommand(MessageEvent<?> event, String... args)
     {
-        sendMessage(channel, "NOOOOooooo...");
+        sendMessage(event.getChannel(), "NOOOOooooo...");
+        
+        try
+        {
+            Thread.sleep(1000);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        event.getBot().stopBotReconnect();
+        event.getBot().sendIRC().quitServer("x.x");
         
         try
         {
@@ -26,9 +35,8 @@ public class Kill extends Command
             e.printStackTrace();
         }
         
-        Main.getBot().sendIRC().quitServer("x.x");
         System.exit(0);
-        
+
         return true;
     }
 }

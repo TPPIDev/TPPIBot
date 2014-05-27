@@ -16,7 +16,7 @@ import tterrag.tppibot.util.IRCUtils;
 public class MessageListener extends ListenerAdapter<PircBotX>
 {
     private static final String controlChar = "`";
-    
+
     @Override
     public void onMessage(MessageEvent<PircBotX> event) throws Exception
     {
@@ -24,14 +24,15 @@ public class MessageListener extends ListenerAdapter<PircBotX>
         User sender = event.getUser();
         Channel channel = event.getChannel();
         List<Command> commands = Main.getCommandRegistry().getCommands();
-        
+
         if (message.startsWith(controlChar))
         {
             message = pruneMessage(message);
             String[] args = message.split(" ");
-            
-            if (args.length < 1) return;
-            
+
+            if (args.length < 1)
+                return;
+
             for (int i = 0; i < commands.size(); i++)
             {
                 Command c = commands.get(i);
@@ -39,7 +40,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                 {
                     if (IRCUtils.userMatchesPerms(channel, sender, c.getPermLevel()))
                     {
-                        c.onCommand(channel, sender, ArrayUtils.remove(args, 0));
+                        c.onCommand(event, ArrayUtils.remove(args, 0));
                     }
                     else
                     {
@@ -49,8 +50,8 @@ public class MessageListener extends ListenerAdapter<PircBotX>
             }
         }
     }
-    
-    private void sendNotice(MessageEvent<PircBotX> event, String message)
+
+    private void sendNotice(org.pircbotx.hooks.events.MessageEvent<PircBotX> event, String message)
     {
         Main.getBot().sendIRC().notice(event.getUser().getNick(), message);
     }

@@ -1,14 +1,13 @@
 package tterrag.tppibot.commands;
 
-import org.pircbotx.Channel;
-import org.pircbotx.User;
+import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.util.IRCUtils;
 
 public class CustomCommand extends Command
 {
     private String message;
-    
+
     public CustomCommand(String ident, PermLevel perms, String message)
     {
         super(ident, perms);
@@ -16,9 +15,9 @@ public class CustomCommand extends Command
     }
 
     @Override
-    public boolean onCommand(Channel channel, User user, String... args)
+    public boolean onCommand(MessageEvent<?> event, String... args)
     {
-        IRCUtils.sendMessageForUser(channel, user, message, args);
+        IRCUtils.sendMessageForUser(event.getChannel(), event.getUser(), message, args);
         return true;
     }
 }

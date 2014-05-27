@@ -1,8 +1,8 @@
 package tterrag.tppibot.commands;
 
-import org.pircbotx.Channel;
-import org.pircbotx.User;
+import org.pircbotx.hooks.events.MessageEvent;
 
+import tterrag.tppibot.Main;
 
 public class DisableRemind extends Command
 {
@@ -12,18 +12,18 @@ public class DisableRemind extends Command
     }
 
     @Override
-    public boolean onCommand(Channel channel, User user, String... args)
+    public boolean onCommand(MessageEvent<?> event, String... args)
     {
-//        if (Main.getBot().reminders.isRemindEnabledFor(channel))
-//        {
-//            sendNotice(user, "Disabling reminders for channel \"" + channel + "\"");
-//            Main.getBot().reminders.disableRemindersFor(channel);
-//            return true;
-//        }
-//        else
-//        {
-//            sendNotice(user, "Reminders already disabled!");
+        if (Main.reminders.isRemindEnabledFor(event.getChannel().getName()))
+        {
+            sendNotice(event.getUser(), "Disabling reminders for channel \"" + event.getChannel() + "\"");
+            Main.reminders.disableRemindersFor(event.getChannel().getName());
+            return true;
+        }
+        else
+        {
+            sendNotice(event.getUser(), "Reminders already disabled!");
             return false;
-//        }
+        }
     }
 }
