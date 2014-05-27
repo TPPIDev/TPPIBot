@@ -1,8 +1,10 @@
 package tterrag.tppibot.commands;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 
-import tterrag.tppibot.Main;
+import tterrag.tppibot.util.IRCUtils;
 
 public class Help extends Command
 {
@@ -14,11 +16,11 @@ public class Help extends Command
     }
     
     @Override
-    public boolean onCommand(String channel, String user, String... args)
+    public boolean onCommand(Channel channel, User user, String... args)
     {
         if (channel == null || user == null) return false;
         
-        Main.getBot().sendMessage(channel, helpText.replace("%user%", args.length >= 1 ? args[0] : user));
+        IRCUtils.sendMessageForUser(channel, user, helpText, args);
         return true;
     }
     

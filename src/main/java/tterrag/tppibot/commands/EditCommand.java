@@ -3,6 +3,8 @@ package tterrag.tppibot.commands;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 
 import tterrag.tppibot.Main;
 
@@ -14,7 +16,7 @@ public class EditCommand extends Command
     }
 
     @Override
-    public boolean onCommand(String channel, String user, String... args)
+    public boolean onCommand(Channel channel, User user, String... args)
     {
         if (args.length < 2)
         {
@@ -22,7 +24,7 @@ public class EditCommand extends Command
             return false;
         }
         
-        for (Command c : Main.getBot().getCommands())
+        for (Command c : Main.getCommandRegistry().getCommands())
         {
             String cmdName = args[0];
                     

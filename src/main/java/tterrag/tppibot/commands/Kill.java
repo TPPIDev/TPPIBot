@@ -1,5 +1,8 @@
 package tterrag.tppibot.commands;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
+
 import tterrag.tppibot.Main;
 
 public class Kill extends Command
@@ -10,7 +13,7 @@ public class Kill extends Command
     }
 
     @Override
-    public boolean onCommand(String channel, String user, String... args)
+    public boolean onCommand(Channel channel, User user, String... args)
     {
         sendMessage(channel, "NOOOOooooo...");
         
@@ -23,8 +26,7 @@ public class Kill extends Command
             e.printStackTrace();
         }
         
-        Main.getBot().disconnect();
-        Main.getBot().dispose();
+        Main.getBot().sendIRC().quitServer("x.x");
         System.exit(0);
         
         return true;

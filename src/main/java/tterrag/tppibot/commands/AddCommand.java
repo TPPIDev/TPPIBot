@@ -2,20 +2,20 @@ package tterrag.tppibot.commands;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 
 import tterrag.tppibot.Main;
 
 public class AddCommand extends Command
-{
-    private static String toAdd;
-    
+{    
     public AddCommand()
     {
         super("addcmd", PermLevel.OP);
     }
 
     @Override
-    public boolean onCommand(String channel, String user, String... args)
+    public boolean onCommand(Channel channel, User user, String... args)
     {
         if (args.length < 2)
         {
@@ -27,17 +27,9 @@ public class AddCommand extends Command
         
         args = ArrayUtils.remove(args, 0);
         
-        toAdd = StringUtils.join(args, ' ');
+        String toAdd = StringUtils.join(args, ' ');
         
-        Main.getBot().registerCommand(new Command(cmdName, PermLevel.ANY)
-        {
-            @Override
-            public boolean onCommand(String channel, String user, String... args)
-            {
-                sendMessage(channel, toAdd);
-                return true;
-            }
-        });
+        Main.getCommandRegistry().registerCommand(new CustomCommand(cmdName, PermLevel.ANY, toAdd));
         
         return true;
     }

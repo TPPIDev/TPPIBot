@@ -1,5 +1,8 @@
 package tterrag.tppibot.commands;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
+
 import tterrag.tppibot.Main;
 
 public class Join extends Command
@@ -10,13 +13,13 @@ public class Join extends Command
     }
 
     @Override
-    public boolean onCommand(String channel, String user, String... args)
+    public boolean onCommand(Channel channel, User user, String... args)
     {
         if (args.length > 0)
         {
             for (String s : args)
             {
-                Main.getBot().join(s);
+                Main.getBot().sendIRC().joinChannel(s);
             }
             return true;
         }

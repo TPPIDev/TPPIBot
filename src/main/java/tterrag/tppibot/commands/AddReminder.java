@@ -1,6 +1,8 @@
 package tterrag.tppibot.commands;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 
 import tterrag.tppibot.runnables.ReminderProcess;
 
@@ -12,7 +14,7 @@ public class AddReminder extends Command
     }
 
     @Override
-    public boolean onCommand(String channel, String user, String... args)
+    public boolean onCommand(Channel channel, User user, String... args)
     {
         if (args.length > 0)
         {

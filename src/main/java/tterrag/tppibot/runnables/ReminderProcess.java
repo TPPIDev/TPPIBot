@@ -1,25 +1,28 @@
 package tterrag.tppibot.runnables;
 
-import java.util.HashMap;
+import static tterrag.tppibot.util.Logging.log;
 
-import org.jibble.pircbot.Queue;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
 
 import tterrag.tppibot.Main;
-import tterrag.tppibot.TPPIBot;
-import static tterrag.tppibot.util.Logging.*;
 
 public class ReminderProcess implements Runnable
 {
-    private TPPIBot bot;
+    private PircBotX bot;
 
     private HashMap<String, Boolean> reminderMap;
 
-    private static Queue reminders;
+    private static Queue<String> reminders;
 
-    public ReminderProcess(TPPIBot bot, String... strings)
+    public ReminderProcess(PircBotX bot, String... strings)
     {
         this.bot = bot;
-        reminders = new Queue();
+        reminders = new LinkedList<String>();
 
         for (String s : strings)
         {
@@ -36,32 +39,32 @@ public class ReminderProcess implements Runnable
         {
             if (bot.isConnected())
             {
-                for (String channel : bot.getChannels())
+                String reminder = (String) reminders.poll();
+                for (Channel channel : bot.getUserBot().getChannels())
                 {
-                    if (channel != null && reminderMap.get(channel))
+                    if (reminderMap.get(channel.getName()))
                     {
-                        remind(channel);
+                        remind(channel, reminder);
                     }
                 }
-                log("Sleeping for 5 minutes...");
+                reminders.add(reminder);
+                log("Sleeping reminder thread...");
                 sleep(300000);
             }
             else
             {
-                log("Bot not connected, waiting five seconds...");
+                log("Bot not connected, waiting...");
                 sleep(10000);
             }
         }
     }
 
-    private void remind(String channel)
+    private void remind(Channel channel, String reminder)
     {
         synchronized (reminders)
         {
-            String remind = (String) reminders.next();
             log("Sending reminder!");
-            Main.getBot().sendMessage(channel, remind);
-            reminders.add(remind);
+            Main.getBot().sendIRC().message(channel.getName(), reminder);
         }
     }
     
@@ -69,7 +72,7 @@ public class ReminderProcess implements Runnable
     {
         synchronized (reminders)
         {
-            reminders.addFront(reminder);
+            reminders.add(reminder);
         }
     }
     

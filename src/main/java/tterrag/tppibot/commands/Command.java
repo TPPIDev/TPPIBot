@@ -1,9 +1,12 @@
 package tterrag.tppibot.commands;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
+
 import tterrag.tppibot.Main;
 
 public abstract class Command
-{
+{    
     public enum PermLevel
     {
         OP, VOICE, ANY
@@ -34,14 +37,14 @@ public abstract class Command
         return this;
     }
     
-    public void sendMessage(String channel, String message)
+    public void sendMessage(Channel channel, String message)
     {
-        Main.getBot().sendMessage(channel, message);
+        Main.getBot().sendIRC().message(channel.getName(), message);
     }
     
-    public void sendNotice(String user, String message)
+    public void sendNotice(User user, String message)
     {
-        Main.getBot().sendNotice(user, message);
+        Main.getBot().sendIRC().notice(user.getNick(), message);
     }
 
     /**
@@ -52,7 +55,7 @@ public abstract class Command
      * @param args - any args after the command (split by space)
      * @return whether the command processing was successful
      */
-    public abstract boolean onCommand(String channel, String user, String... args);
+    public abstract boolean onCommand(Channel channel, User user, String... args);
 
     /**
      * Edits the command
@@ -63,4 +66,6 @@ public abstract class Command
     {
         return this;
     }
+    
+    
 }
