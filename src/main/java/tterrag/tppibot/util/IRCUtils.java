@@ -9,7 +9,7 @@ public class IRCUtils
 {
     public static boolean userIsOp(String channel, String user)
     {
-        for (User u : Main.bot.getUsers(channel))
+        for (User u : Main.getBot().getUsers(channel))
         {
             if (u.equals(user) && u.isOp())
                 return true;
@@ -19,7 +19,7 @@ public class IRCUtils
     
     public static boolean userIsVoice(String channel, String user)
     {
-        for (User u : Main.bot.getUsers(channel))
+        for (User u : Main.getBot().getUsers(channel))
         {
             if (u.equals(user) && u.hasVoice())
                 return true;

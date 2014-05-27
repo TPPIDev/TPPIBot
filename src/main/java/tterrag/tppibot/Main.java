@@ -1,13 +1,15 @@
 package tterrag.tppibot;
 
 import tterrag.tppibot.commands.AddCommand;
+import tterrag.tppibot.commands.AddReminder;
+import tterrag.tppibot.commands.EditCommand;
 import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
 import tterrag.tppibot.commands.Kill;
 
 public class Main
 {
-    public static TPPIBot bot;
+    private static TPPIBot bot;
     
     public static void main(String[] args)
     {
@@ -19,6 +21,8 @@ public class Main
         bot.registerCommand(new Kill());
         bot.registerCommand(new Join());
         bot.registerCommand(new AddCommand());
+        bot.registerCommand(new EditCommand());
+        bot.registerCommand(new AddReminder());
         
         try
         {
@@ -32,7 +36,7 @@ public class Main
 
         if (args.length < 1)
         {
-            bot.join("#TestPackPleaseIgnore");
+            bot.join("#PlayTPPI");
         }
         else
         {
@@ -41,5 +45,10 @@ public class Main
                 bot.join(s);
             }
         }
+    }
+    
+    public static TPPIBot getBot()
+    {
+        return bot;
     }
 }

@@ -16,7 +16,7 @@ public class Join extends Command
         {
             for (String s : args)
             {
-                Main.bot.join(s);
+                Main.getBot().join(s);
             }
             return true;
         }

@@ -9,17 +9,17 @@ import static tterrag.tppibot.util.Logging.*;
 public class ReminderProcess implements Runnable
 {
     private TPPIBot bot;
-    
-    private Queue reminders;
 
-    public ReminderProcess(TPPIBot bot, String... reminders)
+    private static Queue reminders;
+
+    public ReminderProcess(TPPIBot bot, String... strings)
     {
         this.bot = bot;
-        this.reminders = new Queue();
-        
-        for (String s : reminders)
+        reminders = new Queue();
+
+        for (String s : strings)
         {
-            this.reminders.add(s);
+            reminders.add(s);
         }
     }
 
@@ -32,7 +32,8 @@ public class ReminderProcess implements Runnable
             {
                 for (String channel : bot.getChannels())
                 {
-                    if (channel != null) {
+                    if (channel != null)
+                    {
                         remind(channel);
                     }
                 }
@@ -42,18 +43,28 @@ public class ReminderProcess implements Runnable
             else
             {
                 log("Bot not connected, waiting five seconds...");
-                sleep(5000);
+                sleep(10000);
             }
         }
     }
-    
 
     private void remind(String channel)
     {
-        String remind = (String) reminders.next();
-        log("Sending reminder!");
-        Main.bot.sendMessage(channel, remind);
-        reminders.add(remind);
+        synchronized (reminders)
+        {
+            String remind = (String) reminders.next();
+            log("Sending reminder!");
+            Main.getBot().sendMessage(channel, remind);
+            reminders.add(remind);
+        }
+    }
+    
+    public static void addReminder(String reminder)
+    {
+        synchronized (reminders)
+        {
+            reminders.addFront(reminder);
+        }
     }
 
     private void sleep(int millis)

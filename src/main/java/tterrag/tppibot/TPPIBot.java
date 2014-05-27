@@ -15,7 +15,7 @@ public class TPPIBot extends PircBot
 {
     public String controlChar;
     
-    public ArrayList<Command> commands;
+    private ArrayList<Command> commands;
     
     private Map<String, Boolean> reminderMap;
 
@@ -94,5 +94,10 @@ public class TPPIBot extends PircBot
     public void registerCommand(Command command)
     {
         commands.add(command);
+    }
+    
+    public ArrayList<Command> getCommands()
+    {
+        return commands;
     }
 }

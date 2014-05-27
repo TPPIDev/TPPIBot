@@ -36,12 +36,12 @@ public abstract class Command
     
     public void sendMessage(String channel, String message)
     {
-        Main.bot.sendMessage(channel, message);
+        Main.getBot().sendMessage(channel, message);
     }
     
     public void sendNotice(String user, String message)
     {
-        Main.bot.sendNotice(user, message);
+        Main.getBot().sendNotice(user, message);
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class Command
      * @param params - Could be anything, needs to be strictly checked for each command impl
      * @return the command object
      */
-    public Command editCommand(Object... params)
+    public Command editCommand(String... params)
     {
         return this;
     }

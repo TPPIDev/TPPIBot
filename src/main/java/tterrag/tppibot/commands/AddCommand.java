@@ -1,6 +1,7 @@
 package tterrag.tppibot.commands;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import tterrag.tppibot.Main;
 
@@ -26,15 +27,9 @@ public class AddCommand extends Command
         
         args = ArrayUtils.remove(args, 0);
         
-        toAdd = "";
-        for (String s : args)
-        {
-            toAdd += s + " ";    
-        }
+        toAdd = StringUtils.join(args, ' ');
         
-        toAdd = toAdd.substring(0, toAdd.length() - 1);
-        
-        Main.bot.registerCommand(new Command(cmdName, PermLevel.ANY)
+        Main.getBot().registerCommand(new Command(cmdName, PermLevel.ANY)
         {
             @Override
             public boolean onCommand(String channel, String user, String... args)
