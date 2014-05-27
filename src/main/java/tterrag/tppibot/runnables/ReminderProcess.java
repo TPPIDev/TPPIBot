@@ -85,7 +85,7 @@ public class ReminderProcess implements Runnable
     
     public boolean isRemindEnabledFor(String channel)
     {
-        return channel == null ? false : reminderMap.get(channel);
+        return channel == null ? false : reminderMap.get(channel.toLowerCase());
     }
 
     private void sleep(int millis)

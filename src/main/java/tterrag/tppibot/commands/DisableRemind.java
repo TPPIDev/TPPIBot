@@ -14,7 +14,7 @@ public class DisableRemind extends Command
     {
         if (Main.getBot().reminders.isRemindEnabledFor(channel))
         {
-            sendNotice(channel, "Disabling reminders for channel \"" + channel + "\"");
+            sendNotice(user, "Disabling reminders for channel \"" + channel + "\"");
             Main.getBot().reminders.disableRemindersFor(channel);
             return true;
         }

@@ -74,8 +74,9 @@ public class TPPIBot extends PircBot
 
     public void join(String channel)
     {
-        this.joinChannel(channel.startsWith("#") ? channel : "#" + channel);
-        this.reminders.enableRemindersFor(channel);
+        channel = channel.startsWith("#") ? channel : "#" + channel;
+        this.joinChannel(channel);
+        this.reminders.enableRemindersFor(channel.toLowerCase());
     }
     
     public void registerCommand(Command command)
