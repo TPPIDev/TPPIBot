@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class SettingsSaver
+public class SaveUtils
 {
     public static String readTextFile(String filename)
     {

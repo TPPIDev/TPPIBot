@@ -8,7 +8,6 @@
 *.war
 *.ear
 
-/deps
 /bin
 
 *.DS_Store
