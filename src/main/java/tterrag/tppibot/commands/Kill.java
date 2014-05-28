@@ -28,14 +28,14 @@ public class Kill extends Command
         
         try
         {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         }
         catch (InterruptedException e)
         {
             e.printStackTrace();
         }
         
-//        System.exit(0);
+        System.exit(0);
 
         return true;
     }
