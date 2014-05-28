@@ -9,9 +9,10 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import tterrag.tppibot.Main;
 import tterrag.tppibot.commands.Command;
 import tterrag.tppibot.interfaces.IReaction;
+import tterrag.tppibot.registry.CommandRegistry;
+import tterrag.tppibot.registry.ReactionRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
 public class MessageListener extends ListenerAdapter<PircBotX>
@@ -24,7 +25,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
         String message = event.getMessage();
         User sender = event.getUser();
         Channel channel = event.getChannel();
-        List<Command> commands = Main.getCommandRegistry().getCommands();
+        List<Command> commands = CommandRegistry.getCommands();
 
         if (message.startsWith(controlChar))
         {
@@ -51,7 +52,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
             }
         }
         
-        for (IReaction r : Main.getReactionRegistry().getReactions())
+        for (IReaction r : ReactionRegistry.getReactions())
         {
             r.onMessage(event);
         }

@@ -16,22 +16,17 @@ import tterrag.tppibot.commands.Join;
 import tterrag.tppibot.commands.Kill;
 import tterrag.tppibot.commands.RemindersOff;
 import tterrag.tppibot.commands.RemindersOn;
+import tterrag.tppibot.commands.RemoveCommand;
 import tterrag.tppibot.commands.Topic;
 import tterrag.tppibot.listeners.ExitListener;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.ExitRecieverRegistry;
-import tterrag.tppibot.registry.ReactionRegistry;
 import tterrag.tppibot.runnables.ReminderProcess;
 
 public class Main
 {
-    private static PircBotX bot;
-
-    private static CommandRegistry commands;
-    private static ReactionRegistry reactions;
-
     public static ReminderProcess reminders;
 
     public static void main(String[] args)
@@ -44,26 +39,23 @@ public class Main
         System.out.println("Starting");
 
         
-        commands = new CommandRegistry();
-
-        commands.registerCommand(new Help());
-        commands.registerCommand(new Kill());
-        commands.registerCommand(new Join());
-        commands.registerCommand(new EditCommand());
-        commands.registerCommand(new AddReminder());
-        commands.registerCommand(new RemindersOff());
-        commands.registerCommand(new RemindersOn());
-        commands.registerCommand(new Topic());
-        commands.registerCommand(new Commands());
+        CommandRegistry.registerCommand(new Help());
+        CommandRegistry.registerCommand(new Kill());
+        CommandRegistry.registerCommand(new Join());
+        CommandRegistry.registerCommand(new EditCommand());
+        CommandRegistry.registerCommand(new AddReminder());
+        CommandRegistry.registerCommand(new RemindersOff());
+        CommandRegistry.registerCommand(new RemindersOn());
+        CommandRegistry.registerCommand(new Topic());
+        CommandRegistry.registerCommand(new Commands());
         
         AddCommand addcmd = new AddCommand();
-        commands.registerCommand(addcmd);
+        CommandRegistry.registerCommand(addcmd);
         ExitRecieverRegistry.registerReceiver(addcmd);
         
-        reactions = new ReactionRegistry();
-        
-        //reactions.registerReaction(new Cursewords());
+        CommandRegistry.registerCommand(new RemoveCommand());
                 
+        // DISABLED UNTIL FURTHER NOTICE reactions.registerReaction(new Cursewords());
         
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
         System.out.println("Building config");
@@ -103,20 +95,5 @@ public class Main
         {
             throw new RuntimeException(e);
         }
-    }
-
-    public static PircBotX getBot()
-    {
-        return bot;
-    }
-
-    public static CommandRegistry getCommandRegistry()
-    {
-        return commands;
-    }
-
-    public static ReactionRegistry getReactionRegistry()
-    {
-        return reactions;
     }
 }

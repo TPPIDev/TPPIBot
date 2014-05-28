@@ -3,28 +3,24 @@ package tterrag.tppibot.registry;
 import java.util.ArrayList;
 import java.util.List;
 
+import tterrag.tppibot.commands.AddCommand;
 import tterrag.tppibot.commands.Command;
 
 public class CommandRegistry
 {
-    private ArrayList<Command> commands;
+    private static ArrayList<Command> commands = new ArrayList<Command>();
 
-    public CommandRegistry()
-    {
-        commands = new ArrayList<Command>();
-    }
-
-    public void registerCommand(Command c)
+    public static void registerCommand(Command c)
     {
         commands.add(c);
     }
 
-    public List<Command> getCommands()
+    public static List<Command> getCommands()
     {
         return commands;
     }
 
-    public boolean isCommandRegistered(String s)
+    public static boolean isCommandRegistered(String s)
     {
         for (Command c : commands)
         {
@@ -34,7 +30,7 @@ public class CommandRegistry
         return false;
     }
     
-    public Command getCommand(String s)
+    public static Command getCommand(String s)
     {
         for (Command c : commands)
         {
@@ -42,5 +38,18 @@ public class CommandRegistry
                 return c;
         }
         return null;
+    }
+
+    public static void unregisterCommand(String s)
+    {
+        for (int i = 0; i < commands.size(); i++)
+        {
+            Command c = commands.get(i);
+            if (c.getName().equalsIgnoreCase(s))
+            {
+                commands.remove(c);
+                AddCommand.commandsAdded.remove(c);
+            }
+        }
     }
 }

@@ -7,9 +7,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import tterrag.tppibot.Main;
 import tterrag.tppibot.annotations.ReceiveExitEvent;
 import tterrag.tppibot.config.Config;
+import tterrag.tppibot.registry.CommandRegistry;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,21 +18,21 @@ public class AddCommand extends Command
 {
     private Config config;
     
-    private List<CustomCommand> added = new ArrayList<CustomCommand>();
+    public static List<CustomCommand> commandsAdded = new ArrayList<CustomCommand>();
     
     public AddCommand()
     {
         super("addcmd", PermLevel.OP);
         config = new Config("customCommands.json");
         
-        added = new Gson().fromJson(config.getText(), new TypeToken<List<CustomCommand>>(){}.getType());
+        commandsAdded = new Gson().fromJson(config.getText(), new TypeToken<List<CustomCommand>>(){}.getType());
         
-        if (added == null)
-            added = new ArrayList<CustomCommand>();
+        if (commandsAdded == null)
+            commandsAdded = new ArrayList<CustomCommand>();
         
-        for (Command c : added)
+        for (Command c : commandsAdded)
         {
-            Main.getCommandRegistry().registerCommand(c);
+            CommandRegistry.registerCommand(c);
         }
     }
 
@@ -58,8 +58,8 @@ public class AddCommand extends Command
         }
         
         CustomCommand command = new CustomCommand(cmdName, PermLevel.ANY, toAdd);
-        Main.getCommandRegistry().registerCommand(command);
-        added.add(command);
+        CommandRegistry.registerCommand(command);
+        commandsAdded.add(command);
         
         sendNotice(event.getUser(), "Registered command " + cmdName);
 
@@ -68,12 +68,12 @@ public class AddCommand extends Command
     
     private boolean commandAlreadyRegistered(String cmdName)
     {
-        return Main.getCommandRegistry().getCommand(cmdName) != null;
+        return CommandRegistry.getCommand(cmdName) != null;
     }
 
     @ReceiveExitEvent
     public void onExitEvent()
     {
-        config.addJsonToFile(added);
+        config.writeJsonToFile(commandsAdded);
     }
 }

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.apache.commons.lang3.ArrayUtils;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import tterrag.tppibot.Main;
+import tterrag.tppibot.registry.CommandRegistry;
 
 public class EditCommand extends Command
 {
@@ -23,7 +23,7 @@ public class EditCommand extends Command
             return false;
         }
 
-        for (Command c : Main.getCommandRegistry().getCommands())
+        for (Command c : CommandRegistry.getCommands())
         {
             String cmdName = args[0];
 

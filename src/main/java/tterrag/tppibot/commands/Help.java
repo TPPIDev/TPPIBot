@@ -5,8 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import tterrag.tppibot.Main;
 import tterrag.tppibot.listeners.MessageListener;
+import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
 public class Help extends Command
@@ -42,9 +42,9 @@ public class Help extends Command
             
             for (String s : args)
             {
-                if (Main.getCommandRegistry().isCommandRegistered(s))
+                if (CommandRegistry.isCommandRegistered(s))
                 {
-                    sendNotice(sendTo, String.format("Info on %s: %s", s, Main.getCommandRegistry().getCommand(s).getDesc()));
+                    sendNotice(sendTo, String.format("Info on %s: %s", s, CommandRegistry.getCommand(s).getDesc()));
                 }
             }
         }
