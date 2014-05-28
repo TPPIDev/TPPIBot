@@ -34,7 +34,7 @@ public class Config
     {
         String json = gson.toJson(o);
         
-        SaveUtils.addToFile(configFile, json);
+        SaveUtils.addToFile(configFile, json + "\n");
     }
     
     /**
@@ -44,7 +44,7 @@ public class Config
     {
         String json = gson.toJson(o);
         
-        SaveUtils.saveAllToFile(configFile, json);
+        SaveUtils.saveAllToFile(configFile, json + "\n");
     }
 
     public String getText()

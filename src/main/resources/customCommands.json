@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "message": "To remove yourself from the chat for this play session, type \"/irc part #playtppi\". You can rejoin in the EiraIRC options.",
+    "level": "ANY",
+    "ident": "dc"
+  }
+]
