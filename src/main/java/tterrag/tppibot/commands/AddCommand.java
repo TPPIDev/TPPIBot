@@ -26,6 +26,14 @@ public class AddCommand extends Command
         config = new Config("customCommands.json");
         
         added = new Gson().fromJson(config.getText(), new TypeToken<List<CustomCommand>>(){}.getType());
+        
+        if (added == null)
+            added = new ArrayList<CustomCommand>();
+        
+        for (Command c : added)
+        {
+            Main.getCommandRegistry().registerCommand(c);
+        }
     }
 
     @Override
@@ -43,13 +51,26 @@ public class AddCommand extends Command
 
         String toAdd = StringUtils.join(args, ' ');
 
-        Main.getCommandRegistry().registerCommand(new CustomCommand(cmdName, PermLevel.ANY, toAdd));
+        if (commandAlreadyRegistered(cmdName))
+        {
+            sendNotice(event.getUser(), cmdName + " is already registered!");
+            return false;
+        }
+        
+        CustomCommand command = new CustomCommand(cmdName, PermLevel.ANY, toAdd);
+        Main.getCommandRegistry().registerCommand(command);
+        added.add(command);
         
         sendNotice(event.getUser(), "Registered command " + cmdName);
 
         return true;
     }
     
+    private boolean commandAlreadyRegistered(String cmdName)
+    {
+        return Main.getCommandRegistry().getCommand(cmdName) != null;
+    }
+
     @ReceiveExitEvent
     public void onExitEvent()
     {
