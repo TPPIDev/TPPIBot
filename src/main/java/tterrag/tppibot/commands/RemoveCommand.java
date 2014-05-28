@@ -27,4 +27,10 @@ public class RemoveCommand extends Command
         }
         return true;
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "Deletes a command from the registry. Default command removals will not persist between loads.";
+    }
 }

@@ -38,4 +38,10 @@ public class EditCommand extends Command
 
         return true;
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "Edits the specified command with the parameters passed. Each command has its own way of handling these parameters.";
+    }
 }

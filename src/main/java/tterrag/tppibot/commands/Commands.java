@@ -27,4 +27,10 @@ public class Commands extends Command
         sendNotice(event.getUser(), "Commands: " + s);
         return true;
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "Shows all possible commands for you, perm level sensitive.";
+    }
 }

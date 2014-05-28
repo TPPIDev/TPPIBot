@@ -62,4 +62,10 @@ public class Help extends Command
         this.helpText = newText;
         return this;
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "Don't Panic.";
+    }
 }

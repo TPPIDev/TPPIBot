@@ -20,4 +20,10 @@ public class CustomCommand extends Command
         IRCUtils.sendMessageForUser(event.getChannel(), event.getUser(), message, args);
         return true;
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "A custom command that was added by 'addcmd'";
+    }
 }

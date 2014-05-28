@@ -26,4 +26,10 @@ public class Join extends Command
             return false;
         }
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "Joins a channel.";
+    }
 }

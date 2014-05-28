@@ -70,6 +70,12 @@ public class AddCommand extends Command
     {
         return CommandRegistry.getCommand(cmdName) != null;
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "Adds a command with the name of the first argument and the output of any following arguments to the command registry.";
+    }
 
     @ReceiveExitEvent
     public void onExitEvent()

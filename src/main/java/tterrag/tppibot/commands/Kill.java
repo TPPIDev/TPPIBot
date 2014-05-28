@@ -39,4 +39,10 @@ public class Kill extends Command
 
         return true;
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "I am kill. No.";
+    }
 }

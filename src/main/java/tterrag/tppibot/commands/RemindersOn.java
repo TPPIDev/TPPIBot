@@ -26,4 +26,10 @@ public class RemindersOn extends Command
             return false;
         }
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "Turns reminders on for the current channel";
+    }
 }
