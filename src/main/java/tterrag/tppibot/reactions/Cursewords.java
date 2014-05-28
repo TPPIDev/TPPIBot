@@ -9,6 +9,8 @@ import java.util.Scanner;
 import org.pircbotx.Colors;
 import org.pircbotx.hooks.events.MessageEvent;
 
+import tterrag.tppibot.interfaces.IReaction;
+
 public class Cursewords implements IReaction
 {
     private List<String> curses;

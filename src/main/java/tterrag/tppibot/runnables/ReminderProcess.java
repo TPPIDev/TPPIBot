@@ -49,7 +49,7 @@ public class ReminderProcess implements Runnable
                         }
                     }
                     log("Sleeping reminder thread...");
-                    sleep(300000);
+                    sleep(600000);
                 }
                 else
                 {
@@ -87,12 +87,12 @@ public class ReminderProcess implements Runnable
 
     public void disableRemindersFor(String channel)
     {
-        reminderMap.put(channel, false);
+        reminderMap.put(channel.toLowerCase(), false);
     }
 
     public void enableRemindersFor(String channel)
     {
-        reminderMap.put(channel, true);
+        reminderMap.put(channel.toLowerCase(), true);
     }
 
     public boolean isRemindEnabledFor(String channel)

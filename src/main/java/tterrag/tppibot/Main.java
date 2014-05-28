@@ -9,7 +9,7 @@ import org.slf4j.impl.SimpleLogger;
 
 import tterrag.tppibot.commands.AddCommand;
 import tterrag.tppibot.commands.AddReminder;
-import tterrag.tppibot.commands.CommandRegistry;
+import tterrag.tppibot.commands.Commands;
 import tterrag.tppibot.commands.EditCommand;
 import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
@@ -17,9 +17,12 @@ import tterrag.tppibot.commands.Kill;
 import tterrag.tppibot.commands.RemindersOff;
 import tterrag.tppibot.commands.RemindersOn;
 import tterrag.tppibot.commands.Topic;
+import tterrag.tppibot.listeners.ExitListener;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
-import tterrag.tppibot.reactions.ReactionRegistry;
+import tterrag.tppibot.registry.CommandRegistry;
+import tterrag.tppibot.registry.ExitRecieverRegistry;
+import tterrag.tppibot.registry.ReactionRegistry;
 import tterrag.tppibot.runnables.ReminderProcess;
 
 public class Main
@@ -46,13 +49,16 @@ public class Main
         commands.registerCommand(new Help());
         commands.registerCommand(new Kill());
         commands.registerCommand(new Join());
-        commands.registerCommand(new AddCommand());
         commands.registerCommand(new EditCommand());
         commands.registerCommand(new AddReminder());
         commands.registerCommand(new RemindersOff());
         commands.registerCommand(new RemindersOn());
         commands.registerCommand(new Topic());
+        commands.registerCommand(new Commands());
         
+        AddCommand addcmd = new AddCommand();
+        commands.registerCommand(addcmd);
+        ExitRecieverRegistry.registerReceiver(addcmd);
         
         reactions = new ReactionRegistry();
         
@@ -76,6 +82,7 @@ public class Main
         
         builder.getListenerManager().addListener(new MessageListener());
         builder.getListenerManager().addListener(new JoinListener());
+        builder.getListenerManager().addListener(new ExitListener());
 
         PircBotX bot = new PircBotX(builder.buildConfiguration());
         System.out.println("Built config");

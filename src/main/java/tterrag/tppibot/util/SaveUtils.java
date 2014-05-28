@@ -11,10 +11,13 @@ public class SaveUtils
 {
     public static String readTextFile(String filename)
     {
+        return readTextFile(new File(filename));
+    }
+    
+    public static String readTextFile(File file)
+    {
         try
         {
-            File file = new File(filename);
-
             Scanner scan = new Scanner(file);
 
             String s = "";
@@ -30,18 +33,22 @@ public class SaveUtils
         catch (IOException e)
         {
             e.printStackTrace();
-            System.out.println("Reading of file " + filename + " failed! Returning empty string...");
+            System.out.println("Reading of file " + file.getName() + " failed! Returning empty string...");
             return "";
         }
     }
 
     public static boolean saveAllToFile(String filename, String... strings)
     {
+       return saveAllToFile(new File(filename), strings);
+    }
+
+    public static boolean saveAllToFile(File file, String... strings)
+    {
         try
         {
-            File file = new File(filename);
             FileWriter fw = new FileWriter(file);
-
+            
             for (String s : strings)
             {
                 fw.write(s);
@@ -55,16 +62,20 @@ public class SaveUtils
         catch (IOException e)
         {
             e.printStackTrace();
-            System.out.println("Saving to file " + filename + " failed! Aborting shut down...");
+            System.out.println("Saving to file " + file.getName() + " failed! Aborting shut down...");
             return false;
         }
     }
 
     public static boolean addToFile(String filename, String... strings)
     {
+        return addToFile(new File(filename), strings);
+    }
+
+    public static boolean addToFile(File file, String... strings)
+    {
         try
         {
-            File file = new File(filename);
             Scanner scan = new Scanner(file);
 
             List<String> lines = new ArrayList<String>();
@@ -96,7 +107,7 @@ public class SaveUtils
         catch (IOException e)
         {
             e.printStackTrace();
-            System.out.println("Adding to file " + filename + " failed! Aborting shut down...");
+            System.out.println("Adding to file " + file.getName() + " failed! Aborting shut down...");
             return false;
         }
     }

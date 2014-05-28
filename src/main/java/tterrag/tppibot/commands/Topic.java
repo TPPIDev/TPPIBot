@@ -24,4 +24,10 @@ public class Topic extends Command
         sendNotice(event.getUser(), "Please do not spam this command!");
         return false;
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "Prints the topic of the current channel.";
+    }
 }

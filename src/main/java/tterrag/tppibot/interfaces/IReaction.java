@@ -1,4 +1,4 @@
-package tterrag.tppibot.reactions;
+package tterrag.tppibot.interfaces;
 
 import org.pircbotx.hooks.events.MessageEvent;
 

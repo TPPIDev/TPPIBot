@@ -11,7 +11,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.Main;
 import tterrag.tppibot.commands.Command;
-import tterrag.tppibot.reactions.IReaction;
+import tterrag.tppibot.interfaces.IReaction;
 import tterrag.tppibot.util.IRCUtils;
 
 public class MessageListener extends ListenerAdapter<PircBotX>
@@ -59,7 +59,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
 
     private void sendNotice(org.pircbotx.hooks.events.MessageEvent<PircBotX> event, String message)
     {
-        Main.getBot().sendIRC().notice(event.getUser().getNick(), message);
+        event.getUser().send().notice(message);
     }
 
     private String pruneMessage(String message)

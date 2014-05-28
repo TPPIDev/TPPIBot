@@ -1,7 +1,9 @@
-package tterrag.tppibot.commands;
+package tterrag.tppibot.registry;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import tterrag.tppibot.commands.Command;
 
 public class CommandRegistry
 {

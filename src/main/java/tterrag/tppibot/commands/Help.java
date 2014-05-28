@@ -2,6 +2,7 @@ package tterrag.tppibot.commands;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.Main;
@@ -20,6 +21,8 @@ public class Help extends Command
     @Override
     public boolean onCommand(MessageEvent<?> event, String... args)
     {
+        User sendTo = event.getUser();
+        
         if (args.length < 1)
         {
             IRCUtils.sendNoticeForUser(event.getChannel(), event.getUser(), helpText, args);
@@ -29,6 +32,7 @@ public class Help extends Command
             if (IRCUtils.getUserByNick(event.getChannel(), args[0]) != null)
             {
                 IRCUtils.sendNoticeForUser(event.getChannel(), event.getUser(), args.length > 1 ? "%user% - Info on commands:" : helpText, args);
+                sendTo = IRCUtils.getUserByNick(event.getChannel(), args[0]);
                 args = ArrayUtils.remove(args, 0);
             }
             else
@@ -40,7 +44,7 @@ public class Help extends Command
             {
                 if (Main.getCommandRegistry().isCommandRegistered(s))
                 {
-                    sendNotice(event.getUser(), String.format("Info on %s: %s", s, Main.getCommandRegistry().getCommand(s).getDesc()));
+                    sendNotice(sendTo, String.format("Info on %s: %s", s, Main.getCommandRegistry().getCommand(s).getDesc()));
                 }
             }
         }

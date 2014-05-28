@@ -1,7 +1,9 @@
-package tterrag.tppibot.reactions;
+package tterrag.tppibot.registry;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import tterrag.tppibot.interfaces.IReaction;
 
 public class ReactionRegistry
 {
