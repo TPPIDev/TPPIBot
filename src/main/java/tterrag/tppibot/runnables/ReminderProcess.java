@@ -9,6 +9,13 @@ import java.util.Queue;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 
+import tterrag.tppibot.annotations.ReceiveExitEvent;
+import tterrag.tppibot.config.Config;
+import tterrag.tppibot.util.Logging;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 public class ReminderProcess implements Runnable
 {
     private PircBotX bot;
@@ -16,18 +23,33 @@ public class ReminderProcess implements Runnable
     private HashMap<String, Boolean> reminderMap;
 
     private Queue<String> reminders;
+    
+    private Config mapConfig, remindersConfig;
 
-    public ReminderProcess(PircBotX bot, String... strings)
+    private String inFlux = null;
+    
+    public ReminderProcess(PircBotX bot, String... defaults)
     {
         this.bot = bot;
-        reminders = new LinkedList<String>();
+        
+        mapConfig = new Config("reminderMap.json");
+        remindersConfig = new Config("reminders.json");
+        
+        reminderMap = new Gson().fromJson(mapConfig.getText(), new TypeToken<HashMap<String, Boolean>>(){}.getType());
 
-        for (String s : strings)
+        if (reminderMap == null)
+            reminderMap = new HashMap<String, Boolean>();
+        
+        reminders = new Gson().fromJson(remindersConfig.getText(), new TypeToken<Queue<String>>(){}.getType());
+
+        if (reminders == null)
         {
-            reminders.add(s);
+            reminders = new LinkedList<String>();
+            for (String s : defaults)
+            {
+                reminders.add(s);
+            }
         }
-
-        reminderMap = new HashMap<String, Boolean>();
     }
 
     @Override
@@ -36,7 +58,7 @@ public class ReminderProcess implements Runnable
         sleep(150000);
         while (true)
         {
-            String reminder = reminders.poll();
+            inFlux = reminders.poll();
             try
             {
                 if (bot.isConnected())
@@ -45,7 +67,7 @@ public class ReminderProcess implements Runnable
                     {
                         if (isRemindEnabledFor(channel.getName()))
                         {
-                             remind(channel, reminder);
+                             remind(channel, inFlux);
                         }
                     }
                     log("Sleeping reminder thread...");
@@ -59,11 +81,14 @@ public class ReminderProcess implements Runnable
             }
             catch (Throwable t)
             {
+                t.printStackTrace();
+                Logging.error("An error occured with the Reminder Process, continuing...");
                 sleep(10000);
             }
             finally
             {
-                reminders.add(reminder);
+                reminders.add(inFlux);
+                inFlux = null;
             }
         }
     }
@@ -102,6 +127,14 @@ public class ReminderProcess implements Runnable
 
         return channel == null ? false : reminderMap.get(channel.toLowerCase());
     }
+    
+    public boolean isInReminderMap(String channel)
+    {
+        if (!channel.startsWith("#"))
+            channel = "#" + channel;
+        
+        return reminderMap.containsKey(channel.toLowerCase());
+    }
 
     private void sleep(int millis)
     {
@@ -113,5 +146,18 @@ public class ReminderProcess implements Runnable
         {
             e.printStackTrace();
         }
+    }
+    
+    @ReceiveExitEvent
+    public void onExitEvent()
+    {
+        mapConfig.writeJsonToFile(reminderMap);
+        
+        if (inFlux != null)
+        {
+            reminders.add(inFlux);
+        }
+        
+        remindersConfig.writeJsonToFile(reminders);
     }
 }

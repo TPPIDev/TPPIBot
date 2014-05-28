@@ -84,6 +84,7 @@ public class Main
         "[Reminder] You can open the chat and press tab to talk with us!", "[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense.");
 
         Thread reminderThread = new Thread(reminders);
+        ExitRecieverRegistry.registerReceiver(reminders);
         reminderThread.start();
         
         try
