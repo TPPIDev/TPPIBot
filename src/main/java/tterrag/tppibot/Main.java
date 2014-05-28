@@ -2,21 +2,23 @@ package tterrag.tppibot;
 
 import java.nio.charset.Charset;
 
-import org.slf4j.impl.SimpleLogger;
+import org.apache.commons.lang3.ArrayUtils;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.slf4j.impl.SimpleLogger;
 
 import tterrag.tppibot.commands.AddCommand;
 import tterrag.tppibot.commands.AddReminder;
 import tterrag.tppibot.commands.CommandRegistry;
-import tterrag.tppibot.commands.DisableRemind;
 import tterrag.tppibot.commands.EditCommand;
 import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
 import tterrag.tppibot.commands.Kill;
+import tterrag.tppibot.commands.RemindersOff;
+import tterrag.tppibot.commands.RemindersOn;
+import tterrag.tppibot.commands.Topic;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
-import tterrag.tppibot.reactions.Cursewords;
 import tterrag.tppibot.reactions.ReactionRegistry;
 import tterrag.tppibot.runnables.ReminderProcess;
 
@@ -47,13 +49,15 @@ public class Main
         commands.registerCommand(new AddCommand());
         commands.registerCommand(new EditCommand());
         commands.registerCommand(new AddReminder());
-        commands.registerCommand(new DisableRemind());
-
+        commands.registerCommand(new RemindersOff());
+        commands.registerCommand(new RemindersOn());
+        commands.registerCommand(new Topic());
+        
         
         reactions = new ReactionRegistry();
         
-        reactions.registerReaction(new Cursewords());
-        
+        //reactions.registerReaction(new Cursewords());
+                
         
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
         System.out.println("Building config");
@@ -61,8 +65,15 @@ public class Main
         builder.setLogin("TPPIBot");
         builder.setNickservPassword(args[0]);
         builder.setEncoding(Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset());
-        builder.addAutoJoinChannel(args[1].startsWith("#") ? args[1] : "#" + args[1]);
         builder.setServer("irc.esper.net", 6667);
+        
+        args = ArrayUtils.remove(args, 0);
+        
+        for (String s : args)
+        {
+            builder.addAutoJoinChannel(s.startsWith("#") ? s : "#" + s);
+        }
+        
         builder.getListenerManager().addListener(new MessageListener());
         builder.getListenerManager().addListener(new JoinListener());
 

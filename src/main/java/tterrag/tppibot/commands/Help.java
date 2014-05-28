@@ -1,13 +1,16 @@
 package tterrag.tppibot.commands;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.events.MessageEvent;
 
+import tterrag.tppibot.Main;
+import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.util.IRCUtils;
 
 public class Help extends Command
 {
-    private String helpText = "%user%, I am not a very helpful bot yet :(";
+    private String helpText = "%user%, try " + MessageListener.controlChar + "help <command name>";
 
     public Help()
     {
@@ -17,7 +20,30 @@ public class Help extends Command
     @Override
     public boolean onCommand(MessageEvent<?> event, String... args)
     {
-        IRCUtils.sendMessageForUser(event.getChannel(), event.getUser(), helpText, args);
+        if (args.length < 1)
+        {
+            IRCUtils.sendNoticeForUser(event.getChannel(), event.getUser(), helpText, args);
+        }
+        else
+        {
+            if (IRCUtils.getUserByNick(event.getChannel(), args[0]) != null)
+            {
+                IRCUtils.sendNoticeForUser(event.getChannel(), event.getUser(), args.length > 1 ? "%user% - Info on commands:" : helpText, args);
+                args = ArrayUtils.remove(args, 0);
+            }
+            else
+            {
+                IRCUtils.sendNoticeForUser(event.getChannel(), event.getUser(), "%user% - Info on commands:", new String[]{});
+            }
+            
+            for (String s : args)
+            {
+                if (Main.getCommandRegistry().isCommandRegistered(s))
+                {
+                    sendNotice(event.getUser(), String.format("Info on %s: %s", s, Main.getCommandRegistry().getCommand(s).getDesc()));
+                }
+            }
+        }
         return true;
     }
 

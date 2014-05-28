@@ -24,7 +24,7 @@ public class Cursewords implements IReaction
         for (String s : curses)
         {
             String message = event.getMessage().toLowerCase();
-            if (message.contains(s.toLowerCase() + " ") || message.contains(" " + s.toLowerCase()))
+            if (message.contains(s.toLowerCase()))
             {
                 event.getChannel().send().message(Colors.RED + event.getUser().getNick() + ", please avoid cursing!");
             }

@@ -16,7 +16,7 @@ import tterrag.tppibot.util.IRCUtils;
 
 public class MessageListener extends ListenerAdapter<PircBotX>
 {
-    private static final String controlChar = "`";
+    public static final String controlChar = "`";
 
     @Override
     public void onMessage(MessageEvent<PircBotX> event) throws Exception

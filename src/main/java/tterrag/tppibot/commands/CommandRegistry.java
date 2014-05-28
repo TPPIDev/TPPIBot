@@ -21,4 +21,24 @@ public class CommandRegistry
     {
         return commands;
     }
+
+    public boolean isCommandRegistered(String s)
+    {
+        for (Command c : commands)
+        {
+            if (c.getName().equalsIgnoreCase(s))
+                return true;
+        }
+        return false;
+    }
+    
+    public Command getCommand(String s)
+    {
+        for (Command c : commands)
+        {
+            if (c.getName().equalsIgnoreCase(s))
+                return c;
+        }
+        return null;
+    }
 }

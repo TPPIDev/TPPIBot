@@ -9,15 +9,13 @@ import java.util.Queue;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 
-import tterrag.tppibot.Main;
-
 public class ReminderProcess implements Runnable
 {
     private PircBotX bot;
 
     private HashMap<String, Boolean> reminderMap;
 
-    private static Queue<String> reminders;
+    private Queue<String> reminders;
 
     public ReminderProcess(PircBotX bot, String... strings)
     {
@@ -35,21 +33,21 @@ public class ReminderProcess implements Runnable
     @Override
     public void run()
     {
+        sleep(150000);
         while (true)
         {
+            String reminder = reminders.poll();
             try
             {
                 if (bot.isConnected())
                 {
-                    String reminder = reminders.poll();
                     for (Channel channel : bot.getUserBot().getChannels())
                     {
-                        if (reminderMap.get(channel.getName()))
+                        if (isRemindEnabledFor(channel.getName()))
                         {
-                            remind(channel, reminder);
+                             remind(channel, reminder);
                         }
                     }
-                    reminders.add(reminder);
                     log("Sleeping reminder thread...");
                     sleep(300000);
                 }
@@ -63,6 +61,10 @@ public class ReminderProcess implements Runnable
             {
                 sleep(10000);
             }
+            finally
+            {
+                reminders.add(reminder);
+            }
         }
     }
 
@@ -75,7 +77,7 @@ public class ReminderProcess implements Runnable
         }
     }
 
-    public static void addReminder(String reminder)
+    public void addReminder(String reminder)
     {
         synchronized (reminders)
         {

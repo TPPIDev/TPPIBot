@@ -11,6 +11,6 @@ public class JoinListener extends ListenerAdapter<PircBotX>
     @Override
     public void onJoin(JoinEvent<PircBotX> event) throws Exception
     {
-        Main.reminders.enableRemindersFor(event.getChannel().getName());
+        Main.reminders.enableRemindersFor(event.getChannel().getName().toLowerCase());
     }
 }

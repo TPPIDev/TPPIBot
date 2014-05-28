@@ -67,5 +67,9 @@ public abstract class Command
     {
         return this;
     }
-
+    
+    public String getDesc()
+    {
+        return "";
+    }
 }
