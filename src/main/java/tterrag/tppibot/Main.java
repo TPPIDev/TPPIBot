@@ -19,6 +19,7 @@ import tterrag.tppibot.commands.RemindersOn;
 import tterrag.tppibot.commands.RemoveCommand;
 import tterrag.tppibot.commands.Timeout;
 import tterrag.tppibot.commands.Topic;
+import tterrag.tppibot.commands.Victim;
 import tterrag.tppibot.listeners.EventBus;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
@@ -54,6 +55,7 @@ public class Main
         new Commands().create();
         new AddCommand().create();
         new RemoveCommand().create();
+        new Victim().create();
 
         Timeout timeout = (Timeout) new Timeout().create();
 
