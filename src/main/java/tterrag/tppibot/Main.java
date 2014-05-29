@@ -32,6 +32,8 @@ public class Main
     public static ReminderProcess reminders;
     public static TimeoutChecker timeouts;
 
+    public static PircBotX bot;
+    
     public static void main(String[] args)
     {
         System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
@@ -83,7 +85,7 @@ public class Main
         builder.getListenerManager().addListener(new JoinListener());
         builder.getListenerManager().addListener(new ExitListener());
 
-        PircBotX bot = new PircBotX(builder.buildConfiguration());
+        bot = new PircBotX(builder.buildConfiguration());
         System.out.println("Built config");
 
         reminders = new ReminderProcess(bot,

@@ -3,8 +3,6 @@ package tterrag.tppibot.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 
@@ -22,15 +20,13 @@ public class Timeout extends Command
         public final long init;
         public final long time;
         
-        public final Channel channel;
-        public final User user;
-        public final PircBotX bot;
+        public final String channel;
+        public final String user;
         
-        public TimeoutTime(long start, int mins, PircBotX bot, Channel chan, User user)
+        public TimeoutTime(long start, int mins, String chan, String user)
         {
             this.init = start;
             this.time = mins * 60 * 1000;
-            this.bot = bot;
             this.channel = chan;
             this.user = user;
         }
@@ -85,7 +81,7 @@ public class Timeout extends Command
         }
         
         event.getBot().sendRaw().rawLine("MODE " + event.getChannel().getName()+ " +q " + user.getHostmask());
-        this.list.add(new TimeoutTime(System.currentTimeMillis(), mins, event.getBot(), event.getChannel(), user));
+        this.list.add(new TimeoutTime(System.currentTimeMillis(), mins, event.getChannel().getName(), user.getNick()));
         return true;
     }
     

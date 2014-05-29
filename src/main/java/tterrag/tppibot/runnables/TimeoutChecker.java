@@ -1,7 +1,9 @@
 package tterrag.tppibot.runnables;
 
+import tterrag.tppibot.Main;
 import tterrag.tppibot.commands.Timeout;
 import tterrag.tppibot.commands.Timeout.TimeoutTime;
+import tterrag.tppibot.util.IRCUtils;
 
 public class TimeoutChecker implements Runnable
 {
@@ -25,7 +27,7 @@ public class TimeoutChecker implements Runnable
                 
                 if (time.isTimeUp())
                 {
-                    time.bot.sendRaw().rawLine("MODE "+ time.channel.getName() + " -q " + time.user.getHostmask());
+                    Main.bot.sendRaw().rawLine("MODE "+ time.channel + " -q " + IRCUtils.getUserByNick(IRCUtils.getChannelByName(Main.bot, time.channel), time.user).getHostmask());
                     this.instance.list.remove(i);
                 }
             }

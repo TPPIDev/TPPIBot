@@ -1,6 +1,7 @@
 package tterrag.tppibot.util;
 
 import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserLevel;
 
@@ -61,6 +62,16 @@ public class IRCUtils
         {
             if (u.getNick().equalsIgnoreCase(nick))
                 return u;
+        }
+        return null;
+    }
+
+    public static Channel getChannelByName(PircBotX bot, String channel)
+    {
+        for (Channel c : bot.getUserBot().getChannels())
+        {
+            if (c.getName().equalsIgnoreCase(channel))
+                return c;
         }
         return null;
     }

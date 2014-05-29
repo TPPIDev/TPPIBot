@@ -35,7 +35,7 @@ public class Kill extends Command
             e.printStackTrace();
         }
         
-//        System.exit(0);
+        System.exit(0);
 
         return true;
     }
