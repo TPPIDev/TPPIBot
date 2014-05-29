@@ -56,7 +56,8 @@ public class TimeoutChecker implements Runnable
                             }
                             else
                             {
-                                Main.bot.sendRaw().rawLine("MODE " + time.channel + " -q " + IRCUtils.getUserByNick(IRCUtils.getChannelByName(Main.bot, time.channel), time.user).getHostmask());
+                                Main.bot.sendRaw().rawLine("MODE " + time.channel + " -q " + user.getHostmask());
+                                user.send().notice("You are no longer timed out. Be warned, repeat offenses could result in a ban.");
                                 this.instance.list.remove(i);
                             }
                         }

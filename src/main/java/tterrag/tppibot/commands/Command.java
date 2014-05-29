@@ -4,6 +4,9 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.EventHandler;
@@ -11,7 +14,9 @@ import tterrag.tppibot.registry.EventHandler;
 public abstract class Command implements ICommand
 {
     private PermLevel level;
-    private final String ident;
+    private String ident;
+    
+    protected Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     protected Command(String ident, PermLevel level)
     {

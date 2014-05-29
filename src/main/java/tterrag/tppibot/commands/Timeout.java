@@ -1,8 +1,11 @@
 package tterrag.tppibot.commands;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
@@ -12,7 +15,6 @@ import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.util.IRCUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class Timeout extends Command
@@ -50,20 +52,25 @@ public class Timeout extends Command
     }
 
     public List<TimeoutTime> list;
-    private Config config;
+    private Map<String, Integer> pastOffenders;
+    private Config timeoutConfig, offendersConfig;
 
     public Timeout()
     {
         super("timeout", PermLevel.CHANOP);
 
-        config = new Config("timeouts.json");
+        timeoutConfig = new Config("timeouts.json");
+        offendersConfig = new Config("pastOffenders.json");
 
-        list = new Gson().fromJson(config.getText(), new TypeToken<List<TimeoutTime>>()
-        {
-        }.getType());
-
+        list = gson.fromJson(timeoutConfig.getText(), new TypeToken<List<TimeoutTime>>(){}.getType());
+        
         if (list == null)
             list = new ArrayList<TimeoutTime>();
+        
+        pastOffenders = gson.fromJson(offendersConfig.getText(), new TypeToken<Map<String, Integer>>(){}.getType());
+        
+        if (pastOffenders == null)
+            pastOffenders = new HashMap<String, Integer>();
     }
 
     @Override
@@ -107,6 +114,20 @@ public class Timeout extends Command
 
         event.getBot().sendRaw().rawLine("MODE " + event.getChannel().getName() + " +q " + user.getHostmask());
         this.list.add(new TimeoutTime(System.currentTimeMillis(), mins * mult, event.getChannel().getName(), user.getNick()));
+        
+        String hostmask = user.getHostmask();
+        
+        if (pastOffenders.containsKey(hostmask))
+        {
+            int pastTimeouts = pastOffenders.get(hostmask);
+            sendNotice(event.getUser(), String.format("The user \"%s\" with hostmask \"%s\" has been timed out %s time%s before.", user.getNick(), hostmask, Colors.BOLD + pastTimeouts + Colors.NORMAL, pastTimeouts <= 1 ? "" : "s"));
+            pastOffenders.put(hostmask, pastTimeouts + 1);
+        }
+        else
+        {
+            this.pastOffenders.put(hostmask, 1);
+        }
+        
         return true;
     }
 
@@ -144,6 +165,7 @@ public class Timeout extends Command
     @Subscribe
     public void onDisconnect(DisconnectEvent<PircBotX> event)
     {
-        config.writeJsonToFile(list);
+        timeoutConfig.writeJsonToFile(list);
+        offendersConfig.writeJsonToFile(pastOffenders);
     }
 }
