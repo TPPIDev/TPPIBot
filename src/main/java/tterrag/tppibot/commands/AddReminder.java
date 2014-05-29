@@ -9,7 +9,7 @@ public class AddReminder extends Command
 {
     public AddReminder()
     {
-        super("addremind", PermLevel.OP);
+        super("addremind", PermLevel.CHANOP);
     }
 
     @Override

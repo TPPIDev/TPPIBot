@@ -6,7 +6,7 @@ public class Join extends Command
 {
     public Join()
     {
-        super("join", PermLevel.OP);
+        super("join", PermLevel.CHANOP);
     }
 
     @Override

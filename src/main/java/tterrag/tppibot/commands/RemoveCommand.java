@@ -8,7 +8,7 @@ public class RemoveCommand extends Command
 {
     public RemoveCommand()
     {
-        super("delcmd", PermLevel.OP);
+        super("delcmd", PermLevel.CHANOP);
     }
 
     @Override

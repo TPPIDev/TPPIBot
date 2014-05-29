@@ -8,7 +8,7 @@ public interface ICommand
 {
     public enum PermLevel
     {
-        OP, VOICE, ANY
+        CONTROLLER, OP, TRUSTED, CHANOP, VOICE, ALL
     }
 
     /**

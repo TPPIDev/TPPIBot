@@ -12,7 +12,7 @@ public class EditCommand extends Command
 {
     public EditCommand()
     {
-        super("editcmd", PermLevel.OP);
+        super("editcmd", PermLevel.CHANOP);
     }
 
     @Override

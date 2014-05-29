@@ -21,7 +21,7 @@ public class IRCUtils
 
     public static boolean userMatchesPerms(Channel channel, User user, PermLevel perm)
     {
-        if (perm == PermLevel.ANY)
+        if (perm == PermLevel.ALL)
         {
             return true;
         }
@@ -29,7 +29,7 @@ public class IRCUtils
         {
             return userIsVoice(channel, user) || userIsOp(channel, user);
         }
-        else if (perm == PermLevel.OP)
+        else if (perm == PermLevel.CHANOP)
         {
             return userIsOp(channel, user);
         }

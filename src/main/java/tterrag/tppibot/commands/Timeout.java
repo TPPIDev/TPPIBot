@@ -54,7 +54,7 @@ public class Timeout extends Command
 
     public Timeout()
     {
-        super("timeout", PermLevel.OP);
+        super("timeout", PermLevel.CHANOP);
 
         config = new Config("timeouts.json");
 

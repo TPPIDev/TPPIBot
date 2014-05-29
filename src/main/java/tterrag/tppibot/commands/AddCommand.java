@@ -25,7 +25,7 @@ public class AddCommand extends Command
 
     public AddCommand()
     {
-        super("addcmd", PermLevel.OP);
+        super("addcmd", PermLevel.CHANOP);
         config = new Config("customCommands.json");
 
         commandsAdded = new Gson().fromJson(config.getText(), new TypeToken<List<CustomCommand>>()
@@ -62,7 +62,7 @@ public class AddCommand extends Command
             return false;
         }
 
-        CustomCommand command = new CustomCommand(cmdName, PermLevel.ANY, toAdd);
+        CustomCommand command = new CustomCommand(cmdName, PermLevel.ALL, toAdd);
         CommandRegistry.registerCommand(command);
         commandsAdded.add(command);
 

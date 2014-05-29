@@ -10,7 +10,7 @@ public class Commands extends Command
 {
     public Commands()
     {
-        super("commands", PermLevel.ANY);
+        super("commands", PermLevel.ALL);
     }
 
     @Override

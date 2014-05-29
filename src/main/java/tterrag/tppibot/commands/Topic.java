@@ -8,7 +8,7 @@ public class Topic extends Command
 
     public Topic()
     {
-        super("topic", PermLevel.ANY);
+        super("topic", PermLevel.ALL);
         delayTime = 0;
     }
 

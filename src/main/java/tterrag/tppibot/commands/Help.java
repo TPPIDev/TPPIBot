@@ -15,7 +15,7 @@ public class Help extends Command
 
     public Help()
     {
-        super("help", PermLevel.ANY);
+        super("help", PermLevel.ALL);
     }
 
     @Override
