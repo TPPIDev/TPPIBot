@@ -3,5 +3,20 @@
     "message": "To remove yourself from the chat for this play session, type \"/irc part #playtppi\". You can rejoin in the EiraIRC options.",
     "level": "ANY",
     "ident": "dc"
+  },
+  {
+    "message": "Rules: Avoid swearing - No ETA requests - No modlist requests - Don\u0027t advertise - Use common sense.",
+    "level": "ANY",
+    "ident": "rules"
+  },
+  {
+    "message": "Open the chat and press tab to talk with us!",
+    "level": "ANY",
+    "ident": "chat"
+  },
+  {
+    "message": "Remember %user%, breaking the rules can get you timed out or banned!\u000f",
+    "level": "ANY",
+    "ident": "warn"
   }
 ]

@@ -16,6 +16,8 @@ import tterrag.tppibot.util.Logging;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import static tterrag.tppibot.util.ThreadUtils.sleep;
+
 public class ReminderProcess implements Runnable
 {
     private PircBotX bot;
@@ -134,18 +136,6 @@ public class ReminderProcess implements Runnable
             channel = "#" + channel;
         
         return reminderMap.containsKey(channel.toLowerCase());
-    }
-
-    private void sleep(int millis)
-    {
-        try
-        {
-            Thread.sleep(millis);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
     }
     
     @ReceiveExitEvent
