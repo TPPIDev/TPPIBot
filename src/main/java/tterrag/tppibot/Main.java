@@ -19,11 +19,11 @@ import tterrag.tppibot.commands.RemindersOn;
 import tterrag.tppibot.commands.RemoveCommand;
 import tterrag.tppibot.commands.Timeout;
 import tterrag.tppibot.commands.Topic;
-import tterrag.tppibot.listeners.ExitListener;
+import tterrag.tppibot.listeners.EventBus;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.registry.CommandRegistry;
-import tterrag.tppibot.registry.ExitRecieverRegistry;
+import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.runnables.ReminderProcess;
 import tterrag.tppibot.runnables.TimeoutChecker;
 
@@ -56,13 +56,13 @@ public class Main
         
         AddCommand addcmd = new AddCommand();
         CommandRegistry.registerCommand(addcmd);
-        ExitRecieverRegistry.registerReceiver(addcmd);
+        EventHandler.registerReceiver(addcmd);
         
         CommandRegistry.registerCommand(new RemoveCommand());
         
         Timeout timeout = new Timeout();
         CommandRegistry.registerCommand(timeout);
-        ExitRecieverRegistry.registerReceiver(timeout);
+        EventHandler.registerReceiver(timeout);
 
         // DISABLED UNTIL FURTHER NOTICE reactions.registerReaction(new Cursewords());
         
@@ -83,8 +83,8 @@ public class Main
         
         builder.getListenerManager().addListener(new MessageListener());
         builder.getListenerManager().addListener(new JoinListener());
-        builder.getListenerManager().addListener(new ExitListener());
-
+        builder.getListenerManager().addListener(new EventBus());
+        
         bot = new PircBotX(builder.buildConfiguration());
         System.out.println("Built config");
 
@@ -93,7 +93,7 @@ public class Main
         "[Reminder] You can open the chat and press tab to talk with us!", "[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense.");
 
         Thread reminderThread = new Thread(reminders);
-        ExitRecieverRegistry.registerReceiver(reminders);
+        EventHandler.registerReceiver(reminders);
         reminderThread.start();
         
         timeouts = new TimeoutChecker(timeout);

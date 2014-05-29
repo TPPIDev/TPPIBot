@@ -3,10 +3,12 @@ package tterrag.tppibot.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import tterrag.tppibot.annotations.ReceiveExitEvent;
+import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.util.IRCUtils;
 
@@ -133,8 +135,8 @@ public class Timeout extends Command
         return "Quiets the specified user for the specified amount of time. Minutes by default, or specified by a character at the end (e.g. 's' or 'd')";
     }
 
-    @ReceiveExitEvent
-    public void onExitEvent()
+    @Subscribe
+    public void onDisconnect(DisconnectEvent<PircBotX> event)
     {
         config.writeJsonToFile(list);
     }

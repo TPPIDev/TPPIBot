@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import tterrag.tppibot.annotations.ReceiveExitEvent;
+import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.registry.CommandRegistry;
 
@@ -77,8 +79,8 @@ public class AddCommand extends Command
         return "Adds a command with the name of the first argument and the output of any following arguments to the command registry.";
     }
 
-    @ReceiveExitEvent
-    public void onExitEvent()
+    @Subscribe
+    public void onDisconnect(DisconnectEvent<PircBotX> event)
     {
         config.writeJsonToFile(commandsAdded);
     }

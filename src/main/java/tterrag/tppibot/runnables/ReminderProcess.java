@@ -1,6 +1,7 @@
 package tterrag.tppibot.runnables;
 
 import static tterrag.tppibot.util.Logging.log;
+import static tterrag.tppibot.util.ThreadUtils.sleep;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8,15 +9,14 @@ import java.util.Queue;
 
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.events.DisconnectEvent;
 
-import tterrag.tppibot.annotations.ReceiveExitEvent;
+import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.util.Logging;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import static tterrag.tppibot.util.ThreadUtils.sleep;
 
 public class ReminderProcess implements Runnable
 {
@@ -138,8 +138,8 @@ public class ReminderProcess implements Runnable
         return reminderMap.containsKey(channel.toLowerCase());
     }
     
-    @ReceiveExitEvent
-    public void onExitEvent()
+    @Subscribe
+    public void onDisconnect(DisconnectEvent<PircBotX> event)
     {
         mapConfig.writeJsonToFile(reminderMap);
         
