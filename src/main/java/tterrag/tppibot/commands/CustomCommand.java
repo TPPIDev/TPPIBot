@@ -24,6 +24,6 @@ public class CustomCommand extends Command
     @Override
     public String getDesc()
     {
-        return "A custom command that was added by 'addcmd'";
+        return "A custom command that was added by 'addcmd'. Output text is: \"" + this.message + ".\"";
     }
 }
