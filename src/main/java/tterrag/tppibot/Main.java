@@ -17,6 +17,7 @@ import tterrag.tppibot.commands.Kill;
 import tterrag.tppibot.commands.RemindersOff;
 import tterrag.tppibot.commands.RemindersOn;
 import tterrag.tppibot.commands.RemoveCommand;
+import tterrag.tppibot.commands.Timeout;
 import tterrag.tppibot.commands.Topic;
 import tterrag.tppibot.listeners.ExitListener;
 import tterrag.tppibot.listeners.JoinListener;
@@ -24,10 +25,12 @@ import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.ExitRecieverRegistry;
 import tterrag.tppibot.runnables.ReminderProcess;
+import tterrag.tppibot.runnables.TimeoutChecker;
 
 public class Main
 {
     public static ReminderProcess reminders;
+    public static TimeoutChecker timeouts;
 
     public static void main(String[] args)
     {
@@ -54,7 +57,11 @@ public class Main
         ExitRecieverRegistry.registerReceiver(addcmd);
         
         CommandRegistry.registerCommand(new RemoveCommand());
-                
+        
+        Timeout timeout = new Timeout();
+        CommandRegistry.registerCommand(timeout);
+        ExitRecieverRegistry.registerReceiver(timeout);
+
         // DISABLED UNTIL FURTHER NOTICE reactions.registerReaction(new Cursewords());
         
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
@@ -86,6 +93,10 @@ public class Main
         Thread reminderThread = new Thread(reminders);
         ExitRecieverRegistry.registerReceiver(reminders);
         reminderThread.start();
+        
+        timeouts = new TimeoutChecker(timeout);
+        Thread timeoutThread = new Thread(timeouts);
+        timeoutThread.start();
         
         try
         {
