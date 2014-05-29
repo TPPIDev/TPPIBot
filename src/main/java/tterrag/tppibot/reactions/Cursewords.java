@@ -14,7 +14,7 @@ import tterrag.tppibot.interfaces.IReaction;
 public class Cursewords implements IReaction
 {
     private List<String> curses;
-    
+
     @Override
     public void onMessage(MessageEvent<?> event)
     {
@@ -22,7 +22,7 @@ public class Cursewords implements IReaction
         {
             loadCurseWords();
         }
-        
+
         for (String s : curses)
         {
             String message = event.getMessage().toLowerCase();
@@ -32,25 +32,25 @@ public class Cursewords implements IReaction
             }
         }
     }
-    
+
     private void loadCurseWords()
     {
         File file = new File(new File("src").getAbsolutePath() + "/main/resources/curses.txt");
         System.out.println(file.getAbsolutePath());
-        
+
         curses = new ArrayList<String>();
 
         try
         {
             Scanner scan = new Scanner(file);
-            
+
             scan.nextLine();
-            
+
             while (scan.hasNextLine())
             {
                 curses.add(scan.nextLine());
             }
-            
+
             scan.close();
         }
         catch (FileNotFoundException e)

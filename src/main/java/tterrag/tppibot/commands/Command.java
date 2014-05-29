@@ -4,13 +4,12 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 
-public abstract class Command
-{
-    public enum PermLevel
-    {
-        OP, VOICE, ANY
-    }
+import tterrag.tppibot.interfaces.ICommand;
+import tterrag.tppibot.registry.CommandRegistry;
+import tterrag.tppibot.registry.EventHandler;
 
+public abstract class Command implements ICommand
+{
     private PermLevel level;
     private final String ident;
 
@@ -20,17 +19,35 @@ public abstract class Command
         this.level = level;
     }
 
-    public String getName()
+    @Override
+    public ICommand create()
+    {
+        CommandRegistry.registerCommand(this);
+
+        if (shouldReceiveEvents())
+            EventHandler.registerReceiver(this);
+
+        return this;
+    }
+
+    public boolean shouldReceiveEvents()
+    {
+        return false;
+    }
+
+    @Override
+    public String getIdent()
     {
         return ident;
     }
 
+    @Override
     public PermLevel getPermLevel()
     {
         return level;
     }
 
-    public Command setPermLevel(PermLevel level)
+    public ICommand setPermLevel(PermLevel level)
     {
         this.level = level;
         return this;
@@ -54,6 +71,7 @@ public abstract class Command
      * @param args - any args after the command (split by space)
      * @return whether the command processing was successful
      */
+    @Override
     public abstract boolean onCommand(MessageEvent<?> event, String... args);
 
     /**
@@ -63,11 +81,13 @@ public abstract class Command
      *            command impl
      * @return the command object
      */
+    @Override
     public Command editCommand(String... params)
     {
         return this;
     }
-    
+
+    @Override
     public String getDesc()
     {
         return "";

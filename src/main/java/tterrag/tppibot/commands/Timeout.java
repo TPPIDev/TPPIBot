@@ -42,7 +42,7 @@ public class Timeout extends Command
         {
             this.time += secs * 1000;
         }
-        
+
         public long getTime()
         {
             return time;
@@ -94,7 +94,7 @@ public class Timeout extends Command
         }
 
         int mult = getMultiplierForModifier(modifier);
-        
+
         try
         {
             mins = Integer.parseInt(args[1]);
@@ -133,6 +133,12 @@ public class Timeout extends Command
     public String getDesc()
     {
         return "Quiets the specified user for the specified amount of time. Minutes by default, or specified by a character at the end (e.g. 's' or 'd')";
+    }
+
+    @Override
+    public boolean shouldReceiveEvents()
+    {
+        return true;
     }
 
     @Subscribe

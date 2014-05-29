@@ -9,7 +9,7 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import tterrag.tppibot.commands.Command;
+import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.interfaces.IReaction;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.ReactionRegistry;
@@ -25,7 +25,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
         String message = event.getMessage();
         User sender = event.getUser();
         Channel channel = event.getChannel();
-        List<Command> commands = CommandRegistry.getCommands();
+        List<ICommand> commands = CommandRegistry.getCommands();
 
         if (message.startsWith(controlChar))
         {
@@ -37,8 +37,8 @@ public class MessageListener extends ListenerAdapter<PircBotX>
 
             for (int i = 0; i < commands.size(); i++)
             {
-                Command c = commands.get(i);
-                if (c.getName().equalsIgnoreCase(args[0]))
+                ICommand c = commands.get(i);
+                if (c.getIdent().equalsIgnoreCase(args[0]))
                 {
                     if (IRCUtils.userMatchesPerms(channel, sender, c.getPermLevel()))
                     {
@@ -51,7 +51,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                 }
             }
         }
-        
+
         for (IReaction r : ReactionRegistry.getReactions())
         {
             r.onMessage(event);

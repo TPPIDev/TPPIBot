@@ -22,7 +22,7 @@ public class Help extends Command
     public boolean onCommand(MessageEvent<?> event, String... args)
     {
         User sendTo = event.getUser();
-        
+
         if (args.length < 1)
         {
             IRCUtils.sendNoticeForUser(event.getChannel(), event.getUser(), helpText, args);
@@ -37,9 +37,9 @@ public class Help extends Command
             }
             else
             {
-                IRCUtils.sendNoticeForUser(event.getChannel(), event.getUser(), "%user% - Info on commands:", new String[]{});
+                IRCUtils.sendNoticeForUser(event.getChannel(), event.getUser(), "%user% - Info on commands:", new String[] {});
             }
-            
+
             for (String s : args)
             {
                 if (CommandRegistry.isCommandRegistered(s))
@@ -62,7 +62,7 @@ public class Help extends Command
         this.helpText = newText;
         return this;
     }
-    
+
     @Override
     public String getDesc()
     {

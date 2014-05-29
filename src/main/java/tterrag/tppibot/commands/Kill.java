@@ -13,7 +13,7 @@ public class Kill extends Command
     public boolean onCommand(MessageEvent<?> event, String... args)
     {
         sendMessage(event.getChannel(), "NOOOOooooo...");
-        
+
         try
         {
             Thread.sleep(1000);
@@ -25,7 +25,7 @@ public class Kill extends Command
 
         event.getBot().stopBotReconnect();
         event.getBot().sendIRC().quitServer("x.x");
-        
+
         try
         {
             Thread.sleep(2000);
@@ -34,12 +34,12 @@ public class Kill extends Command
         {
             e.printStackTrace();
         }
-        
-//        System.exit(0);
+
+        // System.exit(0);
 
         return true;
     }
-    
+
     @Override
     public String getDesc()
     {

@@ -26,7 +26,7 @@ public class Join extends Command
             return false;
         }
     }
-    
+
     @Override
     public String getDesc()
     {

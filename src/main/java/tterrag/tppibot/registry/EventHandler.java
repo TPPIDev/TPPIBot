@@ -9,23 +9,26 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.annotations.Subscribe;
+import tterrag.tppibot.util.Logging;
 
 /**
- * Register classes with this class and have a method (or more) inside (non-static) that have the {@link @Subscribe} annotation.
+ * Register classes with this class and have a method (or more) inside
+ * (non-static) that have the {@link @Subscribe} annotation.
  * <p>
- * Classes that use this should not do so for very common events such as {@link MessageEvent} due to reflection overhead
+ * Classes that use this should not do so for very common events such as
+ * {@link MessageEvent} due to reflection overhead
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class EventHandler
 {
     private static List<ReceiverMethod> registrar = new ArrayList<ReceiverMethod>();
-    
+
     private static class ReceiverMethod
     {
         public final Object instance;
         public final Method method;
         public final Class<? extends Event> eventType;
-        
+
         public ReceiverMethod(Object instance, Method method, Class<? extends Event> eventType)
         {
             this.instance = instance;
@@ -33,7 +36,7 @@ public class EventHandler
             this.eventType = eventType;
         }
     }
-    
+
     public static void registerReceiver(Object o)
     {
         for (Method m : o.getClass().getDeclaredMethods())
@@ -42,10 +45,8 @@ public class EventHandler
             if (annotation != null)
             {
                 Class<?>[] params = m.getParameterTypes();
-                if (params.length != 1 || !Event.class.isAssignableFrom(params[0]))
-                {
-                    throw new IllegalArgumentException("A method that is @Subscribe must take ONE parameter of type Event or subclass");
-                }
+                if (params.length != 1 || !Event.class.isAssignableFrom(params[0])) { throw new IllegalArgumentException(
+                        "A method that is @Subscribe must take ONE parameter of type Event or subclass"); }
                 registerReceiver(o, m, (Class<? extends Event>) params[0]);
             }
         }
@@ -53,7 +54,7 @@ public class EventHandler
 
     private static void registerReceiver(Object o, Method m, Class<? extends Event> clazz)
     {
-        registrar.add(new ReceiverMethod(o, m, (Class<? extends Event>) clazz));
+        registrar.add(new ReceiverMethod(o, m, clazz));
     }
 
     public static void post(Event<PircBotX> event)
@@ -65,6 +66,7 @@ public class EventHandler
                 try
                 {
                     r.method.invoke(r.instance, event);
+                    Logging.log("Successfully posted event " + event.getClass().getSimpleName() + " to class " + r.instance.getClass().getSimpleName());
                 }
                 catch (Throwable t)
                 {

@@ -5,7 +5,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserLevel;
 
-import tterrag.tppibot.commands.Command.PermLevel;
+import tterrag.tppibot.interfaces.ICommand.PermLevel;
 
 public class IRCUtils
 {
@@ -41,7 +41,7 @@ public class IRCUtils
     {
         channel.send().message(message.replace("%user%", args.length >= 1 ? args[0] : user.getNick()));
     }
-    
+
     public static void sendNoticeForUser(Channel channel, User user, String message, String... args)
     {
         if (args.length > 0)
@@ -55,7 +55,7 @@ public class IRCUtils
         }
         user.send().notice(message.replace("%user%", user.getNick()));
     }
-    
+
     public static User getUserByNick(Channel channel, String nick)
     {
         for (User u : channel.getUsers())

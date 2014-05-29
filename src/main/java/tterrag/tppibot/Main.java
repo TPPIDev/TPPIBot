@@ -22,7 +22,6 @@ import tterrag.tppibot.commands.Topic;
 import tterrag.tppibot.listeners.EventBus;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
-import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.runnables.ReminderProcess;
 import tterrag.tppibot.runnables.TimeoutChecker;
@@ -33,7 +32,7 @@ public class Main
     public static TimeoutChecker timeouts;
 
     public static PircBotX bot;
-    
+
     public static void main(String[] args)
     {
         System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
@@ -43,29 +42,24 @@ public class Main
         System.setProperty(SimpleLogger.SHOW_LOG_NAME_KEY, "false");
         System.out.println("Starting");
 
-        
-        CommandRegistry.registerCommand(new Help());
-        CommandRegistry.registerCommand(new Kill());
-        CommandRegistry.registerCommand(new Join());
-        CommandRegistry.registerCommand(new EditCommand());
-        CommandRegistry.registerCommand(new AddReminder());
-        CommandRegistry.registerCommand(new RemindersOff());
-        CommandRegistry.registerCommand(new RemindersOn());
-        CommandRegistry.registerCommand(new Topic());
-        CommandRegistry.registerCommand(new Commands());
-        
-        AddCommand addcmd = new AddCommand();
-        CommandRegistry.registerCommand(addcmd);
-        EventHandler.registerReceiver(addcmd);
-        
-        CommandRegistry.registerCommand(new RemoveCommand());
-        
-        Timeout timeout = new Timeout();
-        CommandRegistry.registerCommand(timeout);
-        EventHandler.registerReceiver(timeout);
+        // create base commands
+        new Help().create();
+        new Kill().create();
+        new Join().create();
+        new EditCommand().create();
+        new AddReminder().create();
+        new RemindersOff().create();
+        new RemindersOn().create();
+        new Topic().create();
+        new Commands().create();
+        new AddCommand().create();
+        new RemoveCommand().create();
 
-        // DISABLED UNTIL FURTHER NOTICE reactions.registerReaction(new Cursewords());
-        
+        Timeout timeout = (Timeout) new Timeout().create();
+
+        // DISABLED UNTIL FURTHER NOTICE reactions.registerReaction(new
+        // Cursewords());
+
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
         System.out.println("Building config");
         builder.setName("TPPIBot");
@@ -73,21 +67,22 @@ public class Main
         builder.setNickservPassword(args[0]);
         builder.setEncoding(Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset());
         builder.setServer("irc.esper.net", 6667);
-        
+
         args = ArrayUtils.remove(args, 0);
-        
+
         for (String s : args)
         {
             builder.addAutoJoinChannel(s.startsWith("#") ? s : "#" + s);
         }
-        
+
         builder.getListenerManager().addListener(new MessageListener());
         builder.getListenerManager().addListener(new JoinListener());
         builder.getListenerManager().addListener(new EventBus());
-        
+
         bot = new PircBotX(builder.buildConfiguration());
         System.out.println("Built config");
 
+        // create and start threads
         reminders = new ReminderProcess(bot,
 
         "[Reminder] You can open the chat and press tab to talk with us!", "[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense.");
@@ -95,11 +90,12 @@ public class Main
         Thread reminderThread = new Thread(reminders);
         EventHandler.registerReceiver(reminders);
         reminderThread.start();
-        
+
         timeouts = new TimeoutChecker(timeout);
         Thread timeoutThread = new Thread(timeouts);
         timeoutThread.start();
-        
+
+        // start 'er up
         try
         {
             System.out.println("Connecting to Server!");

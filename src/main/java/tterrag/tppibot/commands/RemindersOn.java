@@ -10,7 +10,7 @@ public class RemindersOn extends Command
     {
         super("reminderson", PermLevel.OP);
     }
-    
+
     @Override
     public boolean onCommand(MessageEvent<?> event, String... args)
     {
@@ -26,7 +26,7 @@ public class RemindersOn extends Command
             return false;
         }
     }
-    
+
     @Override
     public String getDesc()
     {

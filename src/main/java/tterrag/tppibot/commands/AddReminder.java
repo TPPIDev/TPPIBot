@@ -25,7 +25,7 @@ public class AddReminder extends Command
         sendNotice(event.getUser(), "This requires a string argument!");
         return false;
     }
-    
+
     @Override
     public String getDesc()
     {

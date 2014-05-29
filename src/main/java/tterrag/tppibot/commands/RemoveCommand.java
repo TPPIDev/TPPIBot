@@ -10,7 +10,7 @@ public class RemoveCommand extends Command
     {
         super("delcmd", PermLevel.OP);
     }
-    
+
     @Override
     public boolean onCommand(MessageEvent<?> event, String... args)
     {
@@ -19,7 +19,7 @@ public class RemoveCommand extends Command
             sendNotice(event.getUser(), "No command specified.");
             return false;
         }
-        
+
         for (String s : args)
         {
             CommandRegistry.unregisterCommand(s);
@@ -27,7 +27,7 @@ public class RemoveCommand extends Command
         }
         return true;
     }
-    
+
     @Override
     public String getDesc()
     {

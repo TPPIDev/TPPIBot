@@ -4,37 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tterrag.tppibot.commands.AddCommand;
-import tterrag.tppibot.commands.Command;
+import tterrag.tppibot.interfaces.ICommand;
 
 public class CommandRegistry
 {
-    private static ArrayList<Command> commands = new ArrayList<Command>();
+    private static ArrayList<ICommand> commands = new ArrayList<ICommand>();
 
-    public static void registerCommand(Command c)
+    public static void registerCommand(ICommand c)
     {
         commands.add(c);
     }
 
-    public static List<Command> getCommands()
+    public static List<ICommand> getCommands()
     {
         return commands;
     }
 
     public static boolean isCommandRegistered(String s)
     {
-        for (Command c : commands)
+        for (ICommand c : commands)
         {
-            if (c.getName().equalsIgnoreCase(s))
+            if (c.getIdent().equalsIgnoreCase(s))
                 return true;
         }
         return false;
     }
-    
-    public static Command getCommand(String s)
+
+    public static ICommand getCommand(String s)
     {
-        for (Command c : commands)
+        for (ICommand c : commands)
         {
-            if (c.getName().equalsIgnoreCase(s))
+            if (c.getIdent().equalsIgnoreCase(s))
                 return c;
         }
         return null;
@@ -44,8 +44,8 @@ public class CommandRegistry
     {
         for (int i = 0; i < commands.size(); i++)
         {
-            Command c = commands.get(i);
-            if (c.getName().equalsIgnoreCase(s))
+            ICommand c = commands.get(i);
+            if (c.getIdent().equalsIgnoreCase(s))
             {
                 commands.remove(c);
                 AddCommand.commandsAdded.remove(c);

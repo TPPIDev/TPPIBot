@@ -13,7 +13,7 @@ public class SaveUtils
     {
         return readTextFile(new File(filename));
     }
-    
+
     public static String readTextFile(File file)
     {
         try
@@ -40,7 +40,7 @@ public class SaveUtils
 
     public static boolean saveAllToFile(String filename, String... strings)
     {
-       return saveAllToFile(new File(filename), strings);
+        return saveAllToFile(new File(filename), strings);
     }
 
     public static boolean saveAllToFile(File file, String... strings)
@@ -48,7 +48,7 @@ public class SaveUtils
         try
         {
             FileWriter fw = new FileWriter(file);
-            
+
             for (String s : strings)
             {
                 fw.write(s);

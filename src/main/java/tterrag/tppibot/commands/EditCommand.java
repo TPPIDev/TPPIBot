@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.apache.commons.lang3.ArrayUtils;
 import org.pircbotx.hooks.events.MessageEvent;
 
+import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
 
 public class EditCommand extends Command
@@ -23,22 +24,22 @@ public class EditCommand extends Command
             return false;
         }
 
-        for (Command c : CommandRegistry.getCommands())
+        for (ICommand c : CommandRegistry.getCommands())
         {
             String cmdName = args[0];
 
-            if (c.getName().equalsIgnoreCase(cmdName))
+            if (c.getIdent().equalsIgnoreCase(cmdName))
             {
                 args = ArrayUtils.remove(args, 0);
 
-                sendNotice(event.getUser(), "Editing command " + c.getName() + " with args " + Arrays.deepToString(args));
+                sendNotice(event.getUser(), "Editing command " + c.getIdent() + " with args " + Arrays.deepToString(args));
                 c.editCommand(args);
             }
         }
 
         return true;
     }
-    
+
     @Override
     public String getDesc()
     {

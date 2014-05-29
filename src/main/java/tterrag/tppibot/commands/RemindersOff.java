@@ -26,7 +26,7 @@ public class RemindersOff extends Command
             return false;
         }
     }
-    
+
     @Override
     public String getDesc()
     {

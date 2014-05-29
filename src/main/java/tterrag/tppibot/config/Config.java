@@ -12,11 +12,11 @@ public class Config
 {
     private File configFile;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    
+
     public Config(String filename)
     {
         this.configFile = new File("src/main/resources/" + filename);
-        
+
         if (!configFile.exists())
         {
             try
@@ -33,17 +33,17 @@ public class Config
     public void addJsonToFile(Object o)
     {
         String json = gson.toJson(o);
-        
+
         SaveUtils.addToFile(configFile, json + "\n");
     }
-    
+
     /**
      * Warning, overwrites current text if it exists
      */
     public void writeJsonToFile(Object o)
     {
         String json = gson.toJson(o);
-        
+
         SaveUtils.saveAllToFile(configFile, json + "\n");
     }
 

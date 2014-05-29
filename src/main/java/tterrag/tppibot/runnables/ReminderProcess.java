@@ -25,24 +25,28 @@ public class ReminderProcess implements Runnable
     private HashMap<String, Boolean> reminderMap;
 
     private Queue<String> reminders;
-    
+
     private Config mapConfig, remindersConfig;
 
     private String inFlux = null;
-    
+
     public ReminderProcess(PircBotX bot, String... defaults)
     {
         this.bot = bot;
-        
+
         mapConfig = new Config("reminderMap.json");
         remindersConfig = new Config("reminders.json");
-        
-        reminderMap = new Gson().fromJson(mapConfig.getText(), new TypeToken<HashMap<String, Boolean>>(){}.getType());
+
+        reminderMap = new Gson().fromJson(mapConfig.getText(), new TypeToken<HashMap<String, Boolean>>()
+        {
+        }.getType());
 
         if (reminderMap == null)
             reminderMap = new HashMap<String, Boolean>();
-        
-        reminders = new Gson().fromJson(remindersConfig.getText(), new TypeToken<Queue<String>>(){}.getType());
+
+        reminders = new Gson().fromJson(remindersConfig.getText(), new TypeToken<Queue<String>>()
+        {
+        }.getType());
 
         if (reminders == null)
         {
@@ -69,7 +73,7 @@ public class ReminderProcess implements Runnable
                     {
                         if (isRemindEnabledFor(channel.getName()))
                         {
-                             remind(channel, inFlux);
+                            remind(channel, inFlux);
                         }
                     }
                     log("Sleeping reminder thread...");
@@ -129,25 +133,25 @@ public class ReminderProcess implements Runnable
 
         return channel == null ? false : reminderMap.get(channel.toLowerCase());
     }
-    
+
     public boolean isInReminderMap(String channel)
     {
         if (!channel.startsWith("#"))
             channel = "#" + channel;
-        
+
         return reminderMap.containsKey(channel.toLowerCase());
     }
-    
+
     @Subscribe
     public void onDisconnect(DisconnectEvent<PircBotX> event)
     {
         mapConfig.writeJsonToFile(reminderMap);
-        
+
         if (inFlux != null)
         {
             reminders.add(inFlux);
         }
-        
+
         remindersConfig.writeJsonToFile(reminders);
     }
 }

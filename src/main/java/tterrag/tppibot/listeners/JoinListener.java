@@ -7,7 +7,7 @@ import org.pircbotx.hooks.events.JoinEvent;
 import tterrag.tppibot.Main;
 
 public class JoinListener extends ListenerAdapter<PircBotX>
-{   
+{
     @Override
     public void onJoin(JoinEvent<PircBotX> event) throws Exception
     {

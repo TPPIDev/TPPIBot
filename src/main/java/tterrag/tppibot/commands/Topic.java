@@ -5,13 +5,13 @@ import org.pircbotx.hooks.events.MessageEvent;
 public class Topic extends Command
 {
     private long delayTime;
-    
+
     public Topic()
     {
         super("topic", PermLevel.ANY);
         delayTime = 0;
     }
-    
+
     @Override
     public boolean onCommand(MessageEvent<?> event, String... args)
     {
@@ -24,7 +24,7 @@ public class Topic extends Command
         sendNotice(event.getUser(), "Please do not spam this command!");
         return false;
     }
-    
+
     @Override
     public String getDesc()
     {
