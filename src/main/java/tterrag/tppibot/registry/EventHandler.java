@@ -42,7 +42,7 @@ public class EventHandler
             if (annotation != null)
             {
                 Class<?>[] params = m.getParameterTypes();
-                if (params.length != 1)//FIXME || !params[0].isAssignableFrom(Event.class))
+                if (params.length != 1 || !Event.class.isAssignableFrom(params[0]))
                 {
                     throw new IllegalArgumentException("A method that is @Subscribe must take ONE parameter of type Event or subclass");
                 }
