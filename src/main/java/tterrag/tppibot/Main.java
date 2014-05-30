@@ -15,6 +15,7 @@ import tterrag.tppibot.commands.EditPerms;
 import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
 import tterrag.tppibot.commands.Kill;
+import tterrag.tppibot.commands.Leave;
 import tterrag.tppibot.commands.RemindersOff;
 import tterrag.tppibot.commands.RemindersOn;
 import tterrag.tppibot.commands.RemoveCommand;
@@ -64,6 +65,7 @@ public class Main
         new RemoveCommand().create();
         new Victim().create();
         new EditPerms().create();
+        new Leave().create();
 
         Timeout timeout = (Timeout) new Timeout().create();
 

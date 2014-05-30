@@ -1,14 +1,17 @@
 {
   "#TPPIBot": {
     "~esKaayY": "CONTROLLER",
-    "tterrag": "CONTROLLER"
+    "tterrag": "CONTROLLER",
+    "Yoda": "TRUSTED"
   },
   "#PlayTPPI": {
     "sneezing": "OP",
     "~timewarp3": "OP",
-    "~Spybot": "OP"
+    "~Spybot": "OP",
+    "MomoNasty": "TRUSTED"
   },
   "#TestPackPleaseIgnore": {
-    "~batman": "TRUSTED"
+    "~batman": "TRUSTED",
+    "batman": "TRUSTED"
   }
 }

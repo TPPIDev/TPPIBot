@@ -39,17 +39,10 @@ public class IRCUtils
         if (perm == null)
             perm = PermLevel.DEFAULT;
 
-        switch (perm)
-        {
-        case DEFAULT:
-            return true;
-        case VOICE:
-            return userIsVoice(channel, user) || userIsOp(channel, user);
-        case CHANOP:
-            return userIsOp(channel, user);
-        default:
-            return isUserAboveOrEqualTo(channel, PermRegistry.instance().getPermLevelForUser(channel, user), user);
-        }
+        PermLevel userPerm = PermRegistry.instance().getPermLevelForUser(channel, user);
+
+        return isUserAboveOrEqualTo(channel, userPerm, user);
+
     }
 
     /**
@@ -62,19 +55,9 @@ public class IRCUtils
      */
     public static boolean userMatchesPerms(Channel channel, User user, PermLevel userPerm, PermLevel toCheck)
     {
-        toCheck = toCheck ==  null ? DEFAULT : toCheck;
-        
-        switch (toCheck)
-        {
-        case DEFAULT:
-            return true;
-        case VOICE:
-            return userPerm == VOICE || userPerm == CHANOP;
-        case CHANOP:
-            return userPerm == CHANOP;
-        default:
-            return isUserAboveOrEqualTo(userPerm, toCheck);
-        }
+        toCheck = toCheck == null ? DEFAULT : toCheck;
+
+        return isUserAboveOrEqualTo(userPerm, toCheck);
     }
 
     /**

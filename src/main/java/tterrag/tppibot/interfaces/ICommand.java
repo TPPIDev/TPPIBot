@@ -14,11 +14,6 @@ public interface ICommand
         DEFAULT, 
         
         /*
-         * Following two are not counted for most checks, you cannot assign a user these values
-         */
-        VOICE, CHANOP, 
-        
-        /*
          * Custom levels, these are assignable and in order of power 
          */
         TRUSTED, OP, CONTROLLER;
