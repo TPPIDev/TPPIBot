@@ -41,7 +41,7 @@ public class IRCUtils
 
         PermLevel userPerm = PermRegistry.instance().getPermLevelForUser(channel, user);
 
-        return isUserAboveOrEqualTo(channel, userPerm, user);
+        return isUserAboveOrEqualTo(userPerm, perm);
 
     }
 
