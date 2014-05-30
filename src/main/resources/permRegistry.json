@@ -1,18 +1,22 @@
 {
   "#TPPIBot": {
-    "~esKaayY": "CONTROLLER",
-    "tterrag": "CONTROLLER",
     "Yoda": "TRUSTED",
     "batman": "DEFAULT"
   },
   "#PlayTPPI": {
     "sneezing": "OP",
-    "~timewarp3": "OP",
-    "~Spybot": "OP",
-    "MomoNasty": "TRUSTED"
+    "timewarp3": "OP",
+    "Spybot": "OP",
+    "MomoNasty": "TRUSTED",
+    "matthewprenger": "TRUSTED"
   },
   "#TestPackPleaseIgnore": {
-    "~batman": "TRUSTED",
-    "batman": "TRUSTED"
+    "batman": "TRUSTED",
+    "judge": "OP",
+    "whahaha": "OP",
+    "timewarp": "OP",
+    "Spyboticsguy": "OP",
+    "sneezing_panda": "OP",
+    "esKaayY": "CONTROLLER"
   }
 }
