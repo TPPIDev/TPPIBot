@@ -57,7 +57,7 @@ public class Timeout extends Command
 
     public Timeout()
     {
-        super("timeout", PermLevel.CHANOP);
+        super("timeout", PermLevel.OP);
 
         timeoutConfig = new Config("timeouts.json");
         offendersConfig = new Config("pastOffenders.json");

@@ -6,7 +6,7 @@ public class Kill extends Command
 {
     public Kill()
     {
-        super("kill", PermLevel.CHANOP);
+        super("kill", PermLevel.CONTROLLER);
     }
 
     @Override

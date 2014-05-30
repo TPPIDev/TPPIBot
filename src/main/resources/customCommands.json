@@ -1,27 +1,22 @@
 [
   {
     "message": "To remove yourself from the chat for this play session, type \"/irc part #playtppi\". You can rejoin in the EiraIRC options.",
-    "level": "ALL",
     "ident": "dc"
   },
   {
     "message": "Rules: Avoid swearing - No ETA requests - No modlist requests - Don\u0027t advertise - Use common sense.",
-    "level": "ALL",
     "ident": "rules"
   },
   {
     "message": "Open the chat and press tab to talk with us!",
-    "level": "ALL",
     "ident": "chat"
   },
   {
     "message": "Remember %user%, breaking the rules can get you timed out or banned!\u000f",
-    "level": "ALL",
     "ident": "warn"
   },
   {
     "message": "Press T and then the \"Options\" button in the top right. It may be under your minimap!",
-    "level": "ALL",
     "ident": "ircoptions"
   }
 ]

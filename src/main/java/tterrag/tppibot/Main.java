@@ -11,6 +11,7 @@ import tterrag.tppibot.commands.AddCommand;
 import tterrag.tppibot.commands.AddReminder;
 import tterrag.tppibot.commands.Commands;
 import tterrag.tppibot.commands.EditCommand;
+import tterrag.tppibot.commands.EditPerms;
 import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
 import tterrag.tppibot.commands.Kill;
@@ -24,8 +25,12 @@ import tterrag.tppibot.listeners.EventBus;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.registry.EventHandler;
+import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.runnables.ReminderProcess;
 import tterrag.tppibot.runnables.TimeoutChecker;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class Main
 {
@@ -33,6 +38,8 @@ public class Main
     public static TimeoutChecker timeouts;
 
     public static PircBotX bot;
+    
+    public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static void main(String[] args)
     {
@@ -56,6 +63,7 @@ public class Main
         new AddCommand().create();
         new RemoveCommand().create();
         new Victim().create();
+        new EditPerms().create();
 
         Timeout timeout = (Timeout) new Timeout().create();
 
@@ -96,7 +104,9 @@ public class Main
         timeouts = new TimeoutChecker(timeout);
         Thread timeoutThread = new Thread(timeouts);
         timeoutThread.start();
-
+        
+        EventHandler.registerReceiver(PermRegistry.instance());
+        
         // start 'er up
         try
         {

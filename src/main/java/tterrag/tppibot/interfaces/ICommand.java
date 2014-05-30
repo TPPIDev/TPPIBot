@@ -8,7 +8,25 @@ public interface ICommand
 {
     public enum PermLevel
     {
-        CONTROLLER, OP, TRUSTED, CHANOP, VOICE, ALL
+        /**
+         * Lowest value, all users have this even if not assigned
+         */
+        DEFAULT, 
+        
+        /*
+         * Following two are not counted for most checks, you cannot assign a user these values
+         */
+        VOICE, CHANOP, 
+        
+        /*
+         * Custom levels, these are assignable and in order of power 
+         */
+        TRUSTED, OP, CONTROLLER;
+        
+        public static PermLevel[] getSettablePermLevels()
+        {
+            return new PermLevel[]{CONTROLLER, OP, TRUSTED, DEFAULT};
+        }
     }
 
     /**

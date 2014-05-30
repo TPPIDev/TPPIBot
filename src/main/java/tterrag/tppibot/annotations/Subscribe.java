@@ -1,10 +1,11 @@
 package tterrag.tppibot.annotations;
 
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(value = RUNTIME)
+@Target(value = METHOD)
 public @interface Subscribe {}

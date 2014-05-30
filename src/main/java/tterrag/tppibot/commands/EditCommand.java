@@ -7,12 +7,13 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
+import tterrag.tppibot.util.IRCUtils;
 
 public class EditCommand extends Command
 {
     public EditCommand()
     {
-        super("editcmd", PermLevel.CHANOP);
+        super("editcmd", PermLevel.DEFAULT);
     }
 
     @Override
@@ -32,6 +33,11 @@ public class EditCommand extends Command
             {
                 args = ArrayUtils.remove(args, 0);
 
+                if (!IRCUtils.userMatchesPerms(event.getChannel(), event.getUser(), c.getPermLevel()))
+                {
+                    sendNotice(event.getUser(), "You do not have high enough permissions to edit command \"" + c.getIdent() + ".\" You must be at least: " + c.getPermLevel());
+                }
+                
                 sendNotice(event.getUser(), "Editing command " + c.getIdent() + " with args " + Arrays.deepToString(args));
                 c.editCommand(args);
             }

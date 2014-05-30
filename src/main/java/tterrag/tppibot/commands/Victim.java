@@ -17,7 +17,7 @@ public class Victim extends Command
 
     public Victim()
     {
-        super("victim", PermLevel.ALL);
+        super("victim", PermLevel.DEFAULT);
 
         config = new Config("victim.json");
 
