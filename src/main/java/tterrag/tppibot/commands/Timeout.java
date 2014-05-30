@@ -62,13 +62,17 @@ public class Timeout extends Command
         timeoutConfig = new Config("timeouts.json");
         offendersConfig = new Config("pastOffenders.json");
 
-        list = gson.fromJson(timeoutConfig.getText(), new TypeToken<List<TimeoutTime>>(){}.getType());
-        
+        list = gson.fromJson(timeoutConfig.getText(), new TypeToken<List<TimeoutTime>>()
+        {
+        }.getType());
+
         if (list == null)
             list = new ArrayList<TimeoutTime>();
-        
-        pastOffenders = gson.fromJson(offendersConfig.getText(), new TypeToken<Map<String, Integer>>(){}.getType());
-        
+
+        pastOffenders = gson.fromJson(offendersConfig.getText(), new TypeToken<Map<String, Integer>>()
+        {
+        }.getType());
+
         if (pastOffenders == null)
             pastOffenders = new HashMap<String, Integer>();
     }
@@ -113,21 +117,37 @@ public class Timeout extends Command
         }
 
         event.getBot().sendRaw().rawLine("MODE " + event.getChannel().getName() + " +q " + user.getHostmask());
+        boolean newOffense = true;
+
+        for (int i = 0; i < list.size(); i++)
+        {
+            TimeoutTime t = list.get(i);
+            if (t.user.equals(user.getNick()))
+            {
+                list.remove(t);
+                newOffense = false;
+            }
+        }
+
         this.list.add(new TimeoutTime(System.currentTimeMillis(), mins * mult, event.getChannel().getName(), user.getNick()));
-        
+
         String hostmask = user.getHostmask();
-        
-        if (pastOffenders.containsKey(hostmask))
+
+        if (newOffense)
         {
-            int pastTimeouts = pastOffenders.get(hostmask);
-            sendNotice(event.getUser(), String.format("The user \"%s\" with hostmask \"%s\" has been timed out %s time%s before.", user.getNick(), hostmask, Colors.BOLD + pastTimeouts + Colors.NORMAL, pastTimeouts <= 1 ? "" : "s"));
-            pastOffenders.put(hostmask, pastTimeouts + 1);
+            if (pastOffenders.containsKey(hostmask))
+            {
+                int pastTimeouts = pastOffenders.get(hostmask);
+                sendNotice(event.getUser(), String.format("The user \"%s\" with hostmask \"%s\" has been timed out %s time%s before.", user.getNick(), hostmask, Colors.BOLD + pastTimeouts
+                        + Colors.NORMAL, pastTimeouts <= 1 ? "" : "s"));
+                pastOffenders.put(hostmask, pastTimeouts + 1);
+            }
+            else
+            {
+                this.pastOffenders.put(hostmask, 1);
+            }
         }
-        else
-        {
-            this.pastOffenders.put(hostmask, 1);
-        }
-        
+
         return true;
     }
 
