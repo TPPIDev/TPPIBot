@@ -27,7 +27,7 @@ public class Victim extends Command
     @Override
     public boolean onCommand(MessageEvent<?> event, String... args)
     {
-        IRCUtils.sendMessageForUser(event.getChannel(), event.getUser(), "%user% has fallen fictim to the slash bug! That's " + (++n) + " so far!", args);
+        IRCUtils.sendMessageForUser(event.getChannel(), event.getUser(), "%user% has fallen victim to the slash bug! That's " + (++n) + " so far!", args);
         return true;
     }
 
