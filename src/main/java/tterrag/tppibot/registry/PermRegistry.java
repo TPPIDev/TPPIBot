@@ -15,6 +15,7 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
+import tterrag.tppibot.util.IRCUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -59,7 +60,7 @@ public class PermRegistry
         // controllers are global
         if (level == PermLevel.CONTROLLER)
         {
-            controllers.add(user.getLogin());
+            controllers.add(IRCUtils.getAccount(user));
         }
         
         // can't assign op/voice
@@ -69,29 +70,31 @@ public class PermRegistry
         }
         
         String chanName = chan.getName();
-        String userLogin = user.getLogin();
+        String acct = IRCUtils.getAccount(user);
         
-        registrar.put(chanName, register(registrar.get(chanName), userLogin, level));
+        registrar.put(chanName, register(registrar.get(chanName), acct, level));
     }
 
-    private Map<String, PermLevel> register(Map<String, PermLevel> curChanMap, String userLogin, PermLevel level)
+    private Map<String, PermLevel> register(Map<String, PermLevel> curChanMap, String acct, PermLevel level)
     {
         if (curChanMap == null)
             curChanMap = new HashMap<String, PermLevel>();
         
-        curChanMap.put(userLogin, level);
+        curChanMap.put(acct, level);
         return curChanMap;
     }
     
     public PermLevel getPermLevelForUser(Channel chan, User user)
     {
-        if (controllers.contains(user.getLogin()))
+        String acct = IRCUtils.getAccount(user);
+        
+        if (controllers.contains(acct))
             return PermLevel.CONTROLLER;
         
         if (!registrar.containsKey(chan.getName()))
             return PermLevel.DEFAULT;
         
-        PermLevel perm = registrar.get(chan.getName()).get(user.getLogin());
+        PermLevel perm = registrar.get(chan.getName()).get(acct);
         return perm == null ? PermLevel.DEFAULT : perm;
     }
     

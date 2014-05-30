@@ -1,14 +1,18 @@
 package tterrag.tppibot.util;
 
-import static tterrag.tppibot.interfaces.ICommand.PermLevel.*;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserLevel;
+import org.pircbotx.hooks.WaitForQueue;
+import org.pircbotx.hooks.events.WhoisEvent;
 
+import tterrag.tppibot.Main;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
+
+import static tterrag.tppibot.interfaces.ICommand.PermLevel.*;
+
 import tterrag.tppibot.registry.PermRegistry;
 
 public class IRCUtils
@@ -25,6 +29,7 @@ public class IRCUtils
 
     /**
      * Can a user perform a command or action with the passed perm level
+     * 
      * @param channel - Channel the action was performed in
      * @param user - User to check
      * @param perm - {@link PermLevel} to check against
@@ -33,8 +38,8 @@ public class IRCUtils
     {
         if (perm == null)
             perm = PermLevel.DEFAULT;
-        
-        switch(perm)
+
+        switch (perm)
         {
         case DEFAULT:
             return true;
@@ -43,7 +48,32 @@ public class IRCUtils
         case CHANOP:
             return userIsOp(channel, user);
         default:
-            return isUserAboveOrEqualTo(channel, PermRegistry.instance().getPermLevelForUser(channel, user), perm, user);
+            return isUserAboveOrEqualTo(channel, PermRegistry.instance().getPermLevelForUser(channel, user), user);
+        }
+    }
+
+    /**
+     * Can a user perform a command or action with the passed perm level, use this version if you need to repeat the check multiple times
+     * 
+     * @param channel - Channel the action was performed in
+     * @param user - User to check
+     * @param userPerm - {@link PermLevel} of the user (not checked)
+     * @param perm - {@link PermLevel} to check against
+     */
+    public static boolean userMatchesPerms(Channel channel, User user, PermLevel userPerm, PermLevel toCheck)
+    {
+        toCheck = toCheck ==  null ? DEFAULT : toCheck;
+        
+        switch (toCheck)
+        {
+        case DEFAULT:
+            return true;
+        case VOICE:
+            return userPerm == VOICE || userPerm == CHANOP;
+        case CHANOP:
+            return userPerm == CHANOP;
+        default:
+            return isUserAboveOrEqualTo(userPerm, toCheck);
         }
     }
 
@@ -56,10 +86,10 @@ public class IRCUtils
     {
         if (!ArrayUtils.contains(PermLevel.getSettablePermLevels(), perm)) { throw new IllegalArgumentException("The perm level " + perm.toString() + " is not valid."); }
 
-        return isUserAboveOrEqualTo(chan, PermRegistry.instance().getPermLevelForUser(chan, user), perm, user);
+        return isUserAboveOrEqualTo(PermRegistry.instance().getPermLevelForUser(chan, user), perm);
     }
 
-    private static boolean isUserAboveOrEqualTo(Channel chan, PermLevel userLevel, PermLevel toCheck, User user)
+    private static boolean isUserAboveOrEqualTo(PermLevel userLevel, PermLevel toCheck)
     {
         return userLevel.ordinal() >= toCheck.ordinal();
     }
@@ -101,5 +131,27 @@ public class IRCUtils
                 return c;
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static String getAccount(User u)
+    {
+        String user = "";
+        Main.bot.sendRaw().rawLineNow("WHOIS " + u.getNick());
+        WaitForQueue waitForQueue = new WaitForQueue(Main.bot);
+        WhoisEvent<PircBotX> test = null;
+        try
+        {
+            test = waitForQueue.waitFor(WhoisEvent.class);
+            waitForQueue.close();
+            user = test.getRegisteredAs();
+        }
+        catch (InterruptedException ex)
+        {
+            ex.printStackTrace();
+            user = null;
+        }
+
+        return user;
     }
 }

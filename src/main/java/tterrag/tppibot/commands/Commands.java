@@ -4,6 +4,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
+import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
 public class Commands extends Command
@@ -17,9 +18,10 @@ public class Commands extends Command
     public boolean onCommand(MessageEvent<?> event, String... args)
     {
         String s = "";
+        PermLevel perms = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
         for (ICommand c : CommandRegistry.getCommands())
         {
-            if (IRCUtils.userMatchesPerms(event.getChannel(), event.getUser(), c.getPermLevel()))
+            if (IRCUtils.userMatchesPerms(event.getChannel(), event.getUser(), perms, c.getPermLevel()))
             {
                 s += c.getIdent() + ", ";
             }

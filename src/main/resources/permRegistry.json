@@ -2,5 +2,13 @@
   "#TPPIBot": {
     "~esKaayY": "CONTROLLER",
     "tterrag": "CONTROLLER"
+  },
+  "#PlayTPPI": {
+    "sneezing": "OP",
+    "~timewarp3": "OP",
+    "~Spybot": "OP"
+  },
+  "#TestPackPleaseIgnore": {
+    "~batman": "TRUSTED"
   }
 }
