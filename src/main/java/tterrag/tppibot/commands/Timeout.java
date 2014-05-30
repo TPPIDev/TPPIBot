@@ -62,16 +62,12 @@ public class Timeout extends Command
         timeoutConfig = new Config("timeouts.json");
         offendersConfig = new Config("pastOffenders.json");
 
-        list = gson.fromJson(timeoutConfig.getText(), new TypeToken<List<TimeoutTime>>()
-        {
-        }.getType());
+        list = gson.fromJson(timeoutConfig.getText(), new TypeToken<List<TimeoutTime>>() {}.getType());
 
         if (list == null)
             list = new ArrayList<TimeoutTime>();
 
-        pastOffenders = gson.fromJson(offendersConfig.getText(), new TypeToken<Map<String, Integer>>()
-        {
-        }.getType());
+        pastOffenders = gson.fromJson(offendersConfig.getText(), new TypeToken<Map<String, Integer>>() {}.getType());
 
         if (pastOffenders == null)
             pastOffenders = new HashMap<String, Integer>();

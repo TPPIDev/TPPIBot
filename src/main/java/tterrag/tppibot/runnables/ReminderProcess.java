@@ -37,16 +37,12 @@ public class ReminderProcess implements Runnable
         mapConfig = new Config("reminderMap.json");
         remindersConfig = new Config("reminders.json");
 
-        reminderMap = new Gson().fromJson(mapConfig.getText(), new TypeToken<HashMap<String, Boolean>>()
-        {
-        }.getType());
+        reminderMap = new Gson().fromJson(mapConfig.getText(), new TypeToken<HashMap<String, Boolean>>() {}.getType());
 
         if (reminderMap == null)
             reminderMap = new HashMap<String, Boolean>();
 
-        reminders = new Gson().fromJson(remindersConfig.getText(), new TypeToken<Queue<String>>()
-        {
-        }.getType());
+        reminders = new Gson().fromJson(remindersConfig.getText(), new TypeToken<Queue<String>>() {}.getType());
 
         if (reminders == null)
         {

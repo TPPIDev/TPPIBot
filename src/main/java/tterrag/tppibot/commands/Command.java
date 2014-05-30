@@ -15,7 +15,7 @@ public abstract class Command implements ICommand
 {
     private PermLevel level;
     private String ident;
-    
+
     protected static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     protected Command(String ident, PermLevel level)
