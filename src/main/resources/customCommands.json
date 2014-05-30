@@ -18,5 +18,10 @@
     "message": "Remember %user%, breaking the rules can get you timed out or banned!\u000f",
     "level": "ALL",
     "ident": "warn"
+  },
+  {
+    "message": "Press T and then the \"Options\" button in the top right. It may be under your minimap!",
+    "level": "ALL",
+    "ident": "ircoptions"
   }
 ]

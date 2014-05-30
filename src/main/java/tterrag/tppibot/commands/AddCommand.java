@@ -28,9 +28,7 @@ public class AddCommand extends Command
         super("addcmd", PermLevel.CHANOP);
         config = new Config("customCommands.json");
 
-        commandsAdded = new Gson().fromJson(config.getText(), new TypeToken<List<CustomCommand>>()
-        {
-        }.getType());
+        commandsAdded = new Gson().fromJson(config.getText(), new TypeToken<List<CustomCommand>>(){}.getType());
 
         if (commandsAdded == null)
             commandsAdded = new ArrayList<CustomCommand>();
