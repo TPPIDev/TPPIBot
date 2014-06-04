@@ -8,7 +8,8 @@
     "timewarp3": "OP",
     "Spybot": "OP",
     "MomoNasty": "TRUSTED",
-    "matthewprenger": "TRUSTED"
+    "matthewprenger": "TRUSTED",
+    "whahaha": "OP"
   },
   "#TestPackPleaseIgnore": {
     "batman": "TRUSTED",
@@ -16,6 +17,6 @@
     "whahaha": "OP",
     "timewarp": "OP",
     "Spyboticsguy": "OP",
-    "sneezing_panda": "OP",
+    "sneezing_panda": "OP"
   }
 }
