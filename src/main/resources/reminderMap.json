@@ -2,8 +2,8 @@
   "#testpackpleaseignore": false,
   "#batbot": false,
   "#tppibot": false,
-  "#tppibeta": false,
   "#ftrdev": false,
+  "#tppibeta": false,
   "#eirairc": true,
   "#playtppi": true
 }
