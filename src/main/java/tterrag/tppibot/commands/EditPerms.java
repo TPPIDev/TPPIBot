@@ -58,4 +58,10 @@ public class EditPerms extends Command
         
         return true;
     }
+    
+    @Override
+    public String getDesc()
+    {
+        return "Edits the permissions level of the specified user, valid entries are: " + Arrays.deepToString(PermLevel.getSettablePermLevels()) + "  (not case sensitive)";
+    }
 }

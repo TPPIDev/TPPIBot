@@ -57,12 +57,14 @@ public class ReminderProcess implements Runnable
     @Override
     public void run()
     {
-        sleep(150000);
         while (true)
         {
             inFlux = reminders.poll();
             try
             {
+                log("Sleeping reminder thread...");
+                sleep(900000);
+                
                 if (bot.isConnected())
                 {
                     for (Channel channel : bot.getUserBot().getChannels())
@@ -72,8 +74,6 @@ public class ReminderProcess implements Runnable
                             remind(channel, inFlux);
                         }
                     }
-                    log("Sleeping reminder thread...");
-                    sleep(600000);
                 }
                 else
                 {

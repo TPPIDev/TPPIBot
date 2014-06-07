@@ -18,5 +18,10 @@
   {
     "message": "Press T and then the \"Options\" button in the top right. It may be under your minimap!",
     "ident": "ircoptions"
+  },
+  {
+    "message": "http://i.imgur.com/jacoj.jpg",
+    "level": "DEFAULT",
+    "ident": "stacktrace"
   }
 ]
