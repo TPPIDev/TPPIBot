@@ -66,4 +66,9 @@ public interface ICommand
      * The description of this command, for help purposes
      */
     public String getDesc();
+
+    /**
+     * Does something without a channel or user reference, used via the command line
+     */
+    boolean handleConsoleCommand(String... args);
 }

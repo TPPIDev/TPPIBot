@@ -91,6 +91,12 @@ public abstract class Command implements ICommand
     {
         return this;
     }
+    
+    @Override
+    public boolean handleConsoleCommand(String... args)
+    {
+        return false;
+    }
 
     @Override
     public String getDesc()

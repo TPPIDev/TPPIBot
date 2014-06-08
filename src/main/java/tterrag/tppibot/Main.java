@@ -27,6 +27,7 @@ import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.registry.PermRegistry;
+import tterrag.tppibot.runnables.ConsoleCommands;
 import tterrag.tppibot.runnables.ReminderProcess;
 import tterrag.tppibot.runnables.TimeoutChecker;
 
@@ -106,6 +107,9 @@ public class Main
         timeouts = new TimeoutChecker(timeout);
         Thread timeoutThread = new Thread(timeouts);
         timeoutThread.start();
+        
+        Thread consoleThread = new Thread(new ConsoleCommands());
+        consoleThread.start();
         
         EventHandler.registerReceiver(PermRegistry.instance());
         
