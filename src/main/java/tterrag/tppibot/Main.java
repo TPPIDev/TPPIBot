@@ -25,8 +25,10 @@ import tterrag.tppibot.commands.Victim;
 import tterrag.tppibot.listeners.EventBus;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
+import tterrag.tppibot.reactions.CharacterSpam;
 import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.registry.PermRegistry;
+import tterrag.tppibot.registry.ReactionRegistry;
 import tterrag.tppibot.runnables.ConsoleCommands;
 import tterrag.tppibot.runnables.ReminderProcess;
 import tterrag.tppibot.runnables.TimeoutChecker;
@@ -70,9 +72,8 @@ public class Main
 
         Timeout timeout = (Timeout) new Timeout().create();
 
-        // DISABLED UNTIL FURTHER NOTICE reactions.registerReaction(new
-        // Cursewords());
-
+        ReactionRegistry.registerReaction(new CharacterSpam());
+        
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
         System.out.println("Building config");
         builder.setName("TPPIBot");
