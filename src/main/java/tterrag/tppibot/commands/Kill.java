@@ -33,9 +33,12 @@ public class Kill extends Command
             e.printStackTrace();
         }
 
-        bot.stopBotReconnect();
-        bot.sendIRC().quitServer("x.x");
-
+        if (bot.isConnected())
+        {
+            bot.stopBotReconnect();
+            bot.sendIRC().quitServer("x.x");
+        }
+        
         try
         {
             Thread.sleep(2000);

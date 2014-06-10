@@ -1,5 +1,6 @@
 package tterrag.tppibot.commands;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.util.IRCUtils;
@@ -19,6 +20,15 @@ public class CustomCommand extends Command
     {
         IRCUtils.sendMessageForUser(event.getChannel(), event.getUser(), message, args);
         return true;
+    }
+    
+    @Override
+    public Command editCommand(String... params)
+    {
+        AddCommand.commandsAdded.remove(this);
+        this.message = StringUtils.join(params, " ");
+        AddCommand.commandsAdded.add(this);
+        return this;
     }
 
     @Override
