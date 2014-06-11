@@ -4,12 +4,12 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.EventHandler;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public abstract class Command implements ICommand
 {
@@ -23,7 +23,7 @@ public abstract class Command implements ICommand
         this.ident = ident.toLowerCase();
         this.level = level;
     }
-
+    
     @Override
     public ICommand create()
     {
