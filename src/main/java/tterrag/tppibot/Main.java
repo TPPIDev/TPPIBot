@@ -32,6 +32,7 @@ import tterrag.tppibot.registry.ReactionRegistry;
 import tterrag.tppibot.runnables.ConsoleCommands;
 import tterrag.tppibot.runnables.ReminderProcess;
 import tterrag.tppibot.runnables.TimeoutChecker;
+import static tterrag.tppibot.util.Logging.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -47,14 +48,15 @@ public class Main
 
     public static void main(String[] args)
     {
+        log("Starting...");
         System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
         System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "[MM/dd HH:mm:ss]");
         System.setProperty(SimpleLogger.SHOW_THREAD_NAME_KEY, "false");
         System.setProperty(SimpleLogger.LEVEL_IN_BRACKETS_KEY, "true");
         System.setProperty(SimpleLogger.SHOW_LOG_NAME_KEY, "false");
-        System.out.println("Starting");
 
         // create base commands
+        log("Creating commands...");
         new Help().create();
         new Kill().create();
         new Join().create();
@@ -71,11 +73,15 @@ public class Main
         new Leave().create();
 
         Timeout timeout = (Timeout) new Timeout().create();
+        log("Commands created.");
 
-        ReactionRegistry.registerReaction(new CharacterSpam());
-        
+        log("Creating reactions...");
+        CharacterSpam characterSpam = new CharacterSpam();
+        ReactionRegistry.registerReaction(characterSpam);
+        log("Reactions created.");
+
+        log("Configuring bot...");
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
-        System.out.println("Building config");
         builder.setName("TPPIBot");
         builder.setLogin("TPPIBot");
         builder.setNickservPassword(args[0]);
@@ -94,15 +100,15 @@ public class Main
         builder.getListenerManager().addListener(new EventBus());
 
         bot = new PircBotX(builder.buildConfiguration());
-        System.out.println("Built config");
+        log("Configured.");
 
         // create and start threads
+        log("Creating threads...");
         reminders = new ReminderProcess(bot,
 
         "[Reminder] You can open the chat and press tab to talk with us!", "[Reminder] Rules: Avoid swearing - No ETA requests - No modlist requests - Don't advertise - Use common sense.");
 
         Thread reminderThread = new Thread(reminders);
-        EventHandler.registerReceiver(reminders);
         reminderThread.start();
 
         timeouts = new TimeoutChecker(timeout);
@@ -111,13 +117,18 @@ public class Main
         
         Thread consoleThread = new Thread(new ConsoleCommands());
         consoleThread.start();
+        log("Threads created...");
         
+        log("Registering extra event receivers...");
+        EventHandler.registerReceiver(reminders);
         EventHandler.registerReceiver(PermRegistry.instance());
+        EventHandler.registerReceiver(characterSpam);
+        log("Registered extra event reveivers.");
         
         // start 'er up
         try
         {
-            System.out.println("Connecting to Server!");
+            log("Connecting bot...");
             bot.startBot();
         }
         catch (Exception e)

@@ -1,26 +1,20 @@
 [
   {
     "init": 1402445300737,
-    "time": 3000000,
+    "time": 9300000,
     "channel": "#TPPIBot",
     "user": "tterrag|away"
   },
   {
     "init": 1402446222297,
-    "time": 2100000,
+    "time": 8400000,
     "channel": "#TestPackPleaseIgnore",
     "user": "JuanCartierXVIII"
   },
   {
-    "init": 1402446615697,
-    "time": 1200000,
-    "channel": "#PlayTPPI",
-    "user": "talented_toenail"
-  },
-  {
-    "init": 1402446620632,
-    "time": 1200000,
-    "channel": "#PlayTPPI",
-    "user": "WhoisAaron"
+    "init": 1402450811191,
+    "time": 3900000,
+    "channel": "#TPPIBot",
+    "user": "esKaayY"
   }
 ]
