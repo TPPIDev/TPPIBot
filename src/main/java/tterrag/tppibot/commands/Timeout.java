@@ -108,7 +108,7 @@ public class Timeout extends Command
         }
         catch (NumberFormatException e)
         {
-            sendNotice(event.getUser(), "Not a valid amount of time: \"" + (mins * mult) + "\"");
+            sendNotice(event.getUser(), "Not a valid amount of time: \"" + args[1] + "\"");
             return false;
         }
 

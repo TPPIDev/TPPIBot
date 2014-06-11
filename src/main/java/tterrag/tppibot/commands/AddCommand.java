@@ -1,7 +1,6 @@
 package tterrag.tppibot.commands;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +13,7 @@ import tterrag.tppibot.config.Config;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
 
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,17 +21,17 @@ public class AddCommand extends Command
 {
     private Config config;
 
-    public static List<CustomCommand> commandsAdded = new ArrayList<CustomCommand>();
+    public static Set<CustomCommand> commandsAdded = Sets.newConcurrentHashSet();
 
     public AddCommand()
     {
         super("addcmd", PermLevel.TRUSTED);
         config = new Config("customCommands.json");
 
-        commandsAdded = new Gson().fromJson(config.getText(), new TypeToken<List<CustomCommand>>() {}.getType());
+        commandsAdded = new Gson().fromJson(config.getText(), new TypeToken<Set<CustomCommand>>(){}.getType());
 
         if (commandsAdded == null)
-            commandsAdded = new ArrayList<CustomCommand>();
+            commandsAdded = Sets.newConcurrentHashSet();
 
         for (ICommand c : commandsAdded)
         {
