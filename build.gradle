@@ -19,20 +19,56 @@ buildscript {
 }
 
 project.ext {
-    mainClass = 'com.harry2258.Alfred.Main'
-    currentYear = '2013'
+    mainClass = 'tterrag.tppibot.Main'
+    currentYear = '2014'
 }
 
-group = 'com.harry2258'
-version = '1.0-SNAPSHOT'
+ext.configFile = file "build.properties"
+
+configFile.withReader {
+    // Load config.  It shall from now be referenced as simply config or project.config
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+
+// Finds and sets version data
+task buildInfo {
+    def cmd = "git rev-parse --short HEAD"
+    def proc = cmd.execute()
+    proc.waitFor()
+    if (proc.exitValue() == 0) {
+        ext.revision = proc.text.trim()
+    } else {
+        ext.revision = "GITBORK"
+    }
+
+    if (System.getenv().BUILD_NUMBER != null) {
+        ext.buildNum = "${System.getenv().BUILD_NUMBER}"
+    } else {
+        ext.buildNum = "DEV.${project.buildInfo.revision}"
+    }
+}
+ext.artifact_version = 'NFG'
+if (System.getenv().ARTIFACT_VERSION == null) {
+    artifact_version = "${config.version}"
+}
+if (System.getenv().ARTIFACT_VERSION != null) {
+    artifact_version = "${system.getenv().ARTIFACT_VERSION}"
+}
+
+version = "${artifact_version}-${System.getenv().BUILD_NUMBER}"
+archivesBaseName = "TPPIBot"
+
+group = 'tterrag.tppibot'
 project.build.sourceEncoding = 'UTF-8'
-description = "AlfredV2(FTB-IRC-BOT)"
+description = "Bot for TPPI IRC channels"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 jar {
     manifest {
-        attributes 'Main-Class': project.mainClass
+        attributes 'Main-Class': tterrag.tppibot.Main
     }
 }
 
