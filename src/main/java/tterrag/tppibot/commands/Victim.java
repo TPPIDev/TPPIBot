@@ -15,6 +15,8 @@ public class Victim extends Command
     private int n;
     private Config config;
 
+    private long lastUsed = 0;
+
     public Victim()
     {
         super("victim", PermLevel.DEFAULT);
@@ -27,8 +29,15 @@ public class Victim extends Command
     @Override
     public boolean onCommand(MessageEvent<?> event, String... args)
     {
-        IRCUtils.sendMessageForUser(event.getChannel(), event.getUser(), "%user% has fallen victim to the slash bug! That's " + (++n) + " so far!", args);
-        return true;
+        synchronized (this)
+        {
+            if (System.currentTimeMillis() - lastUsed > 10000)
+            {
+                IRCUtils.sendMessageForUser(event.getChannel(), event.getUser(), "%user% has fallen victim to the slash bug! That's " + (++n) + " so far!", args);
+                lastUsed = System.currentTimeMillis();
+            }
+            return true;
+        }
     }
 
     @Override
