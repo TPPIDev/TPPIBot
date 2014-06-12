@@ -20,6 +20,7 @@ import tterrag.tppibot.commands.RemindersOff;
 import tterrag.tppibot.commands.RemindersOn;
 import tterrag.tppibot.commands.RemoveCommand;
 import tterrag.tppibot.commands.Timeout;
+import tterrag.tppibot.commands.ToggleSpamFilters;
 import tterrag.tppibot.commands.Topic;
 import tterrag.tppibot.commands.Victim;
 import tterrag.tppibot.listeners.EventBus;
@@ -57,22 +58,23 @@ public class Main
 
         // create base commands
         log("Creating commands...");
-        new Help().create();
-        new Kill().create();
-        new Join().create();
-        new EditCommand().create();
-        new AddReminder().create();
-        new RemindersOff().create();
-        new RemindersOn().create();
-        new Topic().create();
-        new Commands().create();
-        new AddCommand().create();
-        new RemoveCommand().create();
-        new Victim().create();
-        new EditPerms().create();
-        new Leave().create();
+        new Help();
+        new Kill();
+        new Join();
+        new EditCommand();
+        new AddReminder();
+        new RemindersOff();
+        new RemindersOn();
+        new Topic();
+        new Commands();
+        new AddCommand();
+        new RemoveCommand();
+        new Victim();
+        new EditPerms();
+        new Leave();
+        new ToggleSpamFilters();
 
-        Timeout timeout = (Timeout) new Timeout().create();
+        Timeout timeout = new Timeout();
         log("Commands created.");
 
         log("Creating reactions...");

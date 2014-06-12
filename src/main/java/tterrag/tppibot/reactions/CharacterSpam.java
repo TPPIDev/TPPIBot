@@ -1,7 +1,11 @@
 package tterrag.tppibot.reactions;
 
+import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.REPEATS;
+import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.SYMBOLS;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -17,8 +21,8 @@ import tterrag.tppibot.interfaces.IReaction;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.util.IRCUtils;
 import tterrag.tppibot.util.Logging;
-import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.*;
 
+import com.google.common.collect.Sets;
 import com.google.gson.reflect.TypeToken;
 
 public class CharacterSpam implements IReaction
@@ -45,16 +49,23 @@ public class CharacterSpam implements IReaction
     private Map<String, Integer> strikes;
     private Config strikesConfig;
 
+    private static Set<String> blacklistChannels = Sets.newConcurrentHashSet();
+    private Config blacklistConfig;
+
     public CharacterSpam()
     {
         repeated = new HashMap<Character, Integer>();
 
         strikesConfig = new Config("spamStrikes.json");
+        blacklistConfig = new Config("spamChannelBlacklist.json");
 
         strikes = Main.gson.fromJson(strikesConfig.getText(), new TypeToken<Map<String, Integer>>() {}.getType());
+        blacklistChannels = Main.gson.fromJson(blacklistConfig.getText(), new TypeToken<Set<String>>() {}.getType());
 
         if (strikes == null)
             strikes = new HashMap<String, Integer>();
+        if (blacklistChannels == null)
+            blacklistChannels = Sets.newConcurrentHashSet();
     }
 
     @Override
@@ -66,7 +77,10 @@ public class CharacterSpam implements IReaction
 
         if (msg.length() < 12)
             return;
-        
+
+        if (blacklistChannels.contains(event.getChannel().getName().toLowerCase()))
+            return;
+
         if (IRCUtils.isUserAboveOrEqualTo(event.getChannel(), PermLevel.TRUSTED, event.getUser()))
             return;
 
@@ -154,9 +168,31 @@ public class CharacterSpam implements IReaction
         return false;
     }
 
+    /**
+     * @return true if added, false if removed
+     */
+    public static boolean toggleBlacklistChannel(String channelname)
+    {
+        synchronized (blacklistChannels)
+        {
+            channelname = channelname.toLowerCase();
+            if (blacklistChannels.contains(channelname))
+            {
+                blacklistChannels.remove(channelname);
+                return false;
+            }
+            else
+            {
+                blacklistChannels.add(channelname);
+                return true;
+            }
+        }
+    }
+
     @Subscribe
     public void onDisconnect(DisconnectEvent<?> event)
     {
         strikesConfig.writeJsonToFile(strikes);
+        blacklistConfig.writeJsonToFile(blacklistChannels);
     }
 }

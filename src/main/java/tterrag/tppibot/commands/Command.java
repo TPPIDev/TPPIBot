@@ -22,6 +22,8 @@ public abstract class Command implements ICommand
     {
         this.ident = ident.toLowerCase();
         this.level = level;
+        
+        create();
     }
     
     @Override
