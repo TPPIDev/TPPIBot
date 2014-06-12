@@ -38,7 +38,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
             for (int i = 0; i < commands.size(); i++)
             {
                 ICommand c = commands.get(i);
-                if (c.getIdent().equalsIgnoreCase(args[0]))
+                if (c.getIdent().equalsIgnoreCase(args[0]) && (IRCUtils.userIsOp(event.getChannel(), event.getBot().getUserBot()) || !c.needsOp()))
                 {
                     if (IRCUtils.userMatchesPerms(channel, sender, c.getPermLevel()))
                     {

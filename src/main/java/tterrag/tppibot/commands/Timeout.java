@@ -177,7 +177,13 @@ public class Timeout extends Command
     {
         return true;
     }
-
+    
+    @Override
+    public boolean needsOp()
+    {
+        return true;
+    }
+    
     @Subscribe
     public void onDisconnect(DisconnectEvent<PircBotX> event)
     {

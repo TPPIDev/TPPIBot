@@ -42,6 +42,11 @@ public interface ICommand
      * @return {@link PermLevel}
      */
     public PermLevel getPermLevel();
+    
+    /**
+     * Does this command need operator status to do anything useful
+     */
+    public boolean needsOp();
 
     /**
      * Called when this command is used

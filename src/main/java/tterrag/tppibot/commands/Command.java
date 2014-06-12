@@ -57,6 +57,12 @@ public abstract class Command implements ICommand
         this.level = level;
         return this;
     }
+    
+    @Override
+    public boolean needsOp()
+    {
+        return false;
+    }
 
     public void sendMessage(Channel channel, String message)
     {

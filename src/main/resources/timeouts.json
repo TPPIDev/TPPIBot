@@ -1,14 +1,14 @@
 [
   {
-    "init": 1402445300737,
-    "time": 18300000,
-    "channel": "#TPPIBot",
-    "user": "tterrag|away"
-  },
-  {
     "init": 1402446222297,
-    "time": 17400000,
+    "time": 87600000,
     "channel": "#TestPackPleaseIgnore",
     "user": "JuanCartierXVIII"
+  },
+  {
+    "init": 1402532909603,
+    "time": 300000,
+    "channel": "#TestPackPleaseIgnore",
+    "user": "RedstoneFlux"
   }
 ]

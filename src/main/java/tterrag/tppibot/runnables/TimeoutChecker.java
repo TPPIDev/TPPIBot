@@ -40,25 +40,43 @@ public class TimeoutChecker implements Runnable
                     {
                         Channel channel = IRCUtils.getChannelByName(Main.bot, time.channel);
 
-                        if (channel == null)
+                        if (IRCUtils.userIsOp(channel, Main.bot.getUserBot()))
                         {
-                            Logging.log("Bot is not connected to " + time.channel + ", adding " + (retry / 60) + " minutes to the timeout on user " + time.user + ".");
-                            time.addTime(retry);
-                        }
-                        else
-                        {
-                            User user = IRCUtils.getUserByNick(channel, time.user);
-
-                            if (user == null)
+                            if (channel == null)
                             {
-                                Logging.log("Could not find user " + time.user + " in channel " + time.channel + ", adding " + (retry / 60) + " minutes to the timeout on user " + time.user + ".");
+                                Logging.log("Bot is not connected to " + time.channel + ", adding " + (retry / 60) + " minutes to the timeout on user " + time.user + ".");
                                 time.addTime(retry);
                             }
                             else
                             {
-                                Main.bot.sendRaw().rawLine("MODE " + time.channel + " -q " + user.getHostmask());
-                                user.send().notice("You are no longer timed out. Be warned, repeat offenses could result in a ban.");
-                                this.instance.list.remove(i);
+                                User user = IRCUtils.getUserByNick(channel, time.user);
+
+                                if (user == null)
+                                {
+                                    Logging.log("Could not find user " + time.user + " in channel " + time.channel + ", adding " + (retry / 60) + " minutes to the timeout on user " + time.user + ".");
+                                    time.addTime(retry);
+                                }
+                                else
+                                {
+                                    Main.bot.sendRaw().rawLine("MODE " + time.channel + " -q " + user.getHostmask());
+                                    user.send().notice("You are no longer timed out. Be warned, repeat offenses could result in a ban.");
+                                    this.instance.list.remove(i);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            try
+                            {
+                                Main.bot.sendIRC().message(channel.getName(), "Please op me so I may remove the timeout on " + IRCUtils.getUserByNick(channel, time.user).getNick() + "!");
+                            }
+                            catch (Exception e)
+                            {
+                                // what do I do now??
+                            }
+                            finally
+                            {
+                                time.addTime(retry);
                             }
                         }
                     }
