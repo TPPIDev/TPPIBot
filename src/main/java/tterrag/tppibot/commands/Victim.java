@@ -8,8 +8,6 @@ import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.util.IRCUtils;
 
-import com.google.gson.Gson;
-
 public class Victim extends Command
 {
     private int n;
@@ -23,7 +21,11 @@ public class Victim extends Command
 
         config = new Config("victim.json");
 
-        n = new Gson().fromJson(config.getText(), Integer.class);
+        String text = config.getText();
+        if (text == "")
+            n = 0;
+        else
+            n = Integer.parseInt(text);
     }
 
     @Override
@@ -49,6 +51,6 @@ public class Victim extends Command
     @Subscribe
     public void onDisconnect(DisconnectEvent<PircBotX> event)
     {
-        config.writeJsonToFile(n);
+        config.writeInt(n);
     }
 }

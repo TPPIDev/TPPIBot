@@ -11,11 +11,25 @@ import com.google.gson.GsonBuilder;
 public class Config
 {
     private File configFile;
+    private static File baseDir;
+    
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    
+    static
+    {
+        File userDir = new File(System.getProperty("user.home"));
+        
+        baseDir = new File(userDir.getAbsolutePath() + "/.tppibot");
+        
+        if (!baseDir.exists())
+        {
+            baseDir.mkdir();
+        }
+    }
 
     public Config(String filename)
     {
-        this.configFile = new File("src/main/resources/" + filename);
+        this.configFile = new File(baseDir.getAbsolutePath() + "/" + filename);
 
         if (!configFile.exists())
         {
@@ -50,5 +64,10 @@ public class Config
     public String getText()
     {
         return SaveUtils.readTextFile(configFile);
+    }
+
+    public void writeInt(int n)
+    {
+        SaveUtils.saveAllToFile(configFile, "" + n);
     }
 }
