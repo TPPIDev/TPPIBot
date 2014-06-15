@@ -6,7 +6,7 @@ public class Leave extends Command
 {
     public Leave()
     {
-        super("leave", PermLevel.OP);
+        super("leave", PermLevel.TRUSTED);
     }
     
     @Override

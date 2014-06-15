@@ -8,7 +8,7 @@ public class ToggleSpamFilters extends Command
 {
     public ToggleSpamFilters()
     {
-        super("toggleFilter", PermLevel.OP);
+        super("toggleFilter", PermLevel.TRUSTED);
     }
     
     @Override

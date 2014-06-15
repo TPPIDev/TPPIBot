@@ -8,7 +8,7 @@ public class RemindersOn extends Command
 {
     public RemindersOn()
     {
-        super("reminderson", PermLevel.OP);
+        super("reminderson", PermLevel.TRUSTED);
     }
 
     @Override
