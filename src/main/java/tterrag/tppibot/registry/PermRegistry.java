@@ -57,19 +57,22 @@ public class PermRegistry
 
     public void registerUser(Channel chan, User user, PermLevel level)
     {
+        String acct = IRCUtils.getAccount(user);
+        
         // controllers are global
         if (level == PermLevel.CONTROLLER)
         {
-            controllers.add(IRCUtils.getAccount(user));
+            controllers.add(acct);
         }
         else
         {
+            controllers.remove(acct);
+            
             // can't assign op/voice
             if (!ArrayUtils.contains(PermLevel.getSettablePermLevels(), level))
                 throw new IllegalArgumentException("Cannot register a user with the level " + level.toString());
 
             String chanName = chan.getName();
-            String acct = IRCUtils.getAccount(user);
 
             registrar.put(chanName, register(registrar.get(chanName), acct, level));
         }
