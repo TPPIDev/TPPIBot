@@ -3,7 +3,9 @@ package tterrag.tppibot.reactions;
 import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.REPEATS;
 import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.SYMBOLS;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,6 +53,8 @@ public class CharacterSpam implements IReaction
 
     private static Set<String> blacklistChannels = Sets.newConcurrentHashSet();
     private Config blacklistConfig;
+    
+    private static List<Character> whitelistedChars = Arrays.asList(new Character[]{' ', '.'});
 
     public CharacterSpam()
     {
@@ -83,7 +87,7 @@ public class CharacterSpam implements IReaction
 
         for (char c : msg.toCharArray())
         {
-            if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == ' '))
+            if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || whitelistedChars.contains(c)))
             {
                 symbolCount++;
             }
