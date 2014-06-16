@@ -27,7 +27,8 @@ public class SaveUtils
                 s += scan.nextLine() + "\n";
             }
             
-            s = s.substring(0, s.length() - 1);
+            if (s.length() > 0)
+                s = s.substring(0, s.length() - 1);
 
             scan.close();
             return s;

@@ -46,7 +46,7 @@ public class ConsoleCommands implements Runnable
 
             connected = Main.bot.isConnected();
         }
-
+        
         scan.close();
     }
 }

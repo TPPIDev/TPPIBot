@@ -81,9 +81,6 @@ public class CharacterSpam implements IReaction
         if (blacklistChannels.contains(event.getChannel().getName().toLowerCase()))
             return;
 
-        if (IRCUtils.isUserAboveOrEqualTo(event.getChannel(), PermLevel.TRUSTED, event.getUser()))
-            return;
-
         for (char c : msg.toCharArray())
         {
             if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == ' '))
@@ -142,7 +139,7 @@ public class CharacterSpam implements IReaction
 
     private boolean timeout(MessageEvent<?> event, int i, SpamReasons reason)
     {
-        if (IRCUtils.userIsOp(event.getChannel(), event.getBot().getUserBot()))
+        if (IRCUtils.userIsOp(event.getChannel(), event.getBot().getUserBot()) && !IRCUtils.isUserAboveOrEqualTo(event.getChannel(), PermLevel.TRUSTED, event.getUser()))
         {
             Command quiet = (Command) CommandRegistry.getCommand("timeout");
 

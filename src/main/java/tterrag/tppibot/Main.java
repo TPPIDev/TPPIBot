@@ -89,6 +89,7 @@ public class Main
         builder.setNickservPassword(args[0]);
         builder.setEncoding(Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset());
         builder.setServer("irc.esper.net", 6667);
+        builder.setAutoReconnect(true);
 
         args = ArrayUtils.remove(args, 0);
 
