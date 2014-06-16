@@ -1,7 +1,6 @@
 package tterrag.tppibot.reactions;
 
-import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.REPEATS;
-import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.SYMBOLS;
+import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,7 +30,7 @@ public class CharacterSpam implements IReaction
 {
     public enum SpamReasons
     {
-        REPEATS("You had too many repeated characters."), SYMBOLS("You had too many non-alphabetic symbols.");
+        REPEATS("You had too many repeated characters."), SYMBOLS("You had too many non-alphabetic symbols."), CAPS("Too much caps!");
 
         private String text;
 
@@ -76,6 +75,7 @@ public class CharacterSpam implements IReaction
     public synchronized void onMessage(MessageEvent<?> event)
     {
         int symbolCount = 0;
+        int caps = 0;
 
         String msg = event.getMessage();
 
@@ -90,6 +90,11 @@ public class CharacterSpam implements IReaction
             if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || whitelistedChars.contains(c)))
             {
                 symbolCount++;
+            }
+            
+            if (c >= 'A' && c <= 'Z')
+            {
+                caps++;
             }
 
             if (repeated.containsKey(c))
@@ -116,6 +121,13 @@ public class CharacterSpam implements IReaction
         {
             Logging.log("too many symbols!");
             finish(timeout(event, 5, SYMBOLS) ? event.getUser() : null);
+            return;
+        }
+        
+        if (caps > msg.length() / 1.5)
+        {
+            Logging.log("caps!");
+            finish(timeout(event, 5, CAPS) ? event.getUser() : null);
             return;
         }
 
@@ -155,11 +167,11 @@ public class CharacterSpam implements IReaction
 
             if (strikeCount < 3)
             {
-                quiet.sendMessage(event.getChannel(), event.getUser().getNick() + ", please do not spam! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
+                quiet.sendMessage(event.getChannel(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
             }
             else
             {
-                quiet.sendMessage(event.getChannel(), event.getUser().getNick() + ", please do not spam! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
+                quiet.sendMessage(event.getChannel(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
                         + (5 * (strikeCount - 2)) + " minutes. Reason: " + reason.getText());
                 quiet.onCommand(new MessageEvent<PircBotX>(event.getBot(), event.getChannel(), event.getBot().getUserBot(), event.getMessage()), event.getUser().getNick(), ""
                         + (5 * (strikeCount - 2)));
