@@ -109,7 +109,7 @@ public class CharacterSpam implements IReaction
 
         for (char c : repeated.keySet())
         {
-            if (repeated.get(c) > msg.length() / 2.5)
+            if (repeated.get(c) > msg.length() / 2)
             {
                 Logging.log("too many repeated characters!");
                 finish(timeout(event, 5, REPEATS) ? event.getUser() : null);
