@@ -12,6 +12,7 @@ import tterrag.tppibot.commands.AddReminder;
 import tterrag.tppibot.commands.Commands;
 import tterrag.tppibot.commands.EditCommand;
 import tterrag.tppibot.commands.EditPerms;
+import tterrag.tppibot.commands.Forgive;
 import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
 import tterrag.tppibot.commands.Kill;
@@ -43,6 +44,8 @@ public class Main
     public static ReminderProcess reminders;
     public static TimeoutChecker timeouts;
 
+    public static CharacterSpam spamFilter;
+    
     public static PircBotX bot;
     
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -73,13 +76,14 @@ public class Main
         new EditPerms();
         new Leave();
         new ToggleSpamFilters();
+        new Forgive();
 
         Timeout timeout = new Timeout();
         log("Commands created.");
 
         log("Creating reactions...");
-        CharacterSpam characterSpam = new CharacterSpam();
-        ReactionRegistry.registerReaction(characterSpam);
+        spamFilter = new CharacterSpam();
+        ReactionRegistry.registerReaction(spamFilter);
         log("Reactions created.");
 
         log("Configuring bot...");
@@ -125,7 +129,7 @@ public class Main
         log("Registering extra event receivers...");
         EventHandler.registerReceiver(reminders);
         EventHandler.registerReceiver(PermRegistry.instance());
-        EventHandler.registerReceiver(characterSpam);
+        EventHandler.registerReceiver(spamFilter);
         log("Registered extra event reveivers.");
         
         // start 'er up

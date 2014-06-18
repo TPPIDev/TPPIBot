@@ -201,7 +201,21 @@ public class CharacterSpam implements IReaction
             }
         }
     }
+    
+    public int setStrikes(User user, int amnt)
+    {
+        strikes.put(user.getHostmask(), amnt);
+        return amnt;
+    }
 
+    public int removeStrikes(User user, int amnt)
+    {
+        if (!strikes.containsKey(user.getHostmask()))
+            return 0;
+        else
+            return setStrikes(user, Math.max(0, strikes.get(user.getHostmask()) - amnt));
+    }
+    
     @Subscribe
     public void onDisconnect(DisconnectEvent<?> event)
     {
