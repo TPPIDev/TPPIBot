@@ -61,7 +61,6 @@ public class AddCommand extends Command
         }
 
         CustomCommand command = new CustomCommand(cmdName, PermLevel.DEFAULT, toAdd);
-        CommandRegistry.registerCommand(command);
         commandsAdded.add(command);
 
         sendNotice(event.getUser(), "Registered command " + cmdName);
