@@ -90,7 +90,7 @@ public class Main
 
         log("Configuring bot...");
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
-        builder.setName("TPPIBot|Dev");
+        builder.setName("TPPIBot");
         builder.setLogin("TPPIBot");
         builder.setNickservPassword(args[0]);
         builder.setEncoding(Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset());
