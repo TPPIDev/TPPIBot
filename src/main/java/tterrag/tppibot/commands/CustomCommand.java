@@ -29,7 +29,7 @@ public class CustomCommand extends Command
 
         if (params.length > 0 && params[0].startsWith("-permLevel="))
         {
-            this.setPermLevel(PermLevel.valueOf(params[0].substring(10)));
+            this.setPermLevel(PermLevel.valueOf(params[0].substring(11).toUpperCase()));
         }
         else
         {
