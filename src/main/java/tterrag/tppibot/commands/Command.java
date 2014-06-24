@@ -95,7 +95,7 @@ public abstract class Command implements ICommand
      * @return the command object
      */
     @Override
-    public Command editCommand(String... params)
+    public Command editCommand(MessageEvent<?> event, String... args)
     {
         return this;
     }

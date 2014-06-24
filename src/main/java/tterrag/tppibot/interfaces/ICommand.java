@@ -11,28 +11,31 @@ public interface ICommand
         /**
          * Lowest value, all users have this even if not assigned
          */
-        DEFAULT, 
-        
+        DEFAULT,
+
         /*
-         * Custom levels, these are assignable and in order of power 
+         * Custom levels, these are assignable and in order of power
          */
-        TRUSTED, OP, CONTROLLER;
-        
+        TRUSTED, OP, CONTROLLER,
+
+        /**
+         * Used for error handling
+         */
+        INVALID;
+
         public static PermLevel[] getSettablePermLevels()
         {
-            return new PermLevel[]{CONTROLLER, OP, TRUSTED, DEFAULT};
+            return new PermLevel[] { CONTROLLER, OP, TRUSTED, DEFAULT };
         }
     }
 
     /**
-     * Does any base initialization for the command, should be called on
-     * construction e.g. <code>new ICommand().create()</code>
+     * Does any base initialization for the command, should be called on construction e.g. <code>new ICommand().create()</code>
      */
     public ICommand create();
 
     /**
-     * The identity of this command, e.g. the word after the control character
-     * that would activate this command
+     * The identity of this command, e.g. the word after the control character that would activate this command
      */
     public String getIdent();
 
@@ -42,7 +45,7 @@ public interface ICommand
      * @return {@link PermLevel}
      */
     public PermLevel getPermLevel();
-    
+
     /**
      * Does this command need operator status to do anything useful
      */
@@ -61,11 +64,11 @@ public interface ICommand
     /**
      * Edits the command
      * 
-     * @param params - Could be anything, needs to be strictly checked for each
-     *            command impl
+     * @param args - Could be anything, needs to be strictly checked for each command impl
      * @return the command object
+     * 
      */
-    public Command editCommand(String... params);
+    public Command editCommand(MessageEvent<?> event, String... args);
 
     /**
      * The description of this command, for help purposes

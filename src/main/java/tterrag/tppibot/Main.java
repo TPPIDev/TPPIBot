@@ -17,6 +17,7 @@ import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
 import tterrag.tppibot.commands.Kill;
 import tterrag.tppibot.commands.Leave;
+import tterrag.tppibot.commands.Recover;
 import tterrag.tppibot.commands.RemindersOff;
 import tterrag.tppibot.commands.RemindersOn;
 import tterrag.tppibot.commands.RemoveCommand;
@@ -77,6 +78,7 @@ public class Main
         new Leave();
         new ToggleSpamFilters();
         new Forgive();
+        new Recover();
 
         Timeout timeout = new Timeout();
         log("Commands created.");
@@ -88,7 +90,7 @@ public class Main
 
         log("Configuring bot...");
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
-        builder.setName("TPPIBot");
+        builder.setName("TPPIBot|Dev");
         builder.setLogin("TPPIBot");
         builder.setNickservPassword(args[0]);
         builder.setEncoding(Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset());

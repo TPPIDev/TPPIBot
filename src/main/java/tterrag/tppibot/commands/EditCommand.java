@@ -36,10 +36,11 @@ public class EditCommand extends Command
                 if (!IRCUtils.userMatchesPerms(event.getChannel(), event.getUser(), c.getPermLevel()))
                 {
                     sendNotice(event.getUser(), "You do not have high enough permissions to edit command \"" + c.getIdent() + ".\" You must be at least: " + c.getPermLevel());
+                    return false;
                 }
                 
                 sendNotice(event.getUser(), "Editing command " + c.getIdent() + " with args " + Arrays.deepToString(args));
-                c.editCommand(args);
+                c.editCommand(event, args);
             }
         }
 

@@ -8,6 +8,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.registry.CommandRegistry;
+import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
 public class Help extends Command
@@ -26,7 +27,8 @@ public class Help extends Command
 
         if (args.length < 1)
         {
-            IRCUtils.sendNoticeForUser(event.getChannel(), event.getUser(), helpText, args);
+            sendNotice(event.getUser(), "Your current perm level is: " + PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser()) + ".");
+            IRCUtils.sendNoticeForUser(event.getChannel(), event.getUser(), "To get help on specific commands " + helpText, args);
         }
         else
         {
@@ -54,12 +56,12 @@ public class Help extends Command
     }
 
     @Override
-    public Command editCommand(String... params)
+    public Command editCommand(MessageEvent<?> event, String... args)
     {
-        if (params.length < 1)
+        if (args.length < 1)
             return this;
 
-        String newText = StringUtils.join(params, ' ');
+        String newText = StringUtils.join(args, ' ');
 
         this.helpText = newText;
         return this;

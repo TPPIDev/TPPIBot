@@ -41,7 +41,7 @@ public class IRCUtils
 
         PermLevel userPerm = PermRegistry.instance().getPermLevelForUser(channel, user);
 
-        return isUserAboveOrEqualTo(userPerm, perm);
+        return isPermLevelAboveOrEqualTo(userPerm, perm);
 
     }
 
@@ -57,7 +57,7 @@ public class IRCUtils
     {
         toCheck = toCheck == null ? DEFAULT : toCheck;
 
-        return isUserAboveOrEqualTo(userPerm, toCheck);
+        return isPermLevelAboveOrEqualTo(userPerm, toCheck);
     }
 
     /**
@@ -69,10 +69,10 @@ public class IRCUtils
     {
         if (!ArrayUtils.contains(PermLevel.getSettablePermLevels(), perm)) { throw new IllegalArgumentException("The perm level " + perm.toString() + " is not valid."); }
 
-        return isUserAboveOrEqualTo(PermRegistry.instance().getPermLevelForUser(chan, user), perm);
+        return isPermLevelAboveOrEqualTo(PermRegistry.instance().getPermLevelForUser(chan, user), perm);
     }
 
-    private static boolean isUserAboveOrEqualTo(PermLevel userLevel, PermLevel toCheck)
+    public static boolean isPermLevelAboveOrEqualTo(PermLevel userLevel, PermLevel toCheck)
     {
         return userLevel.ordinal() >= toCheck.ordinal();
     }
