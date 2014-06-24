@@ -14,62 +14,34 @@ buildscript {
     }
     dependencies {
         classpath 'org.gradle.plugins:shadow:0.7.4'
+        classpath 'org.ajoberstar:gradle-git:0.8.0'
     }
 
 }
 
-project.ext {
-    mainClass = 'tterrag.tppibot.Main'
-    currentYear = '2014'
-}
-
-ext.configFile = file "build.properties"
-
-configFile.withReader {
-    // Load config.  It shall from now be referenced as simply config or project.config
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
-}
-
-// Finds and sets version data
-task buildInfo {
-    def cmd = "git rev-parse --short HEAD"
-    def proc = cmd.execute()
-    proc.waitFor()
-    if (proc.exitValue() == 0) {
-        ext.revision = proc.text.trim()
-    } else {
-        ext.revision = "GITBORK"
-    }
-
-    if (System.getenv().BUILD_NUMBER != null) {
-        ext.buildNum = "${System.getenv().BUILD_NUMBER}"
-    } else {
-        ext.buildNum = "DEV.${project.buildInfo.revision}"
-    }
-}
-ext.artifact_version = 'NFG'
-if (System.getenv().ARTIFACT_VERSION == null) {
-    artifact_version = "${config.version}"
-}
-if (System.getenv().ARTIFACT_VERSION != null) {
-    artifact_version = "${system.getenv().ARTIFACT_VERSION}"
-}
-
-version = "${artifact_version}-${System.getenv().BUILD_NUMBER}"
 archivesBaseName = "TPPIBot"
-
 group = 'tterrag.tppibot'
-project.build.sourceEncoding = 'UTF-8'
 description = "Bot for TPPI IRC channels"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-jar {
-    manifest {
-        attributes 'Main-Class': project.mainClass
-    }
+import org.ajoberstar.grgit.Grgit
+
+if (System.getenv('BUILD_NUMBER') != null) {
+    version += ".${System.getenv('BUILD_NUMBER')}"
+} else if (new File(projectDir, '.git').exists()) {
+    def repo = Grgit.open(project.file('.'))
+    version += ".${repo.log().find().abbreviatedId}"
+} else {
+    version += ".CUSTOM"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+jar.manifest {
+    attributes 'Main-Class': 'tterrag.tppibot.Main'
 }
 
 repositories {
@@ -81,5 +53,5 @@ dependencies {
     compile 'org.slf4j:slf4j-simple:1.7.5'
     compile 'org.slf4j:log4j-over-slf4j:1.7.7'
     compile 'com.google.code.gson:gson:2.2.4'
-	compile 'com.google.guava:guava:17.0'
+    compile 'com.google.guava:guava:17.0'
 }
