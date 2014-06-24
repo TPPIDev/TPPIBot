@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 
+import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.util.IRCUtils;
@@ -44,7 +45,8 @@ public class Help extends Command
             {
                 if (CommandRegistry.isCommandRegistered(s))
                 {
-                    sendNotice(sendTo, String.format("Info on %s: %s", s, CommandRegistry.getCommand(s).getDesc()));
+                    ICommand c = CommandRegistry.getCommand(s);
+                    sendNotice(sendTo, String.format("Info on %s: %s %s: %s", s, c.getDesc(), "Required perm level", c.getPermLevel().toString()));
                 }
             }
         }
