@@ -26,7 +26,16 @@ public class CustomCommand extends Command
     public Command editCommand(String... params)
     {
         AddCommand.commandsAdded.remove(this);
-        this.message = StringUtils.join(params, " ");
+
+        if (params.length > 0 && params[0].startsWith("-permLevel="))
+        {
+            this.setPermLevel(PermLevel.valueOf(params[0].substring(10)));
+        }
+        else
+        {
+            this.message = StringUtils.join(params, " ");
+        }
+        
         AddCommand.commandsAdded.add(this);
         return this;
     }

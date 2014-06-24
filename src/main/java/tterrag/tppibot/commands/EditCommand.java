@@ -13,7 +13,7 @@ public class EditCommand extends Command
 {
     public EditCommand()
     {
-        super("editcmd", PermLevel.DEFAULT);
+        super("editcmd", PermLevel.TRUSTED);
     }
 
     @Override
