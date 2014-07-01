@@ -27,7 +27,7 @@ public class Timeout extends Command
         public final String channel;
         public final String user;
 
-        public TimeoutTime(long start, int secs, String chan, String user)
+        public TimeoutTime(long start, long secs, String chan, String user)
         {
             this.init = start;
             this.time = secs * 1000;
