@@ -1,6 +1,6 @@
 TPPIBot
 =======
 
-The bot for the #PlayTPPI IRC channel, currently heavily WIP
+The bot for the #PlayTPPI IRC channel.
 
-Relies on maven dependencies, pom.xml contains these.
+This project uses gradle to resolve its dependncies. Simply run 'gradlew eclipse' (no quotes) to resolve them.
