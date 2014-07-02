@@ -52,7 +52,7 @@ public class Timeout extends Command
     }
 
     public List<TimeoutTime> list;
-    private Map<String, Integer> pastOffenders;
+    public Map<String, Integer> pastOffenders;
     private Config timeoutConfig, offendersConfig;
 
     public Timeout()

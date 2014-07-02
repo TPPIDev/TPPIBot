@@ -89,4 +89,17 @@ public class TimeoutChecker implements Runnable
             }
         }
     }
+    
+    public synchronized int removePastOffenses(User user, int amnt)
+    {
+        for (String nick : instance.pastOffenders.keySet())
+        {
+            if (nick.equals(user.getNick()))
+            {
+                instance.pastOffenders.put(nick, instance.pastOffenders.get(nick) - amnt);
+                return instance.pastOffenders.get(nick);
+            }
+        }
+        return 0;
+    }
 }
