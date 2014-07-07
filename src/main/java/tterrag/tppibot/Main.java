@@ -102,7 +102,7 @@ public class Main
         builder.setAutoReconnect(true);
 
         args = ArrayUtils.remove(args, 0);
-        args = ArrayUtils.remove(args, 1);
+        args = ArrayUtils.remove(args, 0);
 
         for (String s : args)
         {
