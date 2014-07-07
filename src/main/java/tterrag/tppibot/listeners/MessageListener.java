@@ -27,7 +27,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
 
     public static final MessageListener instance = new MessageListener();
 
-    public int delayTime = 5000;
+    public int delayTime = 10000;
     private long lastFire = 0;
     
     @Override
