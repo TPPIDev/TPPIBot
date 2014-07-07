@@ -1,34 +1,39 @@
 package tterrag.tppibot.commands;
 
+import java.util.List;
+
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.Main;
+import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.util.IRCUtils;
 
-public class Forgive extends Command
+public class Forgive extends Command implements IChannelCommand
 {
-    private enum Type
+    private enum Type 
     {
-        strikes, timeouts
+        strikes,
+        timeouts
     }
-
+    
     public Forgive()
     {
         super("forgive", PermLevel.TRUSTED);
     }
-
+    
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         if (args.length < 3)
         {
-            sendNotice(event.getUser(), "This command requires three args: [nick], [type], and [amount].");
-            return false;
+            lines.add("This command requires three args: [nick], [type], and [amount].");
+            return;
         }
-
-        User user = IRCUtils.getUserByNick(event.getChannel(), args[0]);
-
+        
+        User toChange = IRCUtils.getUserByNick(channel, args[0]);
+        
         Type type = Type.strikes;
         for (Type t : Type.values())
         {
@@ -37,60 +42,76 @@ public class Forgive extends Command
                 type = Type.valueOf(args[1]);
             }
         }
-
+            
         int amnt = 0;
         try
         {
-            amnt = Integer.parseInt(args[2]);
+            amnt = Integer.parseInt(args[1]);
         }
         catch (NumberFormatException e)
         {
-            sendNotice(event.getUser(), "\"" + args[2] + "\" is not a valid number!");
-            return false;
+            
+            lines.add("\"" + args[1] + "\" is not a valid number!");
+            return;
         }
-
-        switch (type)
+        
+        switch(type)
         {
         case strikes:
-            return removeStrikes(event, user, amnt);
+            removeStrikes(toChange, amnt, lines);
+            break;
         case timeouts:
-            return removeTimeouts(event, user, amnt);
-        default:
-            return false;
+            removeTimeouts(toChange, amnt, lines);
+            break;
+        }
+        
+        if (toChange != null)
+        {
+            lines.add("Set the amount of strikes on " + args[0] + " to " + Main.spamFilter.removeStrikes(toChange, amnt));
+        }
+        else
+        {
+            lines.add("No such user " + args[0] + " in this channel!");
         }
     }
-
-    private boolean removeStrikes(MessageEvent<?> event, User user, int amnt)
+    
+    private boolean removeStrikes(User user, int amnt, List<String> lines)
     {
         if (user != null)
         {
-            sendNotice(event.getUser(), "Set the amount of strikes on " + user.getNick() + " to " + Main.spamFilter.removeStrikes(user, amnt));
+            lines.add("Set the amount of strikes on " + user.getNick() + " to " + Main.spamFilter.removeStrikes(user, amnt));
             return true;
         }
         else
         {
-            sendNotice(event.getUser(), "No such user in this channel!");
+            lines.add("No such user in this channel!");
             return false;
         }
     }
 
-    private boolean removeTimeouts(MessageEvent<?> event, User user, int amnt)
+    private boolean removeTimeouts(User user, int amnt, List<String> lines)
     {
         if (user != null)
         {
-            sendNotice(event.getUser(), "Set the amount of past offenses on " + user.getNick() + " to " + Main.timeouts.removePastOffenses(user, amnt));
+            lines.add("Set the amount of past offenses on " + user.getNick() + " to " + Main.timeouts.removePastOffenses(user, amnt));
             return true;
         }
         else
         {
-            sendNotice(event.getUser(), "No such user in this channel!");
+            lines.add("No such user in this channel!");
             return false;
         }
     }
-
+    
     @Override
     public String getDesc()
     {
         return "Forgives a user the specified number of offenses. Can use strikes or timeouts as a switch before the number (default is strikes).";
+    }
+    
+    @Override
+    public boolean canChannelBeNull()
+    {
+        return false;
     }
 }

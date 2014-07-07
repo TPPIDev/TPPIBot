@@ -1,10 +1,15 @@
 package tterrag.tppibot.commands;
 
-import org.pircbotx.hooks.events.MessageEvent;
+import java.util.List;
+
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 
 import tterrag.tppibot.Main;
+import tterrag.tppibot.interfaces.IChannelCommand;
 
-public class RemindersOn extends Command
+public class RemindersOn extends Command implements IChannelCommand
 {
     public RemindersOn()
     {
@@ -12,18 +17,16 @@ public class RemindersOn extends Command
     }
 
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        if (!Main.reminders.isRemindEnabledFor(event.getChannel().getName()))
+        if (!Main.reminders.isRemindEnabledFor(channel.getName()))
         {
-            sendNotice(event.getUser(), "Enabling reminders for channel \"" + event.getChannel().getName() + "\"");
-            Main.reminders.enableRemindersFor(event.getChannel().getName());
-            return true;
+            lines.add("Enabling reminders for channel \"" + channel.getName() + "\"");
+            Main.reminders.enableRemindersFor(channel.getName());
         }
         else
         {
-            sendNotice(event.getUser(), "Reminders already enabled!");
-            return false;
+            lines.add("Reminders already enabled!");
         }
     }
 
@@ -31,5 +34,11 @@ public class RemindersOn extends Command
     public String getDesc()
     {
         return "Turns reminders on for the current channel";
+    }
+
+    @Override
+    public boolean canChannelBeNull()
+    {
+        return false;
     }
 }

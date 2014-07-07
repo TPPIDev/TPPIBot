@@ -1,6 +1,9 @@
 package tterrag.tppibot.commands;
 
-import org.pircbotx.hooks.events.MessageEvent;
+import java.util.List;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 
 import tterrag.tppibot.registry.CommandRegistry;
 
@@ -12,20 +15,19 @@ public class RemoveCommand extends Command
     }
 
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, List<String> lines, String... args)
     {
         if (args.length < 1)
         {
-            sendNotice(event.getUser(), "No command specified.");
-            return false;
+            lines.add("No command specified.");
+            return;
         }
 
         for (String s : args)
         {
             CommandRegistry.unregisterCommand(s);
-            sendNotice(event.getUser(), "Successfully removed command: \"" + s + "\"");
+            lines.add("Successfully removed command: \"" + s + "\"");
         }
-        return true;
     }
 
     @Override

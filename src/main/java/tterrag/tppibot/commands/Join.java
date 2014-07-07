@@ -1,6 +1,9 @@
 package tterrag.tppibot.commands;
 
-import org.pircbotx.hooks.events.MessageEvent;
+import java.util.List;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 
 public class Join extends Command
 {
@@ -10,20 +13,18 @@ public class Join extends Command
     }
 
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, List<String> lines, String... args)
     {
         if (args.length > 0)
         {
             for (String s : args)
             {
-                event.getBot().sendIRC().joinChannel(s.startsWith("#") ? s : "#" + s);
+                bot.sendIRC().joinChannel(s.startsWith("#") ? s : "#" + s);
             }
-            return true;
         }
         else
         {
-            sendNotice(event.getUser(), "Must supply at least one channel!");
-            return false;
+            lines.add("Must supply at least one channel!");
         }
     }
 

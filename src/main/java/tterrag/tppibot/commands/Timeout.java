@@ -5,19 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pircbotx.Channel;
 import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
-import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
+import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.util.IRCUtils;
 
 import com.google.gson.reflect.TypeToken;
 
-public class Timeout extends Command
+public class Timeout extends Command implements IChannelCommand
 {
     public class TimeoutTime
     {
@@ -74,21 +75,21 @@ public class Timeout extends Command
     }
 
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         if (args.length < 2)
         {
-            sendNotice(event.getUser(), "This command requires 2 args, [nick] and [time] (minutes)");
-            return false;
+            lines.add("This command requires 2 args, [nick] and [time] (minutes)");
+            return;
         }
 
-        User user = IRCUtils.getUserByNick(event.getChannel(), args[0]);
+        User toTimeout = IRCUtils.getUserByNick(channel, args[0]);
         int mins = 0;
 
-        if (user == null)
+        if (toTimeout == null)
         {
-            sendMessage(event.getChannel(), "No such user \"" + args[0] + "\"!");
-            return false;
+            lines.add("No such user \"" + args[0] + "\"!");
+            return;
         }
 
         String modifier = "none";
@@ -108,33 +109,33 @@ public class Timeout extends Command
         }
         catch (NumberFormatException e)
         {
-            sendNotice(event.getUser(), "Not a valid amount of time: \"" + args[1] + "\"");
-            return false;
+            lines.add("Not a valid amount of time: \"" + args[1] + "\"");
+            return;
         }
 
-        event.getBot().sendRaw().rawLine("MODE " + event.getChannel().getName() + " +q " + user.getHostmask());
+        bot.sendRaw().rawLine("MODE " + channel.getName() + " +q " + toTimeout.getHostmask());
         boolean newOffense = true;
 
         for (int i = 0; i < list.size(); i++)
         {
             TimeoutTime t = list.get(i);
-            if (t.user.equals(user.getNick()))
+            if (t.user.equals(toTimeout.getNick()))
             {
                 list.remove(t);
                 newOffense = false;
             }
         }
 
-        this.list.add(new TimeoutTime(System.currentTimeMillis(), mins * mult, event.getChannel().getName(), user.getNick()));
+        this.list.add(new TimeoutTime(System.currentTimeMillis(), mins * mult, channel.getName(), toTimeout.getNick()));
 
-        String hostmask = user.getHostmask();
+        String hostmask = toTimeout.getHostmask();
 
         if (newOffense)
         {
             if (pastOffenders.containsKey(hostmask))
             {
                 int pastTimeouts = pastOffenders.get(hostmask);
-                sendNotice(event.getUser(), String.format("The user \"%s\" with hostmask \"%s\" has been timed out %s time%s before.", user.getNick(), hostmask, Colors.BOLD + pastTimeouts
+                lines.add(String.format("The user \"%s\" with hostmask \"%s\" has been timed out %s time%s before.", toTimeout.getNick(), hostmask, Colors.BOLD + pastTimeouts
                         + Colors.NORMAL, pastTimeouts <= 1 ? "" : "s"));
                 pastOffenders.put(hostmask, pastTimeouts + 1);
             }
@@ -143,8 +144,6 @@ public class Timeout extends Command
                 this.pastOffenders.put(hostmask, 1);
             }
         }
-
-        return true;
     }
 
     private int getMultiplierForModifier(String modifier)
@@ -189,5 +188,11 @@ public class Timeout extends Command
     {
         timeoutConfig.writeJsonToFile(list);
         offendersConfig.writeJsonToFile(pastOffenders);
+    }
+    
+    @Override
+    public boolean canChannelBeNull()
+    {
+        return false;
     }
 }

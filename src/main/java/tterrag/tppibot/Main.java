@@ -1,5 +1,7 @@
 package tterrag.tppibot;
 
+import static tterrag.tppibot.util.Logging.log;
+
 import java.nio.charset.Charset;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -17,6 +19,7 @@ import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
 import tterrag.tppibot.commands.Kill;
 import tterrag.tppibot.commands.Leave;
+import tterrag.tppibot.commands.Mode;
 import tterrag.tppibot.commands.Recover;
 import tterrag.tppibot.commands.RemindersOff;
 import tterrag.tppibot.commands.RemindersOn;
@@ -33,9 +36,9 @@ import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.registry.ReactionRegistry;
 import tterrag.tppibot.runnables.ConsoleCommands;
+import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.runnables.ReminderProcess;
 import tterrag.tppibot.runnables.TimeoutChecker;
-import static tterrag.tppibot.util.Logging.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -79,6 +82,7 @@ public class Main
         new ToggleSpamFilters();
         new Forgive();
         new Recover();
+        new Mode();
 
         Timeout timeout = new Timeout();
         log("Commands created.");
@@ -90,7 +94,7 @@ public class Main
 
         log("Configuring bot...");
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
-        builder.setName("TPPIBot");
+        builder.setName("TPPIBot|Dev");
         builder.setLogin("TPPIBot");
         builder.setNickservPassword(args[0]);
         builder.setEncoding(Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset());
@@ -104,7 +108,7 @@ public class Main
             builder.addAutoJoinChannel(s.startsWith("#") ? s : "#" + s);
         }
 
-        builder.getListenerManager().addListener(new MessageListener());
+        builder.getListenerManager().addListener(MessageListener.instance);
         builder.getListenerManager().addListener(new JoinListener());
         builder.getListenerManager().addListener(new EventBus());
 
@@ -126,6 +130,10 @@ public class Main
         
         Thread consoleThread = new Thread(new ConsoleCommands());
         consoleThread.start();
+        
+        Thread messageSenderThread = new Thread(MessageSender.INSTANCE);
+        messageSenderThread.start();
+        
         log("Threads created...");
         
         log("Registering extra event receivers...");

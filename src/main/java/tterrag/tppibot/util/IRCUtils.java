@@ -77,9 +77,9 @@ public class IRCUtils
         return userLevel.ordinal() >= toCheck.ordinal();
     }
 
-    public static void sendMessageForUser(Channel channel, User user, String message, String... args)
+    public static String getMessageForUser(User user, String message, String... args)
     {
-        channel.send().message(message.replace("%user%", args.length >= 1 ? args[0] : user.getNick()));
+        return message.replace("%user%", args.length >= 1 ? args[0] : user.getNick());
     }
 
     public static void sendNoticeForUser(Channel channel, User user, String message, String... args)

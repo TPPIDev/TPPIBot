@@ -1,14 +1,16 @@
 package tterrag.tppibot.reactions;
 
-import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.*;
+import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.CAPS;
+import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.REPEATS;
+import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.SYMBOLS;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -20,6 +22,7 @@ import tterrag.tppibot.config.Config;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
 import tterrag.tppibot.interfaces.IReaction;
 import tterrag.tppibot.registry.CommandRegistry;
+import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 import tterrag.tppibot.util.Logging;
 
@@ -167,14 +170,19 @@ public class CharacterSpam implements IReaction
 
             if (strikeCount < 3)
             {
-                quiet.sendMessage(event.getChannel(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
+                MessageSender.INSTANCE.enqueue(event.getBot(), event.getChannel().getName(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
             }
             else
             {
-                quiet.sendMessage(event.getChannel(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
+                MessageSender.INSTANCE.enqueue(event.getBot(), event.getChannel().getName(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
                         + (5 * (strikeCount - 2)) + " minutes. Reason: " + reason.getText());
-                quiet.onCommand(new MessageEvent<PircBotX>(event.getBot(), event.getChannel(), event.getBot().getUserBot(), event.getMessage()), event.getUser().getNick(), ""
-                        + (5 * (strikeCount - 2)));
+                
+                List<String> toQueue = new ArrayList<String>();
+                quiet.onCommand(event.getBot(), event.getUser(), toQueue,"" + (5 * (strikeCount - 2)));
+                for (String s : toQueue)
+                {
+                    MessageSender.INSTANCE.enqueue(event.getBot(), event.getChannel().getName(), s);
+                }
             }
             return true;
         }

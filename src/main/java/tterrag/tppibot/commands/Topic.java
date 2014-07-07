@@ -1,8 +1,14 @@
 package tterrag.tppibot.commands;
 
-import org.pircbotx.hooks.events.MessageEvent;
+import java.util.List;
 
-public class Topic extends Command
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+
+import tterrag.tppibot.interfaces.IChannelCommand;
+
+public class Topic extends Command implements IChannelCommand
 {
     private long delayTime;
 
@@ -13,21 +19,28 @@ public class Topic extends Command
     }
 
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         if (delayTime == 0 || System.currentTimeMillis() - delayTime > 60000)
         {
-            sendMessage(event.getChannel(), event.getChannel().getTopic());
+            lines.add(channel.getTopic());
             delayTime = System.currentTimeMillis();
-            return true;
         }
-        sendNotice(event.getUser(), "Please do not spam this command!");
-        return false;
+        else
+        {
+            user.send().notice("Please do not spam this command!");
+        }
     }
 
     @Override
     public String getDesc()
     {
         return "Prints the topic of the current channel.";
+    }
+
+    @Override
+    public boolean canChannelBeNull()
+    {
+        return false;
     }
 }

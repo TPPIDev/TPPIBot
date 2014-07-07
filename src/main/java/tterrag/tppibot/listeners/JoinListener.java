@@ -5,6 +5,8 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.JoinEvent;
 
 import tterrag.tppibot.Main;
+import tterrag.tppibot.commands.Mode;
+import tterrag.tppibot.commands.Mode.BotMode;
 
 public class JoinListener extends ListenerAdapter<PircBotX>
 {
@@ -13,5 +15,7 @@ public class JoinListener extends ListenerAdapter<PircBotX>
     {
         if (!Main.reminders.isInReminderMap(event.getChannel().getName()))
             Main.reminders.enableRemindersFor(event.getChannel().getName().toLowerCase());
+        
+        Mode.initMode(event.getChannel().getName(), BotMode.MESSAGE);
     }
 }

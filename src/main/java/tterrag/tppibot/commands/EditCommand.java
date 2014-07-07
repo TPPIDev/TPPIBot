@@ -1,15 +1,19 @@
 package tterrag.tppibot.commands;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 
+import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
-public class EditCommand extends Command
+public class EditCommand extends Command implements IChannelCommand
 {
     public EditCommand()
     {
@@ -17,12 +21,12 @@ public class EditCommand extends Command
     }
 
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         if (args.length < 2)
         {
-            sendNotice(event.getUser(), "This requires 2 args: [command] and [edit args]");
-            return false;
+            lines.add("This requires 2 args: [command] and [edit args]");
+            return;
         }
 
         for (ICommand c : CommandRegistry.getCommands())
@@ -33,23 +37,27 @@ public class EditCommand extends Command
             {
                 args = ArrayUtils.remove(args, 0);
 
-                if (!IRCUtils.userMatchesPerms(event.getChannel(), event.getUser(), c.getPermLevel()))
+                if (!IRCUtils.userMatchesPerms(channel, user, c.getPermLevel()))
                 {
-                    sendNotice(event.getUser(), "You do not have high enough permissions to edit command \"" + c.getIdent() + ".\" You must be at least: " + c.getPermLevel());
-                    return false;
+                    lines.add("You do not have high enough permissions to edit command \"" + c.getIdent() + ".\" You must be at least: " + c.getPermLevel());
+                    return;
                 }
                 
-                sendNotice(event.getUser(), "Editing command " + c.getIdent() + " with args " + Arrays.deepToString(args));
-                c.editCommand(event, args);
+                lines.add("Editing command " + c.getIdent() + " with args " + Arrays.deepToString(args));
+                c.editCommand(bot, user, channel, lines, args);
             }
         }
-
-        return true;
     }
 
     @Override
     public String getDesc()
     {
         return "Edits the specified command with the parameters passed. Each command has its own way of handling these parameters.";
+    }
+    
+    @Override
+    public boolean canChannelBeNull()
+    {
+        return false;
     }
 }

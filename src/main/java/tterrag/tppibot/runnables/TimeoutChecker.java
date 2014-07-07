@@ -76,7 +76,7 @@ public class TimeoutChecker implements Runnable
                             }
                             finally
                             {
-                                time.addTime(retry);
+                                time.addTime((int) (System.currentTimeMillis() - time.getTime() + retry));
                             }
                         }
                     }

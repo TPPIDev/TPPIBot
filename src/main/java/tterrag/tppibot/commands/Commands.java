@@ -1,39 +1,49 @@
 package tterrag.tppibot.commands;
 
-import org.pircbotx.hooks.events.MessageEvent;
+import java.util.List;
 
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+
+import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
-public class Commands extends Command
+public class Commands extends Command implements IChannelCommand
 {
     public Commands()
     {
         super("commands", PermLevel.DEFAULT);
     }
-
+    
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         String s = "";
-        PermLevel perms = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
+        PermLevel perms = PermRegistry.instance().getPermLevelForUser(channel, user);
         for (ICommand c : CommandRegistry.getCommands())
         {
-            if (IRCUtils.userMatchesPerms(event.getChannel(), event.getUser(), perms, c.getPermLevel()))
+            if (IRCUtils.userMatchesPerms(channel, user, perms, c.getPermLevel()))
             {
                 s += c.getIdent() + ", ";
             }
         }
         s = s.substring(0, s.length() - 2);
-        sendNotice(event.getUser(), "Commands: " + s);
-        return true;
+        lines.add("Commands: " + s);
     }
-
+    
     @Override
     public String getDesc()
     {
         return "Shows all possible commands for you, perm level sensitive.";
+    }
+    
+    @Override
+    public boolean canChannelBeNull()
+    {        
+        return false;
     }
 }

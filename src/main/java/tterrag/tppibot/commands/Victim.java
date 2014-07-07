@@ -1,8 +1,10 @@
 package tterrag.tppibot.commands;
 
+import java.util.List;
+
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
-import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
@@ -29,16 +31,15 @@ public class Victim extends Command
     }
 
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, List<String> lines, String... args)
     {
         synchronized (this)
         {
             if (System.currentTimeMillis() - lastUsed > 10000)
             {
-                IRCUtils.sendMessageForUser(event.getChannel(), event.getUser(), "%user% has fallen victim to the slash bug! That's " + (++n) + " so far!", args);
+                lines.add(IRCUtils.getMessageForUser(user, "%user% has fallen victim to the slash bug! That's " + (++n) + " so far!", args));
                 lastUsed = System.currentTimeMillis();
             }
-            return true;
         }
     }
 

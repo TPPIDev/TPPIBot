@@ -1,8 +1,10 @@
 package tterrag.tppibot.interfaces;
 
-import org.pircbotx.hooks.events.MessageEvent;
+import java.util.List;
 
-import tterrag.tppibot.commands.Command;
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 
 public interface ICommand
 {
@@ -52,6 +54,11 @@ public interface ICommand
     public boolean needsOp();
 
     /**
+     * Amount of arguments this command requires
+     */
+    public int argsNeeded();
+    
+    /**
      * Called when this command is used
      * 
      * @param channel - channel it was called from
@@ -59,7 +66,7 @@ public interface ICommand
      * @param args - any args after the command (split by space)
      * @return whether the command processing was successful
      */
-    public boolean onCommand(MessageEvent<?> event, String... args);
+    public void onCommand(PircBotX bot, User user, List<String> lines, String... args);
 
     /**
      * Edits the command
@@ -68,7 +75,7 @@ public interface ICommand
      * @return the command object
      * 
      */
-    public Command editCommand(MessageEvent<?> event, String... args);
+    public ICommand editCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args);
 
     /**
      * The description of this command, for help purposes

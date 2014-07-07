@@ -1,8 +1,14 @@
 package tterrag.tppibot.commands;
 
-import org.pircbotx.hooks.events.MessageEvent;
+import java.util.List;
 
-public class Leave extends Command
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+
+import tterrag.tppibot.interfaces.IChannelCommand;
+
+public class Leave extends Command implements IChannelCommand
 {
     public Leave()
     {
@@ -10,9 +16,14 @@ public class Leave extends Command
     }
     
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        event.getChannel().send().part("Why do you hate me :( ");
-        return true;
+        channel.send().part("Why do you hate me :( ");
+    }
+
+    @Override
+    public boolean canChannelBeNull()
+    {
+        return false;
     }
 }

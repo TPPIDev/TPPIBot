@@ -1,7 +1,10 @@
 package tterrag.tppibot.commands;
 
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
-import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.util.IRCUtils;
@@ -14,17 +17,16 @@ public class Recover extends Command
     }
 
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, List<String> lines, String... args)
     {
-        if (ArrayUtils.contains(PermRegistry.defaultControllers, IRCUtils.getAccount(event.getUser())))
+        if (ArrayUtils.contains(PermRegistry.defaultControllers, IRCUtils.getAccount(user)))
         {
-            PermRegistry.instance().registerUser(event.getChannel(), event.getUser(), PermLevel.CONTROLLER);
-            sendNotice(event.getUser(), "Welcome back, " + event.getUser().getNick() + ". You are once again controller.");
+            PermRegistry.instance().registerUser(null, user, PermLevel.CONTROLLER);
+            user.send().notice("Welcome back, " + user.getNick() + ". You are once again controller.");
         }
         else
         {
-            sendNotice(event.getUser(), "Nice try...");
+            user.send().notice("Nice try...");
         }
-        return true;
     }
 }

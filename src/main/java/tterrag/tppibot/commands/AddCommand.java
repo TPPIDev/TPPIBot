@@ -1,12 +1,13 @@
 package tterrag.tppibot.commands;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
-import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
@@ -40,12 +41,12 @@ public class AddCommand extends Command
     }
 
     @Override
-    public boolean onCommand(MessageEvent<?> event, String... args)
+    public void onCommand(PircBotX bot, User user, List<String> lines, String... args)
     {
         if (args.length < 2)
         {
-            sendNotice(event.getUser(), "This requires at least two args, [command name] and [message]!");
-            return false;
+            lines.add("This requires at least two args, [command name] and [message]!");
+            return;
         }
 
         String cmdName = args[0];
@@ -56,16 +57,14 @@ public class AddCommand extends Command
 
         if (commandAlreadyRegistered(cmdName))
         {
-            sendNotice(event.getUser(), cmdName + " is already registered!");
-            return false;
+            lines.add(cmdName + " is already registered!");
+            return ;
         }
 
         CustomCommand command = new CustomCommand(cmdName, PermLevel.DEFAULT, toAdd);
         commandsAdded.add(command);
 
-        sendNotice(event.getUser(), "Registered command " + cmdName);
-
-        return true;
+        lines.add("Registered command " + cmdName);
     }
 
     private boolean commandAlreadyRegistered(String cmdName)
