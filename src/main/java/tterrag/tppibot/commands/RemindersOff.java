@@ -7,9 +7,8 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 import tterrag.tppibot.Main;
-import tterrag.tppibot.interfaces.IChannelCommand;
 
-public class RemindersOff extends Command implements IChannelCommand
+public class RemindersOff extends Command
 {
     public RemindersOff()
     {
@@ -37,7 +36,7 @@ public class RemindersOff extends Command implements IChannelCommand
     }
 
     @Override
-    public boolean canChannelBeNull()
+    public boolean executeWithoutChannel()
     {
         return false;
     }

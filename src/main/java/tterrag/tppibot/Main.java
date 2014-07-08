@@ -31,6 +31,7 @@ import tterrag.tppibot.commands.Victim;
 import tterrag.tppibot.listeners.EventBus;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
+import tterrag.tppibot.listeners.PrivateMessageListener;
 import tterrag.tppibot.reactions.CharacterSpam;
 import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.registry.PermRegistry;
@@ -112,6 +113,7 @@ public class Main
         builder.getListenerManager().addListener(MessageListener.instance);
         builder.getListenerManager().addListener(new JoinListener());
         builder.getListenerManager().addListener(new EventBus());
+        builder.getListenerManager().addListener(new PrivateMessageListener());
 
         bot = new PircBotX(builder.buildConfiguration());
         log("Configured.");

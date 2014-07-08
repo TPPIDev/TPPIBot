@@ -2,6 +2,7 @@ package tterrag.tppibot.commands;
 
 import java.util.List;
 
+import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
@@ -15,7 +16,7 @@ public class RemoveCommand extends Command
     }
 
     @Override
-    public void onCommand(PircBotX bot, User user, List<String> lines, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         if (args.length < 1)
         {

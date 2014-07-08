@@ -13,12 +13,11 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
-import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.util.IRCUtils;
 
 import com.google.gson.reflect.TypeToken;
 
-public class Timeout extends Command implements IChannelCommand
+public class Timeout extends Command
 {
     public class TimeoutTime
     {
@@ -191,7 +190,7 @@ public class Timeout extends Command implements IChannelCommand
     }
     
     @Override
-    public boolean canChannelBeNull()
+    public boolean executeWithoutChannel()
     {
         return false;
     }

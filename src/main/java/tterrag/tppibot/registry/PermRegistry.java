@@ -107,4 +107,9 @@ public class PermRegistry
         registrarConfig.writeJsonToFile(registrar);
         controllersConfig.writeJsonToFile(controllers);
     }
+
+    public boolean isController(User user)
+    {
+        return controllers.contains(IRCUtils.getAccount(user));
+    }
 }

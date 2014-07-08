@@ -13,11 +13,10 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 import tterrag.tppibot.Main;
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
-import tterrag.tppibot.interfaces.IChannelCommand;
 
 import com.google.gson.reflect.TypeToken;
 
-public class Mode extends Command implements IChannelCommand
+public class Mode extends Command
 {
     public enum BotMode
     {
@@ -81,7 +80,7 @@ public class Mode extends Command implements IChannelCommand
     }
 
     @Override
-    public boolean canChannelBeNull()
+    public boolean executeWithoutChannel()
     {
         return false;
     }

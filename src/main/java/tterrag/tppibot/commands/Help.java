@@ -7,14 +7,13 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
-import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
-public class Help extends Command implements IChannelCommand
+public class Help extends Command
 {
     private String helpText = "%user%, try " + MessageListener.controlChar + "help <command name>";
 
@@ -28,18 +27,12 @@ public class Help extends Command implements IChannelCommand
     {
         if (args.length < 1)
         {
-            user.send().notice("Your current perm level is: " + PermRegistry.instance().getPermLevelForUser(channel, user) + ".");
-        }
-
-        onCommand(bot, user, lines, args);
-    }
-
-    @Override
-    public void onCommand(PircBotX bot, User user, List<String> lines, String... args)
-    {
-        if (args.length < 1)
-        {
-            lines.add(IRCUtils.getMessageForUser(user, "To get help on specific commands " + helpText, args));
+            if (channel != null)
+            {
+                user.send().notice("Your current perm level is: " + PermRegistry.instance().getPermLevelForUser(channel, user) + ".");
+            }
+            
+            lines.add(IRCUtils.getMessageForUser(user, "To get help on specific commands " + (channel == null ? helpText.replace(MessageListener.controlChar, "\"") + "\"" : helpText), args));
         }
         else
         {
@@ -72,11 +65,5 @@ public class Help extends Command implements IChannelCommand
     public String getDesc()
     {
         return "Don't Panic.";
-    }
-
-    @Override
-    public boolean canChannelBeNull()
-    {
-        return true;
     }
 }

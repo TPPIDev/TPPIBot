@@ -22,7 +22,7 @@ public class CustomCommand extends Command
     }
 
     @Override
-    public void onCommand(PircBotX bot, User user, List<String> lines, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         lines.add(IRCUtils.getMessageForUser(user, message, args));
     }

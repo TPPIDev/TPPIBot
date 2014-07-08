@@ -8,12 +8,11 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
-import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
-public class EditCommand extends Command implements IChannelCommand
+public class EditCommand extends Command
 {
     public EditCommand()
     {
@@ -56,7 +55,7 @@ public class EditCommand extends Command implements IChannelCommand
     }
     
     @Override
-    public boolean canChannelBeNull()
+    public boolean executeWithoutChannel()
     {
         return false;
     }

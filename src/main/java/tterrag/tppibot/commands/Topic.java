@@ -6,9 +6,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
-import tterrag.tppibot.interfaces.IChannelCommand;
-
-public class Topic extends Command implements IChannelCommand
+public class Topic extends Command
 {
     private long delayTime;
 
@@ -39,7 +37,7 @@ public class Topic extends Command implements IChannelCommand
     }
 
     @Override
-    public boolean canChannelBeNull()
+    public boolean executeWithoutChannel()
     {
         return false;
     }

@@ -7,10 +7,9 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 import tterrag.tppibot.Main;
-import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.util.IRCUtils;
 
-public class Forgive extends Command implements IChannelCommand
+public class Forgive extends Command
 {
     private enum Type 
     {
@@ -110,7 +109,7 @@ public class Forgive extends Command implements IChannelCommand
     }
     
     @Override
-    public boolean canChannelBeNull()
+    public boolean executeWithoutChannel()
     {
         return false;
     }

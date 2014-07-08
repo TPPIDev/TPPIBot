@@ -11,7 +11,6 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.commands.Mode;
-import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
 import tterrag.tppibot.interfaces.IReaction;
@@ -29,7 +28,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
 
     public int delayTime = 10000;
     private long lastFire = 0;
-    
+
     @Override
     public void onMessage(MessageEvent<PircBotX> event) throws Exception
     {
@@ -59,14 +58,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                         List<String> toSend = new ArrayList<String>();
                         if (IRCUtils.userMatchesPerms(channel, sender, c.getPermLevel()))
                         {
-                            if (c instanceof IChannelCommand)
-                            {
-                                ((IChannelCommand) c).onCommand(event.getBot(), event.getUser(), event.getChannel(), toSend, ArrayUtils.remove(args, 0));
-                            }
-                            else
-                            {
-                                c.onCommand(event.getBot(), event.getUser(), toSend, ArrayUtils.remove(args, 0));
-                            }
+                            c.onCommand(event.getBot(), event.getUser(), event.getChannel(), toSend, ArrayUtils.remove(args, 0));
                         }
                         else
                         {
@@ -105,7 +97,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
         }
     }
 
-    private void sendNotice(org.pircbotx.hooks.events.MessageEvent<PircBotX> event, String message)
+    private void sendNotice(MessageEvent<PircBotX> event, String message)
     {
         event.getUser().send().notice(message);
     }

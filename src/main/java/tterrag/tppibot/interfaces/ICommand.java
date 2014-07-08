@@ -66,7 +66,7 @@ public interface ICommand
      * @param args - any args after the command (split by space)
      * @return whether the command processing was successful
      */
-    public void onCommand(PircBotX bot, User user, List<String> lines, String... args);
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args);
 
     /**
      * Edits the command
@@ -86,4 +86,9 @@ public interface ICommand
      * Does something without a channel or user reference, used via the command line
      */
     boolean handleConsoleCommand(String... args);
+    
+    /**
+     * Can this command be called without a channel reference (i.e. in PM)
+     */
+    public boolean executeWithoutChannel();
 }

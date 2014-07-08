@@ -6,13 +6,12 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
-import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
-public class Commands extends Command implements IChannelCommand
+public class Commands extends Command
 {
     public Commands()
     {
@@ -23,10 +22,11 @@ public class Commands extends Command implements IChannelCommand
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         String s = "";
-        PermLevel perms = PermRegistry.instance().getPermLevelForUser(channel, user);
+        
+        PermLevel perms = channel == null ? PermLevel.OP : PermRegistry.instance().getPermLevelForUser(channel, user);
         for (ICommand c : CommandRegistry.getCommands())
         {
-            if (IRCUtils.userMatchesPerms(channel, user, perms, c.getPermLevel()))
+            if (IRCUtils.isPermLevelAboveOrEqualTo(perms, c.getPermLevel()))
             {
                 s += c.getIdent() + ", ";
             }
@@ -39,11 +39,5 @@ public class Commands extends Command implements IChannelCommand
     public String getDesc()
     {
         return "Shows all possible commands for you, perm level sensitive.";
-    }
-    
-    @Override
-    public boolean canChannelBeNull()
-    {        
-        return false;
     }
 }

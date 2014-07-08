@@ -6,10 +6,9 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
-import tterrag.tppibot.interfaces.IChannelCommand;
 import tterrag.tppibot.reactions.CharacterSpam;
 
-public class ToggleSpamFilters extends Command implements IChannelCommand
+public class ToggleSpamFilters extends Command
 {
     public ToggleSpamFilters()
     {
@@ -30,7 +29,7 @@ public class ToggleSpamFilters extends Command implements IChannelCommand
     }
 
     @Override
-    public boolean canChannelBeNull()
+    public boolean executeWithoutChannel()
     {
         return false;
     }

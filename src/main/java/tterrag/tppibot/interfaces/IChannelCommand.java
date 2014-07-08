@@ -10,5 +10,4 @@ public interface IChannelCommand extends ICommand
 {
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args);
     
-    public boolean canChannelBeNull();
 }

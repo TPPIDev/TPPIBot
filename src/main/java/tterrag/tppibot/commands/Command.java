@@ -104,7 +104,7 @@ public abstract class Command implements ICommand
      * @return whether the command processing was successful
      */
     @Override
-    public void onCommand(PircBotX bot, User user, List<String> lines, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         throw new UnsupportedOperationException(this instanceof IChannelCommand ? "Please use the alternate onCommand method from IChannelOnlyCommand." : "Please implement this method.");
     }
@@ -130,5 +130,11 @@ public abstract class Command implements ICommand
     public String getDesc()
     {
         return "";
+    }
+    
+    @Override
+    public boolean executeWithoutChannel()
+    {   
+        return true;
     }
 }

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
@@ -41,7 +42,7 @@ public class AddCommand extends Command
     }
 
     @Override
-    public void onCommand(PircBotX bot, User user, List<String> lines, String... args)
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         if (args.length < 2)
         {
@@ -58,7 +59,7 @@ public class AddCommand extends Command
         if (commandAlreadyRegistered(cmdName))
         {
             lines.add(cmdName + " is already registered!");
-            return ;
+            return;
         }
 
         CustomCommand command = new CustomCommand(cmdName, PermLevel.DEFAULT, toAdd);
