@@ -31,7 +31,7 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
 
         for (ICommand c : CommandRegistry.getCommands())
         {
-            if (c.getIdent().equals(args[0]))
+            if (c.getIdent().equals(args[0].startsWith(MessageListener.controlChar) ? args[0].substring(MessageListener.controlChar.length()) : args[0]))
             {
                 if (c.executeWithoutChannel())
                 {
