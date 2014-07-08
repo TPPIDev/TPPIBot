@@ -29,7 +29,7 @@ public class EditPerms extends Command
         String nick = args[0];
         User toChange = IRCUtils.getUserByNick(channel, nick);
         
-        if (user == null)
+        if (toChange == null)
         {
             lines.add("\"" + nick + "\" is not a valid user in this channel!");
             return;
@@ -54,7 +54,7 @@ public class EditPerms extends Command
             return;
         }
         
-        PermRegistry.instance().registerUser(channel, user, level);
+        PermRegistry.instance().registerUser(channel, toChange, level);
         lines.add("Successfully set " + nick + " to the " + level.toString() + " level.");
         lines.add(toChange.getNick() + ", " + (level == PermLevel.CONTROLLER ? "you are now a controller for TPPIBot!" : "you are now of the level " + level.toString() + " in channel " + channel.getName() + "!"));
     }
