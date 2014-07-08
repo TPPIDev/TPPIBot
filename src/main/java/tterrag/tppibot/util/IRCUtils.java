@@ -76,7 +76,7 @@ public class IRCUtils
         if (userLevel == null)
             userLevel = PermLevel.DEFAULT;
         if (toCheck == null)
-            userLevel = PermLevel.DEFAULT;
+            toCheck = PermLevel.DEFAULT;
 
         return userLevel.ordinal() >= toCheck.ordinal();
     }
