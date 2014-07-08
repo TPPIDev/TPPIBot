@@ -178,7 +178,7 @@ public class CharacterSpam implements IReaction
                         + (5 * (strikeCount - 2)) + " minutes. Reason: " + reason.getText());
                 
                 List<String> toQueue = new ArrayList<String>();
-                quiet.onCommand(event.getBot(), event.getUser(), event.getChannel(), toQueue,"" + (5 * (strikeCount - 2)));
+                quiet.onCommand(event.getBot(), event.getUser(), event.getChannel(), toQueue,event.getUser().getNick(),"" + (5 * (strikeCount - 2)));
                 for (String s : toQueue)
                 {
                     MessageSender.INSTANCE.enqueue(event.getBot(), event.getChannel().getName(), s);
