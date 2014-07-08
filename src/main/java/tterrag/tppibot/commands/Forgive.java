@@ -63,15 +63,6 @@ public class Forgive extends Command
             removeTimeouts(toChange, amnt, lines);
             break;
         }
-        
-        if (toChange != null)
-        {
-            lines.add("Set the amount of strikes on " + args[0] + " to " + Main.spamFilter.removeStrikes(toChange, amnt));
-        }
-        else
-        {
-            lines.add("No such user " + args[0] + " in this channel!");
-        }
     }
     
     private boolean removeStrikes(User user, int amnt, List<String> lines)
