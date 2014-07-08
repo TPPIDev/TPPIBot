@@ -23,7 +23,7 @@ public class Commands extends Command
     {
         String s = "";
         
-        PermLevel perms = channel == null ? PermLevel.OP : PermRegistry.instance().getPermLevelForUser(channel, user);
+        PermLevel perms = channel == null ? PermLevel.DEFAULT : PermRegistry.instance().getPermLevelForUser(channel, user);
         for (ICommand c : CommandRegistry.getCommands())
         {
             if (IRCUtils.isPermLevelAboveOrEqualTo(perms, c.getPermLevel()))

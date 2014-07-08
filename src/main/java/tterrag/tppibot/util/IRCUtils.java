@@ -1,5 +1,7 @@
 package tterrag.tppibot.util;
 
+import static tterrag.tppibot.interfaces.ICommand.PermLevel.DEFAULT;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -10,9 +12,6 @@ import org.pircbotx.hooks.events.WhoisEvent;
 
 import tterrag.tppibot.Main;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
-
-import static tterrag.tppibot.interfaces.ICommand.PermLevel.*;
-
 import tterrag.tppibot.registry.PermRegistry;
 
 public class IRCUtils
@@ -74,6 +73,11 @@ public class IRCUtils
 
     public static boolean isPermLevelAboveOrEqualTo(PermLevel userLevel, PermLevel toCheck)
     {
+        if (userLevel == null)
+            userLevel = PermLevel.DEFAULT;
+        if (toCheck == null)
+            userLevel = PermLevel.DEFAULT;
+
         return userLevel.ordinal() >= toCheck.ordinal();
     }
 
