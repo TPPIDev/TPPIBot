@@ -45,7 +45,7 @@ public class Forgive extends Command
         int amnt = 0;
         try
         {
-            amnt = Integer.parseInt(args[1]);
+            amnt = Integer.parseInt(args[2]);
         }
         catch (NumberFormatException e)
         {
