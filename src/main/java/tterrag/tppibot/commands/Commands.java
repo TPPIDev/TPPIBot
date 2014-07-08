@@ -17,13 +17,13 @@ public class Commands extends Command
     {
         super("commands", PermLevel.DEFAULT);
     }
-    
+
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         String s = "";
-        
-        PermLevel perms = channel == null ? PermLevel.DEFAULT : PermRegistry.instance().getPermLevelForUser(channel, user);
+
+        PermLevel perms = getPerm(channel, user);
         for (ICommand c : CommandRegistry.getCommands())
         {
             if (IRCUtils.isPermLevelAboveOrEqualTo(perms, c.getPermLevel()))
@@ -34,10 +34,22 @@ public class Commands extends Command
         s = s.substring(0, s.length() - 2);
         lines.add("Commands: " + s);
     }
-    
+
     @Override
     public String getDesc()
     {
         return "Shows all possible commands for you, perm level sensitive.";
+    }
+
+    private PermLevel getPerm(Channel chan, User user)
+    {
+        if (chan == null)
+        {
+            return PermRegistry.instance().isController(user) ? PermLevel.CONTROLLER : PermLevel.DEFAULT;
+        }
+        else
+        {
+            return PermRegistry.instance().getPermLevelForUser(chan, user);
+        }
     }
 }
