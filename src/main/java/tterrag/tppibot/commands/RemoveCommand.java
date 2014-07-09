@@ -26,8 +26,10 @@ public class RemoveCommand extends Command
 
         for (String s : args)
         {
-            CommandRegistry.unregisterCommand(s);
-            lines.add("Successfully removed command: \"" + s + "\"");
+            if (CommandRegistry.unregisterCommand(s))
+            {
+                lines.add("Successfully removed command: \"" + s + "\"");
+            }
         }
     }
 

@@ -40,7 +40,7 @@ public class CommandRegistry
         return null;
     }
 
-    public static void unregisterCommand(String s)
+    public static boolean unregisterCommand(String s)
     {
         for (int i = 0; i < commands.size(); i++)
         {
@@ -49,7 +49,9 @@ public class CommandRegistry
             {
                 commands.remove(c);
                 AddCommand.commandsAdded.remove(c);
+                return true;
             }
         }
+        return false;
     }
 }

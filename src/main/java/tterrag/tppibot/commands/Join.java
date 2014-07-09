@@ -6,6 +6,8 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
+import tterrag.tppibot.util.IRCUtils;
+
 public class Join extends Command
 {
     public Join()
@@ -20,7 +22,7 @@ public class Join extends Command
         {
             for (String s : args)
             {
-                bot.sendIRC().joinChannel(s.startsWith("#") ? s : "#" + s);
+                bot.sendIRC().joinChannel(IRCUtils.fmtChan(s));
             }
         }
         else

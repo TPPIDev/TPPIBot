@@ -83,6 +83,11 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                             }
                         }
                     }
+                    
+                    if (i < commands.size() && commands.get(i) != c)
+                    {
+                        i--;
+                    }
                 }
             }
             else

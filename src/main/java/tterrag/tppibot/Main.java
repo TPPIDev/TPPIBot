@@ -40,6 +40,7 @@ import tterrag.tppibot.runnables.ConsoleCommands;
 import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.runnables.ReminderProcess;
 import tterrag.tppibot.runnables.TimeoutChecker;
+import tterrag.tppibot.util.IRCUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -107,7 +108,7 @@ public class Main
 
         for (String s : args)
         {
-            builder.addAutoJoinChannel(s.startsWith("#") ? s : "#" + s);
+            builder.addAutoJoinChannel(IRCUtils.fmtChan(s));
         }
 
         builder.getListenerManager().addListener(MessageListener.instance);

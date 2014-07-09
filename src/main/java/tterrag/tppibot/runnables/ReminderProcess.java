@@ -13,6 +13,7 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
+import tterrag.tppibot.util.IRCUtils;
 import tterrag.tppibot.util.Logging;
 
 import com.google.gson.Gson;
@@ -124,16 +125,14 @@ public class ReminderProcess implements Runnable
 
     public boolean isRemindEnabledFor(String channel)
     {
-        if (!channel.startsWith("#"))
-            channel = "#" + channel;
+        channel = IRCUtils.fmtChan(channel);
 
         return channel == null ? false : reminderMap.get(channel.toLowerCase());
     }
 
     public boolean isInReminderMap(String channel)
     {
-        if (!channel.startsWith("#"))
-            channel = "#" + channel;
+        channel = IRCUtils.fmtChan(channel);
 
         return reminderMap.containsKey(channel.toLowerCase());
     }

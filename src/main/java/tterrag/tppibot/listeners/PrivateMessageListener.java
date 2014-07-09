@@ -22,22 +22,21 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
     public void onPrivateMessage(PrivateMessageEvent<PircBotX> event) throws Exception
     {
         String[] args = event.getMessage().split(" ");
-        if (args.length <= 0)
-        {
-            return;
-        }
+        if (args.length <= 0) { return; }
 
         List<String> lines = new ArrayList<String>();
-
-        for (ICommand c : CommandRegistry.getCommands())
+        List<ICommand> commands = CommandRegistry.getCommands();
+        
+        for (int i = 0; i < commands.size(); i++)
         {
+            ICommand c = commands.get(i);
             if (c.getIdent().equals(args[0].startsWith(MessageListener.controlChar) ? args[0].substring(MessageListener.controlChar.length()) : args[0]))
             {
                 if (c.executeWithoutChannel())
                 {
                     if (c.getPermLevel().equals(PermLevel.DEFAULT) || PermRegistry.instance().isController(event.getUser()))
                     {
-                    c.onCommand(event.getBot(), event.getUser(), null, lines, ArrayUtils.remove(args, 0));
+                        c.onCommand(event.getBot(), event.getUser(), null, lines, ArrayUtils.remove(args, 0));
                     }
                     else
                     {
@@ -67,9 +66,14 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
                         lines.add("This command must be sent to a specific channel, please specify this as the first arg.");
                     }
                 }
+                
+                if (i < commands.size() && commands.get(i) != c)
+                {
+                    i--;
+                }
             }
         }
-        
+
         for (String s : lines)
         {
             MessageSender.INSTANCE.enqueue(event.getBot(), event.getUser().getNick(), s);

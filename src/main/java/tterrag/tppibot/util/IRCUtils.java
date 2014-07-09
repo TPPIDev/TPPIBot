@@ -141,4 +141,9 @@ public class IRCUtils
 
         return user;
     }
+    
+    public static String fmtChan(String chan)
+    {
+        return chan.startsWith("#") ? chan : "#" + chan;
+    }
 }

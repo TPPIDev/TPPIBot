@@ -15,7 +15,7 @@ import tterrag.tppibot.util.IRCUtils;
 
 public class Help extends Command
 {
-    private String helpText = "%user%, try " + MessageListener.controlChar + "help <command name>";
+    private String helpText = "%user%, try " + MessageListener.controlChar + "help <command name>. To see all commands, use " + MessageListener.controlChar + "commands";
 
     public Help()
     {
