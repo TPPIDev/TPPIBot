@@ -78,8 +78,6 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                             case PM:
                                 MessageSender.INSTANCE.enqueue(event.getBot(), event.getUser().getNick(), s);
                                 break;
-                            default:
-                                break;
                             }
                         }
                     }

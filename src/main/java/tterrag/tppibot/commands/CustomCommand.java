@@ -9,6 +9,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 import tterrag.tppibot.registry.PermRegistry;
+import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 
 public class CustomCommand extends Command
@@ -24,7 +25,7 @@ public class CustomCommand extends Command
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        lines.add(IRCUtils.getMessageForUser(user, message, args));
+        MessageSender.INSTANCE.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageForUser(user, message, args));
     }
 
     @Override
