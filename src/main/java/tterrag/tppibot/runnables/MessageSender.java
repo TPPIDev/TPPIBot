@@ -11,7 +11,7 @@ import tterrag.tppibot.util.ThreadUtils;
 
 public class MessageSender implements Runnable
 {
-    public static final MessageSender INSTANCE = new MessageSender();
+    public static final MessageSender instance = new MessageSender();
     
     public final Queue<Message> toSend = new LinkedList<Message>();
     

@@ -21,7 +21,7 @@ public class Timeout extends Command
 {
     public class TimeoutTime
     {
-        public final long init;
+        private long init;
         private long time;
 
         public final String channel;
@@ -48,6 +48,11 @@ public class Timeout extends Command
         public long getTime()
         {
             return time;
+        }
+        
+        public void setStartNow()
+        {
+            this.init = System.currentTimeMillis();
         }
     }
 

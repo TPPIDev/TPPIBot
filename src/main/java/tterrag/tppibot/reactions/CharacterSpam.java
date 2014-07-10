@@ -170,18 +170,18 @@ public class CharacterSpam implements IReaction
 
             if (strikeCount < 3)
             {
-                MessageSender.INSTANCE.enqueue(event.getBot(), event.getChannel().getName(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
+                MessageSender.instance.enqueue(event.getBot(), event.getChannel().getName(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
             }
             else
             {
-                MessageSender.INSTANCE.enqueue(event.getBot(), event.getChannel().getName(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
+                MessageSender.instance.enqueue(event.getBot(), event.getChannel().getName(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
                         + (5 * (strikeCount - 2)) + " minutes. Reason: " + reason.getText());
                 
                 List<String> toQueue = new ArrayList<String>();
                 quiet.onCommand(event.getBot(), event.getUser(), event.getChannel(), toQueue,event.getUser().getNick(),"" + (5 * (strikeCount - 2)));
                 for (String s : toQueue)
                 {
-                    MessageSender.INSTANCE.enqueue(event.getBot(), event.getChannel().getName(), s);
+                    MessageSender.instance.enqueue(event.getBot(), event.getChannel().getName(), s);
                 }
             }
             return true;

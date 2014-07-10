@@ -76,7 +76,7 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
 
         for (String s : lines)
         {
-            MessageSender.INSTANCE.enqueue(event.getBot(), event.getUser().getNick(), s);
+            MessageSender.instance.enqueue(event.getBot(), event.getUser().getNick(), s);
         }
     }
 }

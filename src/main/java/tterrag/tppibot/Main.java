@@ -135,7 +135,7 @@ public class Main
         Thread consoleThread = new Thread(new ConsoleCommands());
         consoleThread.start();
         
-        Thread messageSenderThread = new Thread(MessageSender.INSTANCE);
+        Thread messageSenderThread = new Thread(MessageSender.instance);
         messageSenderThread.start();
         
         log("Threads created...");

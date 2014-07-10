@@ -25,7 +25,7 @@ public class CustomCommand extends Command
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        MessageSender.INSTANCE.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageForUser(user, message, args));
+        MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageForUser(user, message, args));
     }
 
     @Override

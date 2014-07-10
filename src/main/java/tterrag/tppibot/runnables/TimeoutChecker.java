@@ -59,7 +59,7 @@ public class TimeoutChecker implements Runnable
                                 else
                                 {
                                     Main.bot.sendRaw().rawLine("MODE " + time.channel + " -q " + user.getHostmask());
-                                    user.send().notice("You are no longer timed out. Be warned, repeat offenses could result in a ban.");
+                                    IRCUtils.modeSensitiveEnqueue(Main.bot, user, channel, user.getNick() + ", you are no longer timed out. Be warned, repeat offenses could result in a ban.");
                                     this.instance.list.remove(i);
                                 }
                             }
@@ -76,7 +76,7 @@ public class TimeoutChecker implements Runnable
                             }
                             finally
                             {
-                                time.addTime((int) (System.currentTimeMillis() - time.getTime() + retry));
+                                time.setStartNow();
                             }
                         }
                     }

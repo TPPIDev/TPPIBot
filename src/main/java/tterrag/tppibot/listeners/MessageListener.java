@@ -10,14 +10,12 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import tterrag.tppibot.commands.Mode;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
 import tterrag.tppibot.interfaces.IReaction;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.registry.ReactionRegistry;
-import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 
 public class MessageListener extends ListenerAdapter<PircBotX>
@@ -62,23 +60,12 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                         }
                         else
                         {
-                            this.sendNotice(event, "You have no permission, you must be at least: " + c.getPermLevel().toString());
+                            toSend.add("You have no permission, you must be at least: " + c.getPermLevel().toString());
                         }
 
                         for (String s : toSend)
                         {
-                            switch (Mode.getMode(event.getChannel().getName()))
-                            {
-                            case MESSAGE:
-                                MessageSender.INSTANCE.enqueue(event.getBot(), event.getChannel().getName(), s);
-                                break;
-                            case NOTICE:
-                                MessageSender.INSTANCE.enqueueNotice(event.getBot(), event.getUser().getNick(), s);
-                                break;
-                            case PM:
-                                MessageSender.INSTANCE.enqueue(event.getBot(), event.getUser().getNick(), s);
-                                break;
-                            }
+                            IRCUtils.modeSensitiveEnqueue(event.getBot(), event.getUser(), event.getChannel(), s);
                         }
                     }
                     
@@ -98,11 +85,6 @@ public class MessageListener extends ListenerAdapter<PircBotX>
         {
             r.onMessage(event);
         }
-    }
-
-    private void sendNotice(MessageEvent<PircBotX> event, String message)
-    {
-        event.getUser().send().notice(message);
     }
 
     private String pruneMessage(String message)

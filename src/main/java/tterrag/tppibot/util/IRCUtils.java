@@ -11,8 +11,11 @@ import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
 
 import tterrag.tppibot.Main;
+import tterrag.tppibot.commands.Mode;
+import tterrag.tppibot.commands.Mode.BotMode;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
 import tterrag.tppibot.registry.PermRegistry;
+import tterrag.tppibot.runnables.MessageSender;
 
 public class IRCUtils
 {
@@ -145,5 +148,22 @@ public class IRCUtils
     public static String fmtChan(String chan)
     {
         return chan.startsWith("#") ? chan : "#" + chan;
+    }
+    
+    public static void modeSensitiveEnqueue(PircBotX bot, User user, Channel channel, String message)
+    {
+        BotMode mode = Mode.getMode(channel.getName());
+        switch(mode)
+        {
+        case MESSAGE:
+            MessageSender.instance.enqueue(bot, channel.getName(), message);
+            break;
+        case NOTICE:
+            MessageSender.instance.enqueueNotice(bot, channel.getName(), message);
+            break;
+        case PM:
+            MessageSender.instance.enqueue(bot, user.getNick(), message);
+            break;
+        }
     }
 }
