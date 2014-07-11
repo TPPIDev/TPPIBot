@@ -74,6 +74,10 @@ public class IRCUtils
         return isPermLevelAboveOrEqualTo(PermRegistry.instance().getPermLevelForUser(chan, user), perm);
     }
 
+    /**
+     * Performs a simple ordinal check on the perm levels, but also checks for null and converts to {@link PermLevel.DEFAULT}
+     * @return <code>true</code> if <code>userLevel</code> is above or equal to <code>toCheck</code>
+     */
     public static boolean isPermLevelAboveOrEqualTo(PermLevel userLevel, PermLevel toCheck)
     {
         if (userLevel == null)
@@ -89,6 +93,7 @@ public class IRCUtils
         return message.replace("%user%", args.length >= 1 ? args[0] : user.getNick());
     }
 
+    @Deprecated
     public static void sendNoticeForUser(Channel channel, User user, String message, String... args)
     {
         if (args.length > 0)
