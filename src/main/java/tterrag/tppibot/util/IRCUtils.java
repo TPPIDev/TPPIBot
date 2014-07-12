@@ -164,7 +164,7 @@ public class IRCUtils
             MessageSender.instance.enqueue(bot, channel.getName(), message);
             break;
         case NOTICE:
-            MessageSender.instance.enqueueNotice(bot, channel.getName(), message);
+            MessageSender.instance.enqueueNotice(bot, user.getNick(), message);
             break;
         case PM:
             MessageSender.instance.enqueue(bot, user.getNick(), message);
