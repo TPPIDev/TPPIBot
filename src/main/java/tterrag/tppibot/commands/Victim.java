@@ -9,6 +9,7 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
+import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 
 public class Victim extends Command
@@ -38,7 +39,7 @@ public class Victim extends Command
         {
             if (System.currentTimeMillis() - lastUsed > 10000)
             {
-                lines.add(IRCUtils.getMessageForUser(user, "%user% has fallen victim to the slash bug! That's " + (++n) + " so far!", args));
+                MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageForUser(user, "%user% has fallen victim to the slash bug! That's " + (++n) + " so far!", args));
                 lastUsed = System.currentTimeMillis();
             }
         }
