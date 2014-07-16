@@ -6,6 +6,8 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
+import tterrag.tppibot.runnables.MessageSender;
+
 public class Topic extends Command
 {
     public Topic()
@@ -16,7 +18,7 @@ public class Topic extends Command
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        lines.add(channel.getTopic());
+        MessageSender.instance.enqueue(bot, channel.getName(), channel.getTopic());
     }
 
     @Override
