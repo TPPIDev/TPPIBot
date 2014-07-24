@@ -33,6 +33,7 @@ import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.listeners.PrivateMessageListener;
 import tterrag.tppibot.reactions.CharacterSpam;
+import tterrag.tppibot.reactions.FloodSpam;
 import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.registry.ReactionRegistry;
@@ -51,6 +52,7 @@ public class Main
     public static TimeoutChecker timeouts;
 
     public static CharacterSpam spamFilter;
+    public static FloodSpam floodFilter;
     
     public static PircBotX bot;
     
@@ -92,6 +94,8 @@ public class Main
         log("Creating reactions...");
         spamFilter = new CharacterSpam();
         ReactionRegistry.registerReaction(spamFilter);
+        floodFilter = new FloodSpam();
+        ReactionRegistry.registerReaction(floodFilter);
         log("Reactions created.");
 
         log("Configuring bot...");

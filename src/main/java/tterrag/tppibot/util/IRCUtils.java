@@ -2,6 +2,9 @@ package tterrag.tppibot.util;
 
 import static tterrag.tppibot.interfaces.ICommand.PermLevel.DEFAULT;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -11,9 +14,11 @@ import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
 
 import tterrag.tppibot.Main;
+import tterrag.tppibot.commands.Command;
 import tterrag.tppibot.commands.Mode;
 import tterrag.tppibot.commands.Mode.BotMode;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
+import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.runnables.MessageSender;
 
@@ -169,6 +174,17 @@ public class IRCUtils
         case PM:
             MessageSender.instance.enqueue(bot, user.getNick(), message);
             break;
+        }
+    }
+    
+    public static void timeout(PircBotX bot, User user, Channel channel, String amount)
+    {
+        Command quiet = (Command) CommandRegistry.getCommand("timeout");
+        List<String> toQueue = new ArrayList<String>();
+        quiet.onCommand(bot, user, channel, toQueue, user.getNick(),"" + amount);
+        for (String s : toQueue)
+        {
+            IRCUtils.modeSensitiveEnqueue(bot, user, channel, s);
         }
     }
 }

@@ -4,24 +4,23 @@ import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.CAPS;
 import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.REPEATS;
 import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.SYMBOLS;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.Main;
 import tterrag.tppibot.annotations.Subscribe;
-import tterrag.tppibot.commands.Command;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
 import tterrag.tppibot.interfaces.IReaction;
-import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 import tterrag.tppibot.util.Logging;
@@ -33,7 +32,10 @@ public class CharacterSpam implements IReaction
 {
     public enum SpamReasons
     {
-        REPEATS("You had too many repeated characters."), SYMBOLS("You had too many non-alphabetic symbols."), CAPS("Too much caps!");
+        REPEATS("You had too many repeated characters."), 
+        SYMBOLS("You had too many non-alphabetic symbols."), 
+        CAPS("Too much caps!"), 
+        FLOOD("Too many messages!");
 
         private String text;
 
@@ -115,7 +117,7 @@ public class CharacterSpam implements IReaction
             if (repeated.get(c) > msg.length() / 2)
             {
                 Logging.log("too many repeated characters!");
-                finish(timeout(event, 5, REPEATS) ? event.getUser() : null);
+                finish(timeout(event, REPEATS) ? event.getUser() : null);
                 return;
             }
         }
@@ -123,21 +125,21 @@ public class CharacterSpam implements IReaction
         if (symbolCount > msg.length() / 2)
         {
             Logging.log("too many symbols!");
-            finish(timeout(event, 5, SYMBOLS) ? event.getUser() : null);
+            finish(timeout(event, SYMBOLS) ? event.getUser() : null);
             return;
         }
         
         if (caps > (double) msg.length() / 1.75d)
         {
             Logging.log("caps!");
-            finish(timeout(event, 5, CAPS) ? event.getUser() : null);
+            finish(timeout(event, CAPS) ? event.getUser() : null);
             return;
         }
 
         finish(null);
     }
 
-    private void finish(User user)
+    public void finish(User user)
     {
         repeated.clear();
 
@@ -156,33 +158,30 @@ public class CharacterSpam implements IReaction
         }
     }
 
-    private boolean timeout(MessageEvent<?> event, int i, SpamReasons reason)
+    private boolean timeout(MessageEvent<?> event, SpamReasons reason)
     {
-        if (IRCUtils.userIsOp(event.getChannel(), event.getBot().getUserBot()) && !IRCUtils.isUserAboveOrEqualTo(event.getChannel(), PermLevel.TRUSTED, event.getUser()))
+        return timeout(event.getBot(), event.getUser(), event.getChannel(), reason);
+    }
+    
+    public boolean timeout(PircBotX bot, User user, Channel channel, SpamReasons reason)
+    {
+        if (IRCUtils.userIsOp(channel, bot.getUserBot()) && !IRCUtils.isUserAboveOrEqualTo(channel, PermLevel.TRUSTED, user))
         {
-            Command quiet = (Command) CommandRegistry.getCommand("timeout");
-
             int strikeCount = 0;
-            if (strikes.containsKey(event.getUser().getHostmask()))
+            if (strikes.containsKey(user.getHostmask()))
             {
-                strikeCount = strikes.get(event.getUser().getHostmask());
+                strikeCount = strikes.get(user.getHostmask());
             }
 
             if (strikeCount < 3)
             {
-                MessageSender.instance.enqueue(event.getBot(), event.getChannel().getName(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
+                MessageSender.instance.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
             }
             else
             {
-                MessageSender.instance.enqueue(event.getBot(), event.getChannel().getName(), event.getUser().getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
+                MessageSender.instance.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
                         + (5 * (strikeCount - 2)) + " minutes. Reason: " + reason.getText());
-                
-                List<String> toQueue = new ArrayList<String>();
-                quiet.onCommand(event.getBot(), event.getUser(), event.getChannel(), toQueue,event.getUser().getNick(),"" + (5 * (strikeCount - 2)));
-                for (String s : toQueue)
-                {
-                    MessageSender.instance.enqueue(event.getBot(), event.getChannel().getName(), s);
-                }
+                IRCUtils.timeout(bot, user, channel, "" + 5 * (strikeCount - 2));
             }
             return true;
         }
@@ -208,6 +207,11 @@ public class CharacterSpam implements IReaction
                 return true;
             }
         }
+    }
+    
+    public int getStrikes(User user)
+    {
+        return strikes.get(user.getHostmask());
     }
     
     public int setStrikes(User user, int amnt)
