@@ -95,7 +95,7 @@ public class FloodSpam implements IReaction
             }
         }
     };
-    
+
     public FloodSpam()
     {
         Thread thread = new Thread(ticker);
@@ -107,25 +107,29 @@ public class FloodSpam implements IReaction
     {
         boolean found = false;
         Iterator<MessageCount> iter = counts.iterator();
-        while (iter.hasNext())
-        {
-            MessageCount count = iter.next();
-            if (count.equals(event))
-            {
-                count.msg();
-                found = true;
-                if (count.breakinDaLaw())
-                {
-                    timeout(count);
-                    iter.remove();
-                }
-                break;
-            }
-        }
 
-        if (!found)
+        if (Main.spamFilter.filtersEnabled(event.getChannel().getName()))
         {
-            counts.add(new MessageCount(event.getUser(), event.getChannel()));
+            while (iter.hasNext())
+            {
+                MessageCount count = iter.next();
+                if (count.equals(event))
+                {
+                    count.msg();
+                    found = true;
+                    if (count.breakinDaLaw())
+                    {
+                        timeout(count);
+                        iter.remove();
+                    }
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                counts.add(new MessageCount(event.getUser(), event.getChannel()));
+            }
         }
     }
 

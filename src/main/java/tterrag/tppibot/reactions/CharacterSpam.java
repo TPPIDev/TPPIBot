@@ -209,6 +209,15 @@ public class CharacterSpam implements IReaction
         }
     }
     
+    public boolean filtersEnabled(String channelname)
+    {
+        synchronized (blacklistChannels)
+        {
+            channelname = channelname.toLowerCase();
+            return !blacklistChannels.contains(channelname);
+        }
+    }
+    
     public int getStrikes(User user)
     {
         return strikes.get(user.getHostmask());
