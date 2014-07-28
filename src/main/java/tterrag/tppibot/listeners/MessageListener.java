@@ -39,9 +39,8 @@ public class MessageListener extends ListenerAdapter<PircBotX>
         {
             PermLevel perm = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
 
-            if (IRCUtils.isPermLevelAboveOrEqualTo(perm, PermLevel.TRUSTED) || lastFire + delayTime < System.currentTimeMillis())
+            if (lastFire + delayTime < System.currentTimeMillis() || IRCUtils.isPermLevelAboveOrEqualTo(perm, PermLevel.TRUSTED))
             {
-                lastFire = System.currentTimeMillis();
                 message = pruneMessage(message);
                 String[] args = message.split(" ");
 
@@ -53,6 +52,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                     ICommand c = commands.get(i);
                     if (c.getIdent().equalsIgnoreCase(args[0]) && (IRCUtils.userIsOp(event.getChannel(), event.getBot().getUserBot()) || !c.needsOp()))
                     {
+                        lastFire = System.currentTimeMillis();
                         List<String> toSend = new ArrayList<String>();
                         if (IRCUtils.userMatchesPerms(channel, sender, c.getPermLevel()))
                         {
