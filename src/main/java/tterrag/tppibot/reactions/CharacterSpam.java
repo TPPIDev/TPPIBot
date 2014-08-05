@@ -129,12 +129,13 @@ public class CharacterSpam implements IReaction
             return;
         }
         
-        if (caps > (double) msg.length() / 1.75d)
-        {
-            Logging.log("caps!");
-            finish(timeout(event, CAPS) ? event.getUser() : null);
-            return;
-        }
+// No caps for now
+//        if (caps > (double) msg.length() / 1.75d)
+//        {
+//            Logging.log("caps!");
+//            finish(timeout(event, CAPS) ? event.getUser() : null);
+//            return;
+//        }
 
         finish(null);
     }

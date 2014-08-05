@@ -54,4 +54,5 @@ dependencies {
     compile 'org.slf4j:log4j-over-slf4j:1.7.7'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.google.guava:guava:17.0'
+    compile 'org.jsoup:jsoup:1.7.3'
 }
