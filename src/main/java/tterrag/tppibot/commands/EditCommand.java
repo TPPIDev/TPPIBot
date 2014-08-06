@@ -1,6 +1,5 @@
 package tterrag.tppibot.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -42,7 +41,7 @@ public class EditCommand extends Command
                     return;
                 }
                 
-                lines.add("Editing command " + c.getIdent() + " with args " + Arrays.deepToString(args));
+                lines.add("Editing command " + c.getIdent() + "...");
                 c.editCommand(bot, user, channel, lines, args);
             }
         }
