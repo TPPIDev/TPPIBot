@@ -15,6 +15,7 @@ import tterrag.tppibot.commands.Commands;
 import tterrag.tppibot.commands.EditCommand;
 import tterrag.tppibot.commands.EditPerms;
 import tterrag.tppibot.commands.Forgive;
+import tterrag.tppibot.commands.Shortener;
 import tterrag.tppibot.commands.HTML;
 import tterrag.tppibot.commands.Help;
 import tterrag.tppibot.commands.Join;
@@ -89,6 +90,7 @@ public class Main
         new Recover();
         new Mode();
         new HTML();
+        new Shortener();
 
         Timeout timeout = new Timeout();
         log("Commands created.");
