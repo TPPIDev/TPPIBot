@@ -12,6 +12,8 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
+import tterrag.tppibot.runnables.MessageSender;
+
 public class Shortener extends Command
 {
     public Shortener()
@@ -37,7 +39,7 @@ public class Shortener extends Command
             connection.setRequestMethod("POST");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            lines.add("> " + in.readLine());
+            MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), "> " + in.readLine());
         }
         catch (IOException e)
         {
