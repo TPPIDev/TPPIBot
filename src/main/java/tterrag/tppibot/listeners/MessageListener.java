@@ -1,7 +1,9 @@
 package tterrag.tppibot.listeners;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.pircbotx.Channel;
@@ -25,7 +27,8 @@ public class MessageListener extends ListenerAdapter<PircBotX>
     public static final MessageListener instance = new MessageListener();
 
     public int delayTime = 10000;
-    private long lastFire = 0;
+    
+    private Map<String, Long> delayMap = new HashMap<String, Long>();
 
     @Override
     public void onMessage(MessageEvent<PircBotX> event) throws Exception
@@ -35,6 +38,12 @@ public class MessageListener extends ListenerAdapter<PircBotX>
         Channel channel = event.getChannel();
         List<ICommand> commands = CommandRegistry.getCommands();
 
+        Long lastFire = delayMap.get(event.getChannel().getName());
+        if (lastFire == null)
+        {
+           lastFire = 0L;
+        }
+        
         if (message.startsWith(controlChar))
         {
             PermLevel perm = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
@@ -52,7 +61,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                     ICommand c = commands.get(i);
                     if (c.getIdent().equalsIgnoreCase(args[0]) && (IRCUtils.userIsOp(event.getChannel(), event.getBot().getUserBot()) || !c.needsOp()))
                     {
-                        lastFire = System.currentTimeMillis();
+                        delayMap.put(channel.getName(), System.currentTimeMillis());
                         List<String> toSend = new ArrayList<String>();
                         if (IRCUtils.userMatchesPerms(channel, sender, c.getPermLevel()))
                         {

@@ -7,19 +7,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 
 public class PastebinPaster
 {
-    private final String key;
-    private static final Gson gson = new Gson();
-    
-    public PastebinPaster(String apiKey)
-    {
-        this.key = apiKey;
-    }
-
     public String pasteData(CharSequence data)
     {
         URL url;

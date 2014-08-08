@@ -12,7 +12,7 @@ import tterrag.tppibot.util.PastebinPaster;
 
 public class HTML extends Command
 {
-    private final PastebinPaster poster = new PastebinPaster("844bf8e886fdf2f237ecea1c1b037800");
+    private final PastebinPaster poster = new PastebinPaster();
 
     public HTML()
     {
