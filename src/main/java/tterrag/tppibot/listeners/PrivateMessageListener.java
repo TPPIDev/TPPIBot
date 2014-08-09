@@ -26,13 +26,32 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
 
         List<String> lines = new ArrayList<String>();
         List<ICommand> commands = CommandRegistry.getCommands();
-        
+
         for (int i = 0; i < commands.size(); i++)
         {
             ICommand c = commands.get(i);
             if (c.getIdent().equals(args[0].startsWith(MessageListener.controlChar) ? args[0].substring(MessageListener.controlChar.length()) : args[0]))
             {
-                if (c.executeWithoutChannel())
+                Channel channel = null;
+                boolean invalidChan = false;
+                if (args.length >= 2)
+                {
+                    channel = IRCUtils.getChannelByName(event.getBot(), args[1]);
+                    invalidChan = channel == null;
+                }
+
+                if (channel != null)
+                {
+                    if (IRCUtils.isUserAboveOrEqualTo(channel, c.getPermLevel(), event.getUser()))
+                    {
+                        c.onCommand(event.getBot(), event.getUser(), channel, lines, ArrayUtils.remove(ArrayUtils.remove(args, 0), 0));
+                    }
+                    else
+                    {
+                        lines.add("You are not of the level " + c.getPermLevel() + " in channel " + args[1] + ".");
+                    }
+                }
+                else if (c.executeWithoutChannel())
                 {
                     if (c.getPermLevel().equals(PermLevel.DEFAULT) || PermRegistry.instance().isController(event.getUser()))
                     {
@@ -45,28 +64,16 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
                 }
                 else
                 {
-                    if (args.length >= 2)
+                    if (invalidChan)
                     {
-                        Channel channel = IRCUtils.getChannelByName(event.getBot(), args[1]);
-                        if (channel == null)
-                        {
-                            lines.add("Bot is not connected to channel " + args[1]);
-                        }
-                        else if (IRCUtils.isUserAboveOrEqualTo(channel, c.getPermLevel(), event.getUser()))
-                        {
-                            c.onCommand(event.getBot(), event.getUser(), channel, lines, ArrayUtils.remove(ArrayUtils.remove(args, 0), 0));
-                        }
-                        else
-                        {
-                            lines.add("You are not of the level " + c.getPermLevel() + " in channel " + args[1] + ".");
-                        }
+                        lines.add(args[1] + " is not a valid channel that this bot is connected to.");
                     }
                     else
                     {
                         lines.add("This command must be sent to a specific channel, please specify this as the first arg.");
                     }
                 }
-                
+
                 if (i < commands.size() && commands.get(i) != c)
                 {
                     i--;
