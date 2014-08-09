@@ -36,7 +36,7 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
                 boolean invalidChan = false;
                 if (args.length >= 2)
                 {
-                    channel = IRCUtils.getChannelByName(event.getBot(), args[1]);
+                    channel = IRCUtils.getChannelByName(event.getBot(), IRCUtils.fmtChan(args[1]));
                     invalidChan = channel == null;
                 }
 

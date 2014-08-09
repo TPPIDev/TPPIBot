@@ -3,7 +3,6 @@ package tterrag.tppibot.runnables;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import tterrag.tppibot.Main;
 import tterrag.tppibot.interfaces.ICommand;
@@ -26,15 +25,10 @@ public class ConsoleCommands implements Runnable
 
         while (connected)
         {
-            String cmd = scan.nextLine();
-            String[] args = StringUtils.split(cmd, ' ');
+            try
+            {
+                String cmd = scan.nextLine();
 
-            if (cmd.toLowerCase().startsWith("say") && args.length > 2)
-            {
-                Main.bot.sendIRC().message("#" + args[1], StringUtils.join(ArrayUtils.remove(ArrayUtils.remove(args, 0), 0), ' '));
-            }
-            else
-            {
                 for (ICommand c : CommandRegistry.getCommands())
                 {
                     if (cmd.toLowerCase().startsWith(c.getIdent().toLowerCase()))
@@ -42,11 +36,15 @@ public class ConsoleCommands implements Runnable
                         c.handleConsoleCommand(ArrayUtils.remove(cmd.split(" "), 0));
                     }
                 }
-            }
 
-            connected = Main.bot.isConnected();
+                connected = Main.bot.isConnected();
+            }
+            catch (Throwable t)
+            {
+                t.printStackTrace();
+            }
         }
-        
+
         scan.close();
     }
 }
