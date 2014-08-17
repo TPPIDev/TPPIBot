@@ -28,7 +28,10 @@ public class Commands extends Command
         {
             if (IRCUtils.isPermLevelAboveOrEqualTo(perms, c.getPermLevel()))
             {
-                s += c.getIdent() + ", ";
+                if (!(c instanceof CustomCommand) || ((CustomCommand) c).isFor(channel))
+                {
+                    s += c.getIdent() + ", ";
+                }
             }
         }
         s = s.substring(0, s.length() - 2);

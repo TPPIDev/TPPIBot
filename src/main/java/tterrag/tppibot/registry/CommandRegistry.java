@@ -3,7 +3,10 @@ package tterrag.tppibot.registry;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pircbotx.Channel;
+
 import tterrag.tppibot.commands.AddCommand;
+import tterrag.tppibot.commands.CustomCommand;
 import tterrag.tppibot.interfaces.ICommand;
 
 public class CommandRegistry
@@ -40,16 +43,19 @@ public class CommandRegistry
         return null;
     }
 
-    public static boolean unregisterCommand(String s)
+    public static boolean unregisterCommand(String s, Channel channel)
     {
         for (int i = 0; i < commands.size(); i++)
         {
             ICommand c = commands.get(i);
             if (c.getIdent().equalsIgnoreCase(s))
             {
-                commands.remove(c);
-                AddCommand.commandsAdded.remove(c);
-                return true;
+                if (!(c instanceof CustomCommand) || ((CustomCommand) c).isFor(channel))
+                {
+                    commands.remove(c);
+                    AddCommand.commandsAdded.remove(c);
+                    return true;
+                }
             }
         }
         return false;

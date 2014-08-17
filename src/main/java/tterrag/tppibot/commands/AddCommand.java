@@ -14,6 +14,7 @@ import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
+import tterrag.tppibot.registry.PermRegistry;
 
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -30,7 +31,7 @@ public class AddCommand extends Command
         super("addcmd", PermLevel.TRUSTED);
         config = new Config("customCommands.json");
 
-        commandsAdded = new Gson().fromJson(config.getText(), new TypeToken<Set<CustomCommand>>(){}.getType());
+        commandsAdded = new Gson().fromJson(config.getText(), new TypeToken<Set<CustomCommand>>() {}.getType());
 
         if (commandsAdded == null)
             commandsAdded = Sets.newConcurrentHashSet();
@@ -44,6 +45,17 @@ public class AddCommand extends Command
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
+        boolean global = false;
+        if (args.length > 0)
+        {
+            global = args[0].equalsIgnoreCase("global");
+        }
+
+        if (global)
+        {
+            args = ArrayUtils.remove(args, 0);
+        }
+
         if (args.length < 2)
         {
             lines.add("This requires at least two args, [command name] and [message]!");
@@ -56,21 +68,30 @@ public class AddCommand extends Command
 
         String toAdd = StringUtils.join(args, ' ');
 
-        if (commandAlreadyRegistered(cmdName))
+        CustomCommand command = null;
+
+        if (global && PermRegistry.instance().isController(user))
         {
-            lines.add(cmdName + " is already registered!");
+            command = new CustomCommand(cmdName, PermLevel.DEFAULT, toAdd);
+        }
+        else if (global)
+        {
+            lines.add("You must be a controller to add global commands!");
+            return;
+        }
+        else if (channel != null)
+        {
+            command = new CustomCommand(cmdName, PermLevel.DEFAULT, toAdd, channel.getName());
+        }
+        else
+        {
+            lines.add("You cannot add non-global commands in private message!");
             return;
         }
 
-        CustomCommand command = new CustomCommand(cmdName, PermLevel.DEFAULT, toAdd);
         commandsAdded.add(command);
 
-        lines.add("Registered command " + cmdName);
-    }
-
-    private boolean commandAlreadyRegistered(String cmdName)
-    {
-        return CommandRegistry.getCommand(cmdName) != null;
+        lines.add("Registered " + (global ? "global " : "") + "command " + cmdName);
     }
 
     @Override

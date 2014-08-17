@@ -15,28 +15,39 @@ import tterrag.tppibot.util.IRCUtils;
 public class CustomCommand extends Command
 {
     private String message;
+    private String channel;
 
     public CustomCommand(String ident, PermLevel perms, String message)
     {
+        this(ident, perms, message, null);
+    }
+
+    public CustomCommand(String ident, PermLevel perms, String message, String channel)
+    {
         super(ident, perms);
         this.message = message;
+        this.channel = channel;
     }
 
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageForUser(user, message, args));
+        if ((channel != null && channel.getName().equals(this.channel)) || this.channel == null)
+        {
+            MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageForUser(user, message, args));
+        }
     }
 
     @Override
     public Command editCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         AddCommand.commandsAdded.remove(this);
+        PermLevel level = PermLevel.INVALID;
+        PermLevel userLevel = PermRegistry.instance().getPermLevelForUser(channel, user);
+
         if (args.length > 0 && args[0].startsWith("-permLevel="))
         {
-            PermLevel userLevel = PermRegistry.instance().getPermLevelForUser(channel, user);
             String perm = args[0].substring(11);
-            PermLevel level = PermLevel.INVALID;
             try
             {
                 level = PermLevel.valueOf(perm.toUpperCase());
@@ -55,18 +66,31 @@ public class CustomCommand extends Command
                 lines.add("You do not have the required perm level to do this. You must be at least: " + level.toString() + ".");
             }
         }
-        else
+        else if ((this.channel != null && this.channel.equals(channel.getName())) || (this.channel == null && userLevel == PermLevel.CONTROLLER))
         {
             this.message = StringUtils.join(args, " ");
+        }
+        else if (this.channel == null)
+        {
+            lines.add("You cannot edit global commands.");
+        }
+        else
+        {
+            lines.add("No such command in this channel!");
         }
 
         AddCommand.commandsAdded.add(this);
         return this;
     }
-    
+
     @Override
     public String getDesc()
     {
-        return "A custom command that was added by 'addcmd'. Output text is: \"" + this.message + ".\"";
+        return "A custom command that was added by 'addcmd'. Output text is: \"" + this.message + ".\" Registered to : " + (this.channel == null ? "GLOBAL" : this.channel) + ".";
+    }
+
+    public boolean isFor(Channel channel)
+    {
+        return channel == null ? this.channel == null : channel.getName().equals(this.channel);
     }
 }
