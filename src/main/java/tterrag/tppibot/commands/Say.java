@@ -8,6 +8,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
+import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 
@@ -36,6 +37,13 @@ public class Say extends Command
 
         String text = StringUtils.join(args, " ");
 
-        MessageSender.instance.enqueue(bot, sayChan == null ? channel == null ? user.getNick() : channel.getName() : sayChan.getName(), text);
+        if (sayChan == null || IRCUtils.isPermLevelAboveOrEqualTo(PermRegistry.instance().getPermLevelForUser(sayChan, user), PermLevel.TRUSTED))
+        {
+            MessageSender.instance.enqueue(bot, sayChan == null ? channel == null ? user.getNick() : channel.getName() : sayChan.getName(), text);
+        }
+        else
+        {
+            lines.add("You must be trusted or higher in that channel.");
+        }
     }
 }
