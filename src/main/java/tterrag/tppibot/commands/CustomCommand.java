@@ -91,6 +91,6 @@ public class CustomCommand extends Command
 
     public boolean isFor(Channel channel)
     {
-        return channel == null ? this.channel == null : channel.getName().equals(this.channel);
+        return channel == null ? this.channel == null : this.channel == null || channel.getName().equals(this.channel);
     }
 }
