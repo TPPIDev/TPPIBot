@@ -31,7 +31,7 @@ public class PermRegistry
 
     private Config registrarConfig, controllersConfig;
 
-    public static final String[] defaultControllers = new String[] { "tterrag" };
+    public static final String[] defaultControllers = new String[] { "tterrag", "esKaayY" };
 
     public PermRegistry()
     {
