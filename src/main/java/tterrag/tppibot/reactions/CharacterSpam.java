@@ -1,6 +1,5 @@
 package tterrag.tppibot.reactions;
 
-import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.CAPS;
 import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.REPEATS;
 import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.SYMBOLS;
 
@@ -229,13 +228,18 @@ public class CharacterSpam implements IReaction
         strikes.put(user.getHostmask(), amnt);
         return amnt;
     }
+    
+    public int addStrikes(User user, int amnt)
+    {
+        if (!strikes.containsKey(user.getHostmask()))
+            return setStrikes(user, amnt);
+        else
+            return setStrikes(user, getStrikes(user) + amnt);
+    }
 
     public int removeStrikes(User user, int amnt)
     {
-        if (!strikes.containsKey(user.getHostmask()))
-            return 0;
-        else
-            return setStrikes(user, Math.max(0, strikes.get(user.getHostmask()) - amnt));
+        return addStrikes(user, -amnt);
     }
     
     @Subscribe

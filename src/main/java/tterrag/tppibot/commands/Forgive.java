@@ -25,7 +25,7 @@ public class Forgive extends Command
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        if (args.length < 3)
+        if (args.length < 2)
         {
             lines.add("This command requires three args: [nick], [type], and [amount].");
             return;
@@ -33,24 +33,26 @@ public class Forgive extends Command
         
         User toChange = IRCUtils.getUserByNick(channel, args[0]);
         
+        boolean foundType = false;
         Type type = Type.strikes;
         for (Type t : Type.values())
         {
             if (t.toString().equals(args[1]))
             {
                 type = Type.valueOf(args[1]);
+                foundType = true;
             }
         }
             
         int amnt = 0;
         try
         {
-            amnt = Integer.parseInt(args[2]);
+            amnt = Integer.parseInt(args[foundType ? 2 : 1]);
         }
         catch (NumberFormatException e)
         {
             
-            lines.add("\"" + args[1] + "\" is not a valid number!");
+            lines.add("\"" + args[foundType ? 2 : 1] + "\" is not a valid number!");
             return;
         }
         
