@@ -12,6 +12,7 @@ import org.slf4j.impl.SimpleLogger;
 import tterrag.tppibot.commands.AddCommand;
 import tterrag.tppibot.commands.AddReminder;
 import tterrag.tppibot.commands.Commands;
+import tterrag.tppibot.commands.Drama;
 import tterrag.tppibot.commands.EditCommand;
 import tterrag.tppibot.commands.EditPerms;
 import tterrag.tppibot.commands.Forgive;
@@ -93,6 +94,7 @@ public class Main
         new HTML();
         new Shortener();
         new Say();
+        new Drama();
 
         Timeout timeout = new Timeout();
         log("Commands created.");
