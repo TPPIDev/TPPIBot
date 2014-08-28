@@ -225,6 +225,7 @@ public class CharacterSpam implements IReaction
     
     public int setStrikes(User user, int amnt)
     {
+        amnt = Math.max(0, amnt);
         strikes.put(user.getHostmask(), amnt);
         return amnt;
     }

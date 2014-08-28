@@ -96,7 +96,7 @@ public class TimeoutChecker implements Runnable
         {
             if (nick.equals(user.getNick()))
             {
-                instance.pastOffenders.put(nick, instance.pastOffenders.get(nick) - amnt);
+                instance.pastOffenders.put(nick, Math.max(0, instance.pastOffenders.get(nick) - amnt));
                 return instance.pastOffenders.get(nick);
             }
         }

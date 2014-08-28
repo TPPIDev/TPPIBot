@@ -87,10 +87,19 @@ public class FloodSpam implements IReaction
         {
             while (true)
             {
-                for (MessageCount c : counts)
+                synchronized (counts)
                 {
-                    c.tick();
+                    for (MessageCount c : counts)
+                    {
+                        c.tick();
+                    }
                 }
+                
+                if (counts.size() > 100)
+                {
+                    counts.clear();
+                }
+                
                 ThreadUtils.sleep(1000);
             }
         }
@@ -110,19 +119,22 @@ public class FloodSpam implements IReaction
 
         if (Main.spamFilter.filtersEnabled(event.getChannel().getName()))
         {
-            while (iter.hasNext())
+            synchronized (counts)
             {
-                MessageCount count = iter.next();
-                if (count.equals(event))
+                while (iter.hasNext())
                 {
-                    count.msg();
-                    found = true;
-                    if (count.breakinDaLaw())
+                    MessageCount count = iter.next();
+                    if (count.equals(event))
                     {
-                        timeout(count);
-                        iter.remove();
+                        count.msg();
+                        found = true;
+                        if (count.breakinDaLaw())
+                        {
+                            timeout(count);
+                            iter.remove();
+                        }
+                        break;
                     }
-                    break;
                 }
             }
 
