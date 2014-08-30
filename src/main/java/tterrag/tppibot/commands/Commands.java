@@ -22,20 +22,39 @@ public class Commands extends Command
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         String s = "";
+        boolean custom = false;
+
+        if (args.length >= 1 && "custom".equals(args[0]))
+        {
+            custom = true;
+        }
 
         PermLevel perms = getPerm(channel, user);
         for (ICommand c : CommandRegistry.getCommands())
         {
             if (IRCUtils.isPermLevelAboveOrEqualTo(perms, c.getPermLevel()))
             {
-                if (!(c instanceof CustomCommand) || ((CustomCommand) c).isFor(channel))
+                if (custom == (c instanceof CustomCommand))
                 {
-                    s += c.getIdent() + ", ";
+                    if (!(c instanceof CustomCommand) || ((CustomCommand) c).isFor(channel))
+                    {
+                        s += c.getIdent() + ", ";
+                    }
                 }
             }
         }
-        s = s.substring(0, s.length() - 2);
-        lines.add("Commands: " + s);
+
+        s = s.length() <= 2 ? "None" : s.substring(0, s.length() - 2);
+
+        if (custom)
+        {
+            lines.add("Custom Commands: " + s + ".");
+        }
+        else
+        {
+            lines.add("Commands: " + s + ".");
+            lines.add("To show custom commands for this channel, try \"~commands custom\".");
+        }
     }
 
     @Override
