@@ -39,16 +39,17 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
                     channel = IRCUtils.getChannelByName(event.getBot(), IRCUtils.fmtChan(args[1]));
                     invalidChan = channel == null;
                 }
-
+                
                 if (channel != null)
                 {
-                    if (IRCUtils.isUserAboveOrEqualTo(channel, c.getPermLevel(), event.getUser()))
+                    PermLevel userLevel = PermRegistry.instance().getPermLevelForUser(channel, event.getUser());
+                    if (IRCUtils.isPermLevelAboveOrEqualTo(userLevel, c.getPermLevel()) && IRCUtils.isPermLevelAboveOrEqualTo(userLevel, PermLevel.TRUSTED))
                     {
                         c.onCommand(event.getBot(), event.getUser(), channel, lines, ArrayUtils.remove(ArrayUtils.remove(args, 0), 0));
                     }
                     else
                     {
-                        lines.add("You are not of the level " + c.getPermLevel() + " in channel " + args[1] + ".");
+                        lines.add("You are not of the level " + (c.getPermLevel() == PermLevel.DEFAULT ? PermLevel.TRUSTED : c.getPermLevel()) + " in channel " + args[1] + ".");
                     }
                 }
                 else if (c.executeWithoutChannel())
