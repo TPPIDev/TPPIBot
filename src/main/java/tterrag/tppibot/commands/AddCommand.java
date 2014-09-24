@@ -46,14 +46,15 @@ public class AddCommand extends Command
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         boolean global = false;
+        boolean action = false;
         if (args.length > 0)
         {
-            global = args[0].equalsIgnoreCase("global");
-        }
-
-        if (global)
-        {
-            args = ArrayUtils.remove(args, 0);
+            while (args[0].startsWith("-"))
+            {
+                global |= args[0].equalsIgnoreCase("-global");
+                action |= args[0].equalsIgnoreCase("-action");
+                args = ArrayUtils.remove(args, 0);
+            }
         }
 
         if (args.length < 2)
@@ -88,6 +89,8 @@ public class AddCommand extends Command
             lines.add("You cannot add non-global commands in private message!");
             return;
         }
+        
+        command.setIsAction(action);
 
         commandsAdded.add(command);
 

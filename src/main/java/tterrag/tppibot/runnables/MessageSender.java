@@ -43,4 +43,9 @@ public class MessageSender implements Runnable
     {
         this.toSend.add(new Message(bot, to, message).setNotice());
     }
+    
+    public void enqueueAction(PircBotX bot, String to, String message)
+    {
+        this.toSend.add(new Message(bot, to, message).setAction());
+    }
 }

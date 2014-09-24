@@ -16,6 +16,7 @@ public class CustomCommand extends Command
 {
     private String message;
     private String channel;
+    private boolean isAction = false;
 
     public CustomCommand(String ident, PermLevel perms, String message)
     {
@@ -29,12 +30,28 @@ public class CustomCommand extends Command
         this.channel = channel;
     }
 
+    public CustomCommand setIsAction(boolean set)
+    {
+        isAction = set;
+        return this;
+    }
+
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
         if ((channel != null && channel.getName().equals(this.channel)) || this.channel == null)
         {
-            MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageForUser(user, message, args));
+            String to = channel == null ? user.getNick() : channel.getName();
+            String msg = IRCUtils.getMessageForUser(user, message, args);
+
+            if (this.isAction)
+            {
+                MessageSender.instance.enqueueAction(bot, to, msg);
+            }
+            else
+            {
+                MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageForUser(user, message, args));
+            }
         }
     }
 

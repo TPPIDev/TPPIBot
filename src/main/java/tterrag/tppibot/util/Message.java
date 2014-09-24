@@ -2,14 +2,13 @@ package tterrag.tppibot.util;
 
 import org.pircbotx.PircBotX;
 
-import tterrag.tppibot.Main;
-
 public class Message
 {    
     public String to, message;
     
     private boolean sent = false;
     private boolean notice = false;
+    private boolean action = false;
     
     private PircBotX bot;
     
@@ -35,7 +34,11 @@ public class Message
     {
         if (notice)
         {
-            Main.bot.sendIRC().notice(to, message);
+            bot.sendIRC().notice(to, message);
+        }
+        else if (action)
+        {
+            bot.sendIRC().action(to, message);
         }
         else
         {
@@ -43,5 +46,11 @@ public class Message
         }
         
         sent = true;
+    }
+
+    public Message setAction()
+    {
+        action = true;
+        return this;
     }
 }
