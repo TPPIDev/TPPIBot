@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.pircbotx.Channel;
@@ -32,11 +32,12 @@ public class Shortener extends Command
 
         try
         {
-            URI uri = new URI("http://is.gd/create.php?format=simple&url=" + args[0]);
-            HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
+            String link = "http://is.gd/create.php?format=simple&url=" + URLEncoder.encode(args[0], "UTF-8");
+            URL url = new URL(link);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("GET");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), "> " + in.readLine());
@@ -44,11 +45,6 @@ public class Shortener extends Command
         catch (IOException e)
         {
             lines.add("I/O Error!");
-            e.printStackTrace();
-        }
-        catch (URISyntaxException e)
-        {
-            lines.add("Invalid URL.");
             e.printStackTrace();
         }
     }
