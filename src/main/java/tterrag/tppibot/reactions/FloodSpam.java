@@ -124,7 +124,7 @@ public class FloodSpam implements IReaction
                 while (iter.hasNext())
                 {
                     MessageCount count = iter.next();
-                    if (count.equals(event))
+                    if (count != null && count.equals(event))
                     {
                         count.msg();
                         found = true;

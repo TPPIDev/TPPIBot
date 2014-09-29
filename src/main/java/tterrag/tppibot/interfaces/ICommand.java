@@ -11,6 +11,11 @@ public interface ICommand
     public enum PermLevel
     {
         /**
+         * Not allowed to use any commands
+         */
+        NONE,
+        
+        /**
          * Lowest value, all users have this even if not assigned
          */
         DEFAULT,
@@ -27,7 +32,7 @@ public interface ICommand
 
         public static PermLevel[] getSettablePermLevels()
         {
-            return new PermLevel[] { CONTROLLER, OP, TRUSTED, DEFAULT };
+            return new PermLevel[] { NONE, CONTROLLER, OP, TRUSTED, DEFAULT };
         }
     }
 

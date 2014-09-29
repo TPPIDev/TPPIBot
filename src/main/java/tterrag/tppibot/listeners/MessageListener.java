@@ -18,6 +18,7 @@ import tterrag.tppibot.interfaces.IReaction;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.registry.ReactionRegistry;
+import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 
 public class MessageListener extends ListenerAdapter<PircBotX>
@@ -44,10 +45,21 @@ public class MessageListener extends ListenerAdapter<PircBotX>
            lastFire = 0L;
         }
         
+        for (IReaction r : ReactionRegistry.getReactions())
+        {
+            r.onMessage(event);
+        }
+        
         if (message.startsWith(controlChar))
         {
             PermLevel perm = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
 
+            if (perm == PermLevel.NONE && !PermRegistry.isDefaultController(sender))
+            {
+                MessageSender.instance.enqueueNotice(event.getBot(), sender.getNick(), "You may not execute commands in " + channel.getName());
+                return;
+            }
+            
             if (lastFire + delayTime < System.currentTimeMillis() || IRCUtils.isPermLevelAboveOrEqualTo(perm, PermLevel.TRUSTED))
             {
                 message = pruneMessage(message);
@@ -88,11 +100,6 @@ public class MessageListener extends ListenerAdapter<PircBotX>
             {
                 event.getUser().send().notice("Slow down there, partner.");
             }
-        }
-
-        for (IReaction r : ReactionRegistry.getReactions())
-        {
-            r.onMessage(event);
         }
     }
 

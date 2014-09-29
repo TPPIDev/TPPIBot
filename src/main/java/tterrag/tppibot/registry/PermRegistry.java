@@ -112,4 +112,9 @@ public class PermRegistry
     {
         return controllers.contains(IRCUtils.getAccount(user));
     }
+
+    public static boolean isDefaultController(User user)
+    {
+        return ArrayUtils.contains(defaultControllers, IRCUtils.getAccount(user));
+    }
 }
