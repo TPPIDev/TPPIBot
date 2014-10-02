@@ -13,7 +13,7 @@ public class Config
     private File configFile;
     private static File baseDir;
     
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     
     static
     {

@@ -1,6 +1,6 @@
 package tterrag.tppibot;
 
-import static tterrag.tppibot.util.Logging.log;
+import static tterrag.tppibot.util.Logging.*;
 
 import java.nio.charset.Charset;
 
@@ -9,29 +9,7 @@ import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.slf4j.impl.SimpleLogger;
 
-import tterrag.tppibot.commands.AddCommand;
-import tterrag.tppibot.commands.AddReminder;
-import tterrag.tppibot.commands.Commands;
-import tterrag.tppibot.commands.Drama;
-import tterrag.tppibot.commands.EditCommand;
-import tterrag.tppibot.commands.EditPerms;
-import tterrag.tppibot.commands.Forgive;
-import tterrag.tppibot.commands.HTML;
-import tterrag.tppibot.commands.Help;
-import tterrag.tppibot.commands.Join;
-import tterrag.tppibot.commands.Kill;
-import tterrag.tppibot.commands.Leave;
-import tterrag.tppibot.commands.Mode;
-import tterrag.tppibot.commands.Recover;
-import tterrag.tppibot.commands.RemindersOff;
-import tterrag.tppibot.commands.RemindersOn;
-import tterrag.tppibot.commands.RemoveCommand;
-import tterrag.tppibot.commands.Say;
-import tterrag.tppibot.commands.Shortener;
-import tterrag.tppibot.commands.Timeout;
-import tterrag.tppibot.commands.ToggleSpamFilters;
-import tterrag.tppibot.commands.Topic;
-import tterrag.tppibot.commands.Victim;
+import tterrag.tppibot.commands.*;
 import tterrag.tppibot.listeners.EventBus;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
@@ -52,6 +30,8 @@ import com.google.gson.GsonBuilder;
 
 public class Main
 {
+    public static Reminders reminderCommand;
+    
     public static ReminderProcess reminders;
     public static TimeoutChecker timeouts;
 
@@ -78,8 +58,7 @@ public class Main
         new Join();
         new EditCommand();
         new AddReminder();
-        new RemindersOff();
-        new RemindersOn();
+        reminderCommand = new Reminders();
         new Topic();
         new Commands();
         new AddCommand();

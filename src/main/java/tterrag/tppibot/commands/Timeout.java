@@ -89,28 +89,18 @@ public class Timeout extends Command
         }
 
         User toTimeout = IRCUtils.getUserByNick(channel, args[0]);
-        int mins = 0;
 
         if (toTimeout == null)
         {
             lines.add("No such user \"" + args[0] + "\"!");
             return;
         }
-
-        String modifier = "none";
-
-        char c = args[1].charAt(args[1].length() - 1);
-        modifier = c >= '0' && c <= '9' ? "none" : Character.toString(c).toLowerCase();
-        if (!modifier.equals("none"))
-        {
-            args[1] = args[1].substring(0, args[1].length() - 1);
-        }
-
-        int mult = getMultiplierForModifier(modifier);
-
+        
+        int seconds = 0;
+        
         try
         {
-            mins = Integer.parseInt(args[1]);
+            seconds = IRCUtils.getSecondsFromString(args[1]);
         }
         catch (NumberFormatException e)
         {
@@ -131,7 +121,7 @@ public class Timeout extends Command
             }
         }
 
-        this.list.add(new TimeoutTime(System.currentTimeMillis(), mins * mult, channel.getName(), toTimeout.getNick()));
+        this.list.add(new TimeoutTime(System.currentTimeMillis(), seconds, channel.getName(), toTimeout.getNick()));
 
         String hostmask = toTimeout.getHostmask();
 
@@ -148,25 +138,6 @@ public class Timeout extends Command
             {
                 this.pastOffenders.put(hostmask, 1);
             }
-        }
-    }
-
-    private int getMultiplierForModifier(String modifier)
-    {
-        switch (modifier)
-        {
-        case "s":
-            return 1;
-        case "m":
-            return 60;
-        case "h":
-            return 3600;
-        case "d":
-            return 86400;
-        case "w":
-            return 604800;
-        default:
-            return 60;
         }
     }
 

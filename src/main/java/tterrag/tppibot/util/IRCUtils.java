@@ -187,4 +187,39 @@ public class IRCUtils
             IRCUtils.modeSensitiveEnqueue(bot, user, channel, s);
         }
     }
+    
+    public static int getSecondsFromString(String s) throws NumberFormatException
+    {
+        String modifier = "none";
+
+        char c = s.charAt(s.length() - 1);
+        modifier = c >= '0' && c <= '9' ? "none" : Character.toString(c).toLowerCase();
+        if (!modifier.equals("none"))
+        {
+            s = s.substring(0, s.length() - 1);
+        }
+
+        int mult = getMultiplierForModifier(modifier);
+        
+        return Integer.parseInt(s) * mult;
+    }
+    
+    public static int getMultiplierForModifier(String modifier)
+    {
+        switch (modifier)
+        {
+        case "s":
+            return 1;
+        case "m":
+            return 60;
+        case "h":
+            return 3600;
+        case "d":
+            return 86400;
+        case "w":
+            return 604800;
+        default:
+            return 60;
+        }
+    }
 }

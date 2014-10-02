@@ -1,35 +1,50 @@
 package tterrag.tppibot.runnables;
 
-import static tterrag.tppibot.util.Logging.log;
-import static tterrag.tppibot.util.ThreadUtils.sleep;
+import static tterrag.tppibot.util.Logging.*;
+import static tterrag.tppibot.util.ThreadUtils.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
+import java.util.Map;
 
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.DisconnectEvent;
 
+import tterrag.tppibot.Main;
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.util.IRCUtils;
 import tterrag.tppibot.util.Logging;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class ReminderProcess implements Runnable
 {
+    private static class RemindTime
+    {
+        private long init;
+        private long time;
+        private int index;
+
+        private RemindTime(long init, long time, int index)
+        {
+            this.init = init;
+            this.time = time;
+            this.index = index;
+        }
+    }
+
     private PircBotX bot;
 
-    private HashMap<String, Boolean> reminderMap;
+    private Map<String, Boolean> reminderMap;
 
-    private Queue<String> reminders;
+    private List<String> reminders;
 
-    private Config mapConfig, remindersConfig;
+    private Map<String, RemindTime> delayMap;
 
-    private String inFlux = null;
+    private Config mapConfig, remindersConfig, delayConfig;
 
     public ReminderProcess(PircBotX bot, String... defaults)
     {
@@ -37,13 +52,16 @@ public class ReminderProcess implements Runnable
 
         mapConfig = new Config("reminderMap.json");
         remindersConfig = new Config("reminders.json");
+        delayConfig = new Config("reminderDelays.json");
 
-        reminderMap = new Gson().fromJson(mapConfig.getText(), new TypeToken<HashMap<String, Boolean>>() {}.getType());
+        reminderMap = Config.gson.fromJson(mapConfig.getText(), new TypeToken<Map<String, Boolean>>() {}.getType());
 
         if (reminderMap == null)
+        {
             reminderMap = new HashMap<String, Boolean>();
+        }
 
-        reminders = new Gson().fromJson(remindersConfig.getText(), new TypeToken<Queue<String>>() {}.getType());
+        reminders = Config.gson.fromJson(remindersConfig.getText(), new TypeToken<List<String>>() {}.getType());
 
         if (reminders == null)
         {
@@ -53,26 +71,48 @@ public class ReminderProcess implements Runnable
                 reminders.add(s);
             }
         }
+
+        delayMap = Config.gson.fromJson(delayConfig.getText(), new TypeToken<Map<String, RemindTime>>() {}.getType());
+
+        if (delayMap == null)
+        {
+            delayMap = new HashMap<String, RemindTime>();
+        }
     }
+
+    int index = 0;
 
     @Override
     public void run()
     {
         while (true)
         {
-            inFlux = reminders.poll();
             try
             {
-                log("Sleeping reminder thread...");
-                sleep(900000);
-                
+                sleep(1000);
+
                 if (bot.isConnected())
                 {
+                    long time = System.currentTimeMillis();
                     for (Channel channel : bot.getUserBot().getChannels())
                     {
-                        if (isRemindEnabledFor(channel.getName()))
+                        RemindTime remind = delayMap.get(channel.getName());
+                        if (Main.reminderCommand.delayMap.get(channel.getName()) == null)
                         {
-                            remind(channel, inFlux);
+                            Main.reminderCommand.delayMap.put(channel.getName(), 900000L);
+                        }
+
+                        if (remind == null)
+                        {
+                            delayMap.put(channel.getName(), new RemindTime(time, Main.reminderCommand.delayMap.get(channel.getName()), 0));
+                        }
+
+                        String reminder = reminders.get(remind.index);
+
+                        if (time - remind.init > remind.time && isRemindEnabledFor(channel.getName()))
+                        {
+                            remind(channel, reminder);
+                            delayMap.put(channel.getName(), new RemindTime(time, Main.reminderCommand.delayMap.get(channel.getName()), nextIndex(remind.index)));
                         }
                     }
                 }
@@ -88,12 +128,12 @@ public class ReminderProcess implements Runnable
                 Logging.error("An error occured with the Reminder Process, continuing...");
                 sleep(10000);
             }
-            finally
-            {
-                reminders.add(inFlux);
-                inFlux = null;
-            }
         }
+    }
+    
+    private int nextIndex(int index)
+    {
+        return (index + 1) % reminders.size();
     }
 
     private void remind(Channel channel, String reminder)
@@ -141,12 +181,19 @@ public class ReminderProcess implements Runnable
     public void onDisconnect(DisconnectEvent<PircBotX> event)
     {
         mapConfig.writeJsonToFile(reminderMap);
-
-        if (inFlux != null)
-        {
-            reminders.add(inFlux);
-        }
-
         remindersConfig.writeJsonToFile(reminders);
+        delayConfig.writeJsonToFile(delayMap);
+    }
+
+    public void setDelay(String name, long millis)
+    {
+        if (delayMap.get(name) == null)
+        {
+            delayMap.put(name, new RemindTime(System.currentTimeMillis(), millis, 0));
+        }
+        else
+        {
+            delayMap.get(name).time = millis;
+        }
     }
 }
