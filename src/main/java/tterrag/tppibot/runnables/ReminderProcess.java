@@ -202,6 +202,6 @@ public class ReminderProcess implements Runnable
 
     public String[] getReminders()
     {
-        return (String[]) reminders.toArray();
+        return reminders.toArray(new String[]{});
     }
 }
