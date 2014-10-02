@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -12,6 +13,7 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 import tterrag.tppibot.Main;
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
+import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 
 import com.google.gson.reflect.TypeToken;
@@ -20,15 +22,15 @@ public class Reminders extends Command
 {
     private Config delayConfig;
     public Map<String, Long> delayMap;
-    
+
     public Reminders()
     {
         super("reminders", PermLevel.TRUSTED);
-        
+
         delayConfig = new Config("delays.json");
-        
+
         delayMap = Config.gson.fromJson(delayConfig.getText(), new TypeToken<Map<String, Long>>() {}.getType());
-        
+
         if (delayMap == null)
         {
             delayMap = new HashMap<String, Long>();
@@ -43,7 +45,7 @@ public class Reminders extends Command
             lines.add("This command requires one arg.");
             return;
         }
-        
+
         if ("on".equals(args[0]))
         {
             if (!Main.reminders.isRemindEnabledFor(channel.getName()))
@@ -72,13 +74,51 @@ public class Reminders extends Command
         {
             if (args.length < 2)
             {
-                lines.add("'delay' command requires a [time] arg");
+                lines.add("'delay' command requires a time arg");
             }
             else
             {
-                int seconds = IRCUtils.getSecondsFromString(args[1]);
-                delayMap.put(channel.getName(), (long) (seconds * 1000));
-                Main.reminders.setDelay(channel.getName(), seconds * 1000);
+                try
+                {
+                    int seconds = IRCUtils.getSecondsFromString(args[1]);
+                    delayMap.put(channel.getName(), (long) (seconds * 1000));
+                    Main.reminders.setDelay(channel.getName(), seconds * 1000);
+                }
+                catch (NumberFormatException e)
+                {
+                    lines.add("Invalid time " + args[1]);
+                }
+            }
+        }
+        else if ("list".equals(args[0]))
+        {
+            String reminders = StringUtils.join(Main.reminders.getReminders(), "\n");
+            MessageSender.instance.enqueueNotice(bot, user.getNick(), "Current reminders for this channel:\n" + reminders);
+        }
+        else if ("remove".equals(args[0]))
+        {
+            if (args.length < 2)
+            {
+                lines.add("'remove' command requires an index arg");
+            }
+            else
+            {
+                try
+                {
+                    int index = Integer.parseInt(args[1]);
+                    if (index < Main.reminders.getReminders().length)
+                    {
+                        Main.reminders.removeReminder(index);
+                    }
+                    else
+                    {
+                        lines.add(index < 0 ? args[1] + " is below 0." : args[1] + " is too high.");
+                    }
+                }
+                catch (NumberFormatException e)
+                {
+                    lines.add("Invalid number " + args[1]);
+                }
             }
         }
     }
@@ -94,13 +134,13 @@ public class Reminders extends Command
     {
         return false;
     }
-    
+
     @Override
     public boolean shouldReceiveEvents()
     {
         return true;
     }
-    
+
     @Subscribe
     public void onDisconnect(DisconnectEvent<PircBotX> event)
     {

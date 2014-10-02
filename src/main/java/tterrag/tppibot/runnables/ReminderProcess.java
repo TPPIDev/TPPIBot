@@ -80,8 +80,6 @@ public class ReminderProcess implements Runnable
         }
     }
 
-    int index = 0;
-
     @Override
     public void run()
     {
@@ -107,7 +105,7 @@ public class ReminderProcess implements Runnable
                             delayMap.put(channel.getName(), new RemindTime(time, Main.reminderCommand.delayMap.get(channel.getName()), 0));
                         }
 
-                        String reminder = reminders.get(remind.index);
+                        String reminder = reminders.get(remind.index % reminders.size()); // make sure removal hasn't shifted indeces
 
                         if (time - remind.init > remind.time && isRemindEnabledFor(channel.getName()))
                         {
@@ -152,6 +150,11 @@ public class ReminderProcess implements Runnable
             reminders.add(reminder);
         }
     }
+    
+    public void removeReminder(int index)
+    {
+        reminders.remove(index);
+    }
 
     public void disableRemindersFor(String channel)
     {
@@ -195,5 +198,10 @@ public class ReminderProcess implements Runnable
         {
             delayMap.get(name).time = millis;
         }
+    }
+
+    public String[] getReminders()
+    {
+        return (String[]) reminders.toArray();
     }
 }
