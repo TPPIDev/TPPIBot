@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -92,8 +91,11 @@ public class Reminders extends Command
         }
         else if ("list".equals(args[0]))
         {
-            String reminders = StringUtils.join(Main.reminders.getReminders(), "\n");
-            MessageSender.instance.enqueueNotice(bot, user.getNick(), "Current reminders for this channel:\n" + reminders);
+            MessageSender.instance.enqueueNotice(bot, user.getNick(), "Current reminder list:");
+            for (String s : Main.reminders.getReminders())
+            {
+                MessageSender.instance.enqueueNotice(bot, user.getNick(), s);
+            }
         }
         else if ("remove".equals(args[0]))
         {
