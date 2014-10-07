@@ -15,6 +15,7 @@ import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.listeners.PrivateMessageListener;
 import tterrag.tppibot.reactions.CharacterSpam;
+import tterrag.tppibot.reactions.Cursewords;
 import tterrag.tppibot.reactions.FloodSpam;
 import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.registry.PermRegistry;
@@ -83,6 +84,7 @@ public class Main
         ReactionRegistry.registerReaction(spamFilter);
         floodFilter = new FloodSpam();
         ReactionRegistry.registerReaction(floodFilter);
+        ReactionRegistry.registerReaction(new Cursewords());
         log("Reactions created.");
 
         log("Configuring bot...");

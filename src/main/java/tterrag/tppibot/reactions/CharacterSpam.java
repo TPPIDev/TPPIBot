@@ -34,7 +34,8 @@ public class CharacterSpam implements IReaction
         REPEATS("You had too many repeated characters."), 
         SYMBOLS("You had too many non-alphabetic symbols."), 
         CAPS("Too much caps!"), 
-        FLOOD("Too many messages!");
+        FLOOD("Too many messages!"), 
+        CURSE("Banned word.");
 
         private String text;
 
@@ -158,7 +159,7 @@ public class CharacterSpam implements IReaction
         }
     }
 
-    private boolean timeout(MessageEvent<?> event, SpamReasons reason)
+    public boolean timeout(MessageEvent<?> event, SpamReasons reason)
     {
         return timeout(event.getBot(), event.getUser(), event.getChannel(), reason);
     }
