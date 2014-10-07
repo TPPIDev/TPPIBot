@@ -30,17 +30,16 @@ public class Cursewords implements IReaction
     @Override
     public void onMessage(MessageEvent<?> event)
     {
-        PermLevel level = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
-
-        if (!IRCUtils.isPermLevelAboveOrEqualTo(level, PermLevel.TRUSTED))
+        for (String s : curses)
         {
-            for (String s : curses)
+            Matcher matcher = Pattern.compile("\\b(" + s + ")\\b", Pattern.CASE_INSENSITIVE).matcher(event.getMessage());
+            while (matcher.find())
             {
-                Matcher matcher = Pattern.compile("\\b(" + s + ")\\b").matcher(event.getMessage());
-                while (matcher.find())
+                String word = matcher.group();
+                if (word.equalsIgnoreCase(s))
                 {
-                    String word = matcher.group();
-                    if (word.equals(s))
+                    PermLevel level = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
+                    if (!IRCUtils.isPermLevelAboveOrEqualTo(level, PermLevel.TRUSTED))
                     {
                         Main.spamFilter.finish(Main.spamFilter.timeout(event, CURSE) ? event.getUser() : null);
                     }
@@ -60,11 +59,9 @@ public class Cursewords implements IReaction
         {
             Scanner scan = new Scanner(file);
 
-            scan.nextLine();
-
             while (scan.hasNextLine())
             {
-                curses.add(scan.nextLine());
+                curses.add(scan.nextLine().trim());
             }
 
             scan.close();
