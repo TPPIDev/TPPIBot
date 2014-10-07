@@ -2,8 +2,7 @@ package tterrag.tppibot.reactions;
 
 import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -50,25 +49,17 @@ public class Cursewords implements IReaction
 
     private void loadCurseWords()
     {
-        File file = new File(new File("src").getAbsolutePath() + "/main/resources/curses.txt");
-        System.out.println(file.getAbsolutePath());
+        InputStream in = Main.class.getResourceAsStream("/curses.txt");
 
         curses = new ArrayList<String>();
 
-        try
-        {
-            Scanner scan = new Scanner(file);
+        Scanner scan = new Scanner(in);
 
-            while (scan.hasNextLine())
-            {
-                curses.add(scan.nextLine().trim());
-            }
-
-            scan.close();
-        }
-        catch (FileNotFoundException e)
+        while (scan.hasNextLine())
         {
-            e.printStackTrace();
+            curses.add(scan.nextLine().trim());
         }
+
+        scan.close();
     }
 }
