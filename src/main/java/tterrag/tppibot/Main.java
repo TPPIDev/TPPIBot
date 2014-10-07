@@ -15,7 +15,7 @@ import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.listeners.PrivateMessageListener;
 import tterrag.tppibot.reactions.CharacterSpam;
-import tterrag.tppibot.reactions.Cursewords;
+import tterrag.tppibot.reactions.BannedWords;
 import tterrag.tppibot.reactions.FloodSpam;
 import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.registry.PermRegistry;
@@ -38,8 +38,10 @@ public class Main
 
     public static CharacterSpam spamFilter;
     public static FloodSpam floodFilter;
-    
+    public static BannedWords bannedWords;
+
     public static PircBotX bot;
+
     
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -75,6 +77,7 @@ public class Main
         new Shortener();
         new Say();
         new Drama();
+        new BanWord();
 
         Timeout timeout = new Timeout();
         log("Commands created.");
@@ -84,7 +87,8 @@ public class Main
         ReactionRegistry.registerReaction(spamFilter);
         floodFilter = new FloodSpam();
         ReactionRegistry.registerReaction(floodFilter);
-        ReactionRegistry.registerReaction(new Cursewords());
+        bannedWords = new BannedWords();
+        ReactionRegistry.registerReaction(bannedWords);
         log("Reactions created.");
 
         log("Configuring bot...");
@@ -137,6 +141,7 @@ public class Main
         EventHandler.registerReceiver(reminders);
         EventHandler.registerReceiver(PermRegistry.instance());
         EventHandler.registerReceiver(spamFilter);
+        EventHandler.registerReceiver(bannedWords);
         log("Registered extra event reveivers.");
         
         // start 'er up

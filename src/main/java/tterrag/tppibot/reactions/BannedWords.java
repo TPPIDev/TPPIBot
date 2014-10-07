@@ -9,27 +9,41 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.Main;
+import tterrag.tppibot.annotations.Subscribe;
+import tterrag.tppibot.config.Config;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
 import tterrag.tppibot.interfaces.IReaction;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
-public class Cursewords implements IReaction
-{
-    private List<String> curses;
+import com.google.gson.reflect.TypeToken;
 
-    public Cursewords()
+public class BannedWords implements IReaction
+{
+    private List<String> bannedWords;
+    private Config bannedConfig;
+
+    public BannedWords()
     {
-        loadCurseWords();
+        bannedConfig = new Config("bannedWords.json");
+        
+        bannedWords = Config.gson.fromJson(bannedConfig.getText(), new TypeToken<List<String>>(){}.getType());
+        
+        if (bannedWords == null)
+        {
+            loadDefaultWords();
+        }
     }
 
     @Override
     public void onMessage(MessageEvent<?> event)
     {
-        for (String s : curses)
+        for (String s : bannedWords)
         {
             Matcher matcher = Pattern.compile("\\b(" + s + ")\\b", Pattern.CASE_INSENSITIVE).matcher(event.getMessage());
             while (matcher.find())
@@ -47,19 +61,38 @@ public class Cursewords implements IReaction
         }
     }
 
-    private void loadCurseWords()
+    private void loadDefaultWords()
     {
         InputStream in = Main.class.getResourceAsStream("/curses.txt");
 
-        curses = new ArrayList<String>();
+        bannedWords = new ArrayList<String>();
 
         Scanner scan = new Scanner(in);
 
         while (scan.hasNextLine())
         {
-            curses.add(scan.nextLine().trim());
+            bannedWords.add(scan.nextLine().trim());
         }
 
         scan.close();
+    }
+    
+    @Subscribe
+    public void onDisconnect(DisconnectEvent<PircBotX> event)
+    {
+        bannedConfig.writeJsonToFile(bannedWords);
+    }
+
+    public void addWord(String string)
+    {
+        if (!bannedWords.contains(string))
+        {
+            bannedWords.add(string);
+        }
+    }
+    
+    public void removeWord(String string)
+    {
+        bannedWords.remove(string);
     }
 }
