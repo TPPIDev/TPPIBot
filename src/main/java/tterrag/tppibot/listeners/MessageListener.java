@@ -81,7 +81,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                         }
                         else
                         {
-                            toSend.add("You have no permission, you must be at least: " + c.getPermLevel().toString());
+                            MessageSender.instance.enqueueNotice(event.getBot(), event.getUser().getNick(), "You have no permission, you must be at least: " + c.getPermLevel().toString());
                         }
 
                         for (String s : toSend)
