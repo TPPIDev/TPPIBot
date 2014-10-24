@@ -31,9 +31,9 @@ public class BannedWords implements IReaction
     public BannedWords()
     {
         bannedConfig = new Config("bannedWords.json");
-        
-        bannedWords = Config.gson.fromJson(bannedConfig.getText(), new TypeToken<List<String>>(){}.getType());
-        
+
+        bannedWords = Config.gson.fromJson(bannedConfig.getText(), new TypeToken<List<String>>() {}.getType());
+
         if (bannedWords == null)
         {
             loadDefaultWords();
@@ -43,18 +43,21 @@ public class BannedWords implements IReaction
     @Override
     public void onMessage(MessageEvent<?> event)
     {
-        for (String s : bannedWords)
+        if (Main.spamFilter.filtersEnabled(event.getChannel().getName()))
         {
-            Matcher matcher = Pattern.compile("\\b(" + s + ")\\b", Pattern.CASE_INSENSITIVE).matcher(event.getMessage());
-            while (matcher.find())
+            for (String s : bannedWords)
             {
-                String word = matcher.group();
-                if (word.equalsIgnoreCase(s))
+                Matcher matcher = Pattern.compile("\\b(" + s + ")\\b", Pattern.CASE_INSENSITIVE).matcher(event.getMessage());
+                while (matcher.find())
                 {
-                    PermLevel level = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
-                    if (!IRCUtils.isPermLevelAboveOrEqualTo(level, PermLevel.TRUSTED))
+                    String word = matcher.group();
+                    if (word.equalsIgnoreCase(s))
                     {
-                        Main.spamFilter.finish(Main.spamFilter.timeout(event, CURSE) ? event.getUser() : null);
+                        PermLevel level = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
+                        if (!IRCUtils.isPermLevelAboveOrEqualTo(level, PermLevel.TRUSTED))
+                        {
+                            Main.spamFilter.finish(Main.spamFilter.timeout(event, CURSE) ? event.getUser() : null);
+                        }
                     }
                 }
             }
@@ -76,7 +79,7 @@ public class BannedWords implements IReaction
 
         scan.close();
     }
-    
+
     @Subscribe
     public void onDisconnect(DisconnectEvent<PircBotX> event)
     {
@@ -90,7 +93,7 @@ public class BannedWords implements IReaction
             bannedWords.add(string);
         }
     }
-    
+
     public void removeWord(String string)
     {
         bannedWords.remove(string);
