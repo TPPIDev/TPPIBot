@@ -8,10 +8,14 @@
 *.ear
 
 /bin
+/out
 
 *.DS_Store
 *.project
 *.classpath
+*.iml
+*.ipr
+*.iws
 
 /.settings
 
