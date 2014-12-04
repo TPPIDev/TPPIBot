@@ -78,6 +78,7 @@ public class Main
         new Say();
         new Drama();
         new BanWord();
+        new Nick();
 
         Timeout timeout = new Timeout();
         log("Commands created.");

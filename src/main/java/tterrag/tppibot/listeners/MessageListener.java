@@ -50,7 +50,19 @@ public class MessageListener extends ListenerAdapter<PircBotX>
             r.onMessage(event);
         }
         
-        if (message.startsWith(controlChar))
+        String[] args = message.split(" ");
+
+        if (args.length < 1)
+        {
+            return;
+        }
+        
+        if (args[0].startsWith("<") && args[0].endsWith(">")) // Eira Bot
+        {
+            args = ArrayUtils.remove(args, 0);
+        }
+        
+        if (args.length > 0 && args[0].startsWith(controlChar))
         {
             PermLevel perm = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
 
@@ -62,12 +74,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
             
             if (lastFire + delayTime < System.currentTimeMillis() || IRCUtils.isPermLevelAboveOrEqualTo(perm, PermLevel.TRUSTED))
             {
-                message = pruneMessage(message);
-                String[] args = message.split(" ");
-
-                if (args.length < 1)
-                    return;
-
+                args[0] = pruneCommand(args[0]);
                 for (int i = 0; i < commands.size(); i++)
                 {
                     ICommand c = commands.get(i);
@@ -103,7 +110,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
         }
     }
 
-    private String pruneMessage(String message)
+    private String pruneCommand(String message)
     {
         return message.substring(controlChar.length());
     }
