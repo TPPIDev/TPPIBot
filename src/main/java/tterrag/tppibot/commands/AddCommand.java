@@ -1,6 +1,7 @@
 package tterrag.tppibot.commands;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -47,12 +48,26 @@ public class AddCommand extends Command
     {
         boolean global = false;
         boolean action = false;
+        PermLevel level = PermLevel.DEFAULT;
         if (args.length > 0)
         {
             while (args[0].startsWith("-"))
             {
                 global |= args[0].equalsIgnoreCase("-global");
                 action |= args[0].equalsIgnoreCase("-action");
+
+                if (args[0].toLowerCase().contains("-permlevel="))
+                {
+                    String levelStr = args[0].split("=")[1];
+                    try
+                    {
+                        level = PermLevel.valueOf(levelStr.toUpperCase(Locale.ENGLISH));
+                    }
+                    catch(Exception e)
+                    {
+                        lines.add(levelStr + " is not a valid perm level. Using default.");
+                    }
+                }
                 args = ArrayUtils.remove(args, 0);
             }
         }
@@ -73,7 +88,7 @@ public class AddCommand extends Command
 
         if (global && PermRegistry.instance().isController(user))
         {
-            command = new CustomCommand(cmdName, PermLevel.DEFAULT, toAdd);
+            command = new CustomCommand(cmdName, level, toAdd);
         }
         else if (global)
         {
@@ -82,14 +97,14 @@ public class AddCommand extends Command
         }
         else if (channel != null)
         {
-            command = new CustomCommand(cmdName, PermLevel.DEFAULT, toAdd, channel.getName());
+            command = new CustomCommand(cmdName, level, toAdd, channel.getName());
         }
         else
         {
             lines.add("You cannot add non-global commands in private message!");
             return;
         }
-        
+
         command.setIsAction(action);
 
         commandsAdded.add(command);
