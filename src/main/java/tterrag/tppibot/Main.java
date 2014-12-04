@@ -95,7 +95,7 @@ public class Main
         log("Configuring bot...");
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
         builder.setName(args[0]);
-        builder.setLogin("TPPIBot");
+        builder.setLogin(args[0]);
         builder.setNickservPassword(args[1]);
         builder.setEncoding(Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset());
         builder.setServer("irc.esper.net", 6668);
