@@ -3,6 +3,7 @@ package tterrag.tppibot.config;
 import java.io.File;
 import java.io.IOException;
 
+import tterrag.tppibot.Main;
 import tterrag.tppibot.util.SaveUtils;
 
 import com.google.gson.Gson;
@@ -17,13 +18,13 @@ public class Config
     
     static
     {
-        File userDir = new File(System.getProperty("user.home"));
+        File userDir = new File(Main.overrideFile == null ? System.getProperty("user.home") : Main.overrideFile);
         
         baseDir = new File(userDir.getAbsolutePath() + "/.tppibot");
         
         if (!baseDir.exists())
         {
-            baseDir.mkdir();
+            baseDir.mkdirs();
         }
     }
 

@@ -4,7 +4,13 @@ import static tterrag.tppibot.util.Logging.*;
 
 import java.nio.charset.Charset;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.slf4j.impl.SimpleLogger;
@@ -14,8 +20,8 @@ import tterrag.tppibot.listeners.EventBus;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.listeners.PrivateMessageListener;
-import tterrag.tppibot.reactions.CharacterSpam;
 import tterrag.tppibot.reactions.BannedWords;
+import tterrag.tppibot.reactions.CharacterSpam;
 import tterrag.tppibot.reactions.FloodSpam;
 import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.registry.PermRegistry;
@@ -42,11 +48,30 @@ public class Main
 
     public static PircBotX bot;
 
+    public static String overrideFile;
+
     
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws ParseException
     {
+        log("Creating command line options...");
+        Options options = new Options();
+        
+        options.addOption("n", "name", true, "The nick/login of the bot");
+        options.addOption("d", "dataDir", true, "The directory in which to create the .tppibot folder");
+        options.addOption("p", "password", true, "Nickserv password for the bot");
+        
+        @SuppressWarnings("static-access")
+        Option channels = OptionBuilder.withArgName("channel").hasArgs().withDescription("The channels to join on startup").create("channels");
+        options.addOption(channels);
+        
+        CommandLineParser parser = new BasicParser();
+        CommandLine cmd = parser.parse(options, args);
+        log("Command line options created.");
+        
+        overrideFile = cmd.getOptionValue("dataDir");
+        
         log("Starting...");
         System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
         System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "[MM/dd HH:mm:ss]");
@@ -91,20 +116,17 @@ public class Main
         bannedWords = new BannedWords();
         ReactionRegistry.registerReaction(bannedWords);
         log("Reactions created.");
-
-        log("Configuring bot...");
+        
+        log("Configuring bot...");        
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
-        builder.setName(args[0]);
-        builder.setLogin(args[0]);
-        builder.setNickservPassword(args[1]);
+        builder.setName(cmd.getOptionValue("name"));
+        builder.setLogin(cmd.getOptionValue("name"));
+        builder.setNickservPassword(cmd.getOptionValue("password"));
         builder.setEncoding(Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset());
         builder.setServer("irc.esper.net", 6668);
         builder.setAutoReconnect(true);
 
-        args = ArrayUtils.remove(args, 0);
-        args = ArrayUtils.remove(args, 0);
-
-        for (String s : args)
+        for (String s : cmd.getOptionValues("channels"))
         {
             builder.addAutoJoinChannel(IRCUtils.fmtChan(s));
         }
