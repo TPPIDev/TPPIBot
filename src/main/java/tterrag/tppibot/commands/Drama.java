@@ -27,16 +27,11 @@ public class Drama extends Command
     {
         try
         {
-            URI uri = args.length >= 1 && args[0].equals("2") ? new URI("http://asie.pl/drama.php?2&plain") : new URI("http://asie.pl/drama.php?plain");
+            URI uri = new URI("http://tterrag.com/drama.php?plain");
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String drama = in.readLine();
-            int end = drama.indexOf("<");
-            if (end > 0)
-            {
-                drama = drama.substring(0, drama.indexOf("<"));
-            }
 
             if (channel != null)
             {
