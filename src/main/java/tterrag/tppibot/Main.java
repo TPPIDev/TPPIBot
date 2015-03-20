@@ -92,7 +92,7 @@ public class Main
         new AddCommand();
         new RemoveCommand();
         new Victim();
-        new EditPerms();
+        new Perms();
         new Leave();
         new ToggleSpamFilters();
         new Forgive();

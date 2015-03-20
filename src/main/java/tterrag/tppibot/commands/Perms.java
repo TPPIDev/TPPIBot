@@ -10,9 +10,9 @@ import org.pircbotx.User;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
-public class EditPerms extends Command
+public class Perms extends Command
 {
-    public EditPerms()
+    public Perms()
     {
         super("perms", PermLevel.OP);
     }
@@ -20,9 +20,9 @@ public class EditPerms extends Command
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        if (args.length < 2)
+        if (args.length < 1)
         {
-            lines.add("This command requires at least 2 args, [user nick] and [perm level (controller, op, or trusted)]");
+            lines.add("This command requires at least 1 args, either [nick] or [nick] [perm level (controller, op, or trusted)]");
             return;
         }
         
@@ -34,7 +34,13 @@ public class EditPerms extends Command
             lines.add("\"" + nick + "\" is not a valid user in this channel!");
             return;
         }
-        
+
+        if (args.length == 1)
+        {
+            lines.add("Perm level for " + nick + ": " + PermRegistry.instance().getPermLevelForUser(channel, toChange));
+            return;
+        }
+
         PermLevel level = null;
         for (PermLevel p : PermLevel.getSettablePermLevels())
         {
