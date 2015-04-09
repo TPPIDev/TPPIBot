@@ -91,7 +91,6 @@ public class Main
         new Commands();
         new AddCommand();
         new RemoveCommand();
-        new Victim();
         new Perms();
         new Leave();
         new ToggleSpamFilters();
