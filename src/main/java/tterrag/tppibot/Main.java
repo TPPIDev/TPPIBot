@@ -3,6 +3,8 @@ package tterrag.tppibot;
 import static tterrag.tppibot.util.Logging.*;
 
 import java.nio.charset.Charset;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -13,6 +15,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.slf4j.impl.SimpleLogger;
 
 import tterrag.tppibot.commands.*;
@@ -31,6 +34,7 @@ import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.runnables.ReminderProcess;
 import tterrag.tppibot.runnables.TimeoutChecker;
 import tterrag.tppibot.util.IRCUtils;
+import tterrag.tppibot.util.Logging;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -50,6 +54,7 @@ public class Main
 
     public static String overrideFile;
 
+    public static int autoSaveRateSeconds;
     
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -61,6 +66,7 @@ public class Main
         options.addOption("n", "name", true, "The nick/login of the bot");
         options.addOption("d", "dataDir", true, "The directory in which to create the .tppibot folder");
         options.addOption("p", "password", true, "Nickserv password for the bot");
+        options.addOption("a", "autoSaveInterval", true, "Interval at which to save data automatically");
         
         @SuppressWarnings("static-access")
         Option channels = OptionBuilder.withArgName("channel").hasArgs().withDescription("The channels to join on startup").create("channels");
@@ -153,10 +159,23 @@ public class Main
         
         Thread consoleThread = new Thread(new ConsoleCommands());
         consoleThread.start();
-        
+
         Thread messageSenderThread = new Thread(MessageSender.instance);
         messageSenderThread.start();
-        
+
+        Timer timer = new Timer();
+        String opt = cmd.getOptionValue("autoSaveInterval");
+        long saveRate = 1000 * (opt == null ? 60 * 5 : IRCUtils.getSecondsFromString(cmd.getOptionValue("autoSaveInterval")));
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run()
+            {
+                Logging.log("Sending dummy DisconnectEvent for autosave");
+                EventHandler.post(new DisconnectEvent<PircBotX>(bot, bot.getUserChannelDao().createSnapshot(), null));
+            }
+        }, saveRate, saveRate);
+
         log("Threads created...");
         
         log("Registering extra event receivers...");

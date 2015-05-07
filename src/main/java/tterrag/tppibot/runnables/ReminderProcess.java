@@ -87,7 +87,7 @@ public class ReminderProcess implements Runnable
         {
             try
             {
-                sleep(1000);
+                sleep(10000);
 
                 if (bot.isConnected())
                 {
