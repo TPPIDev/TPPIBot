@@ -1,6 +1,6 @@
 package tterrag.tppibot.util;
 
-import static tterrag.tppibot.interfaces.ICommand.PermLevel.DEFAULT;
+import static tterrag.tppibot.interfaces.ICommand.PermLevel.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,14 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserLevel;
-import org.pircbotx.hooks.WaitForQueue;
-import org.pircbotx.hooks.events.WhoisEvent;
 
-import tterrag.tppibot.Main;
 import tterrag.tppibot.commands.Command;
 import tterrag.tppibot.commands.Mode;
 import tterrag.tppibot.commands.Mode.BotMode;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
 import tterrag.tppibot.registry.CommandRegistry;
 import tterrag.tppibot.registry.PermRegistry;
+import tterrag.tppibot.registry.WhoisCache;
 import tterrag.tppibot.runnables.MessageSender;
 
 public class IRCUtils
@@ -133,26 +131,9 @@ public class IRCUtils
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     public static String getAccount(User u)
     {
-        String user = "";
-        Main.bot.sendRaw().rawLineNow("WHOIS " + u.getNick());
-        WaitForQueue waitForQueue = new WaitForQueue(Main.bot);
-        WhoisEvent<PircBotX> test = null;
-        try
-        {
-            test = waitForQueue.waitFor(WhoisEvent.class);
-            waitForQueue.close();
-            user = test.getRegisteredAs();
-        }
-        catch (InterruptedException ex)
-        {
-            ex.printStackTrace();
-            user = null;
-        }
-
-        return user;
+        return WhoisCache.instance().getAccount(u);
     }
     
     public static String fmtChan(String chan)

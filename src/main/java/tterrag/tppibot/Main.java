@@ -29,6 +29,7 @@ import tterrag.tppibot.reactions.FloodSpam;
 import tterrag.tppibot.registry.EventHandler;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.registry.ReactionRegistry;
+import tterrag.tppibot.registry.WhoisCache;
 import tterrag.tppibot.runnables.ConsoleCommands;
 import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.runnables.ReminderProcess;
@@ -184,6 +185,8 @@ public class Main
         EventHandler.registerReceiver(spamFilter);
         EventHandler.registerReceiver(bannedWords);
         log("Registered extra event reveivers.");
+        
+        WhoisCache.instance();
         
         // start 'er up
         try
