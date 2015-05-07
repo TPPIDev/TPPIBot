@@ -34,7 +34,6 @@ public class WhoisCache
     public String getAccount(User user)
     {
         String acct = whoisCache.get(user.getNick());
-        System.out.println(acct);
         return acct != null ? acct : addOrUpdateEntry(user);
     }
 
