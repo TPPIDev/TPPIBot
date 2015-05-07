@@ -87,9 +87,9 @@ public class ReminderProcess implements Runnable
         {
             try
             {
-                sleep(10000);
+                sleep(1000);
 
-                if (bot.isConnected())
+                if (bot.isConnected() && !bot.getUserChannelDao().getAllChannels().isEmpty())
                 {
                     long time = System.currentTimeMillis();
                     for (Channel channel : bot.getUserBot().getChannels())

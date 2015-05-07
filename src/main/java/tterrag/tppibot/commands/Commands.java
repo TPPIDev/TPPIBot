@@ -8,7 +8,10 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
 
+import com.google.common.collect.Lists;
+
 import tterrag.tppibot.annotations.Subscribe;
+import tterrag.tppibot.commands.Mode.BotMode;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.interfaces.ICommand;
 import tterrag.tppibot.registry.CommandRegistry;
@@ -61,7 +64,7 @@ public class Commands extends Command
                 }
             }
         }
-        
+
         boolean isTooLong = false;
 
         PermLevel perms = getPerm(channel, user);
@@ -99,28 +102,30 @@ public class Commands extends Command
         listLines.add(last.substring(0, last.length() - 2));
 
         String[] cmds = listLines.toArray(new String[] {});
-        String target = channel.getName();
-        if (isTooLong)
+        BotMode mode = Mode.getMode(channel.getName());
+        if (isTooLong && mode != BotMode.PM)
         {
             lines.add("List too long, replying privately...");
-            target = user.getNick();
+            if (mode != BotMode.NOTICE)
+            {
+                mode = BotMode.PM;
+            }
         }
 
         if (custom)
         {
-            MessageSender.instance.enqueue(bot, target, "Custom Commands: " + cmds[0]);
-            addRestOfLines(cmds, lines);
+            addLines(cmds, "Custom Commands: " + cmds[0], bot, user, channel, mode);
         }
         else
         {
-            MessageSender.instance.enqueue(bot, target, "Commands: " + cmds[0]);
-            addRestOfLines(cmds, lines);
-            MessageSender.instance.enqueue(bot, target, "To show custom commands for this channel, try \"~commands custom\".");
+            addLines(cmds, "Commands: " + cmds[0], bot, user, channel, mode);
+            lines.add("To show custom commands for this channel, try \"~commands custom\".");
         }
     }
 
-    private void addRestOfLines(String[] cmds, List<String> lines)
+    private void addLines(String[] cmds, String firstLine, PircBotX bot, User user, Channel channel, BotMode mode)
     {
+        List<String> lines = Lists.newArrayList(firstLine);
         for (int i = 1; i < cmds.length; i++)
         {
             String s = cmds[i];
@@ -134,6 +139,11 @@ public class Commands extends Command
         if (cmds.length == 1)
         {
             lines.set(0, lines.get(0) + ".");
+        }
+
+        for (String s : lines)
+        {
+            IRCUtils.modeSensitiveEnqueue(bot, user, channel, s, mode);
         }
     }
 

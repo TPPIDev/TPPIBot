@@ -163,6 +163,11 @@ public class IRCUtils
     public static void modeSensitiveEnqueue(PircBotX bot, User user, Channel channel, String message)
     {
         BotMode mode = Mode.getMode(channel.getName());
+        modeSensitiveEnqueue(bot, user, channel, message, mode);
+    }
+    
+    public static void modeSensitiveEnqueue(PircBotX bot, User user, Channel channel, String message, BotMode mode)
+    {
         switch(mode)
         {
         case MESSAGE:
