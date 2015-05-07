@@ -61,6 +61,8 @@ public class Commands extends Command
                 }
             }
         }
+        
+        boolean isTooLong = false;
 
         PermLevel perms = getPerm(channel, user);
         for (ICommand c : CommandRegistry.getCommands())
@@ -76,6 +78,7 @@ public class Commands extends Command
                         {
                             listLines.add(s);
                             s = "";
+                            isTooLong = true;
                         }
                     }
                 }
@@ -96,17 +99,23 @@ public class Commands extends Command
         listLines.add(last.substring(0, last.length() - 2));
 
         String[] cmds = listLines.toArray(new String[] {});
+        String target = channel.getName();
+        if (isTooLong)
+        {
+            lines.add("List too long, replying privately...");
+            target = user.getNick();
+        }
 
         if (custom)
         {
-            lines.add("Custom Commands: " + cmds[0]);
+            MessageSender.instance.enqueue(bot, target, "Custom Commands: " + cmds[0]);
             addRestOfLines(cmds, lines);
         }
         else
         {
-            lines.add("Commands: " + cmds[0]);
+            MessageSender.instance.enqueue(bot, target, "Commands: " + cmds[0]);
             addRestOfLines(cmds, lines);
-            lines.add("To show custom commands for this channel, try \"~commands custom\".");
+            MessageSender.instance.enqueue(bot, target, "To show custom commands for this channel, try \"~commands custom\".");
         }
     }
 
