@@ -9,6 +9,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -47,7 +48,7 @@ public class BannedWords implements IReaction
         {
             for (String s : bannedWords)
             {
-                Matcher matcher = Pattern.compile("\\b(" + s + ")\\b", Pattern.CASE_INSENSITIVE).matcher(event.getMessage());
+                Matcher matcher = Pattern.compile("\\b(" + s + ")\\b", Pattern.CASE_INSENSITIVE).matcher(Colors.removeFormattingAndColors(event.getMessage()));
                 while (matcher.find())
                 {
                     String word = matcher.group();
