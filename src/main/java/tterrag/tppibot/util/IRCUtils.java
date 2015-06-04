@@ -7,9 +7,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.pircbotx.Channel;
+import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserLevel;
+
+import com.google.common.collect.Lists;
 
 import tterrag.tppibot.commands.Command;
 import tterrag.tppibot.commands.Mode;
@@ -211,5 +214,22 @@ public class IRCUtils
         default:
             return 60;
         }
+    }
+
+    /**
+     * Removes "invisible" arguments
+     */
+    public static String[] trim(String[] args)
+    {
+        List<String> ret = Lists.newArrayList();
+        for (int i = 0; i < args.length; i++)
+        {
+            String s = Colors.removeFormattingAndColors(args[i]);
+            if (!s.trim().isEmpty())
+            {
+                ret.add(s);
+            }
+        }
+        return ret.toArray(new String[ret.size()]);
     }
 }

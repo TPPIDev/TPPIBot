@@ -50,7 +50,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
             r.onMessage(event);
         }
         
-        String[] args = message.split(" ");
+        String[] args = IRCUtils.trim(message.split(" "));
 
         if (args.length < 1)
         {

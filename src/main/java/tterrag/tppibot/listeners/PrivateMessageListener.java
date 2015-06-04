@@ -21,7 +21,7 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
     @Override
     public void onPrivateMessage(PrivateMessageEvent<PircBotX> event) throws Exception
     {
-        String[] args = event.getMessage().split(" ");
+        String[] args = IRCUtils.trim(event.getMessage().split(" "));
         if (args.length <= 0) { return; }
 
         List<String> lines = new ArrayList<String>();
