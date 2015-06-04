@@ -25,7 +25,7 @@ public class MessageSender implements Runnable
         
         while (true)
         {
-            ThreadUtils.sleep(1000);
+            ThreadUtils.sleep(100);
             Message send = toSend.poll();
             if (send != null)
             {
