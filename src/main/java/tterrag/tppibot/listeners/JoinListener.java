@@ -14,7 +14,7 @@ public class JoinListener extends ListenerAdapter<PircBotX>
     public void onJoin(JoinEvent<PircBotX> event) throws Exception
     {
         if (!Main.reminders.isInReminderMap(event.getChannel().getName()))
-            Main.reminders.enableRemindersFor(event.getChannel().getName().toLowerCase());
+            Main.reminders.disableRemindersFor(event.getChannel().getName().toLowerCase());
         
         Mode.initMode(event.getChannel().getName(), BotMode.MESSAGE);
     }
