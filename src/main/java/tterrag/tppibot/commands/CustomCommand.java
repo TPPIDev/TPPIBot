@@ -42,7 +42,7 @@ public class CustomCommand extends Command
         if ((channel != null && channel.getName().equals(this.channel)) || this.channel == null)
         {
             String to = channel == null ? user.getNick() : channel.getName();
-            String msg = IRCUtils.getMessageForUser(user, message, args);
+            String msg = IRCUtils.getMessageWithArgs(user, message, args);
 
             if (this.isAction)
             {
@@ -50,7 +50,7 @@ public class CustomCommand extends Command
             }
             else
             {
-                MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageForUser(user, message, args));
+                MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageWithArgs(user, message, args));
             }
         }
     }

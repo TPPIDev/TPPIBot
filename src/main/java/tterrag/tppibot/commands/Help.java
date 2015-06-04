@@ -32,11 +32,11 @@ public class Help extends Command
                 user.send().notice("Your current perm level is: " + PermRegistry.instance().getPermLevelForUser(channel, user) + ".");
             }
             
-            lines.add(IRCUtils.getMessageForUser(user, "To get help on specific commands " + (channel == null ? helpText.replace(MessageListener.controlChar, "\"") + "\"" : helpText), args));
+            lines.add(IRCUtils.getMessageWithArgs(user, "To get help on specific commands " + (channel == null ? helpText.replace(MessageListener.controlChar, "\"") + "\"" : helpText), args));
         }
         else
         {
-            lines.add(IRCUtils.getMessageForUser(user, "%user% - Info on commands:", new String[] {}));
+            lines.add(IRCUtils.getMessageWithArgs(user, "%user% - Info on commands:", new String[] {}));
 
             for (String s : args)
             {

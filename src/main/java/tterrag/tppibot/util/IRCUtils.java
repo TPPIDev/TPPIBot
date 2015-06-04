@@ -91,9 +91,13 @@ public class IRCUtils
         return userLevel.ordinal() >= toCheck.ordinal();
     }
 
-    public static String getMessageForUser(User user, String message, String... args)
+    public static String getMessageWithArgs(User user, String message, String... args)
     {
-        return message.replace("%user%", args.length >= 1 ? args[0] : user.getNick());
+        String ret = "";
+        for (String arg : args)
+            ret += arg + " ";
+
+        return message.replace("%user%", args.length >= 1 ? ret.substring(0, ret.length() - 1) : user.getNick());
     }
 
     @Deprecated
