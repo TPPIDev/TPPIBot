@@ -1,7 +1,6 @@
 package tterrag.tppibot.reactions;
 
-import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.REPEATS;
-import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.SYMBOLS;
+import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -221,7 +220,8 @@ public class CharacterSpam implements IReaction
     
     public int getStrikes(User user)
     {
-        return strikes.get(user.getHostmask());
+        Integer ret = strikes.get(user.getHostmask());
+        return ret == null ? 0 : ret;
     }
     
     public int setStrikes(User user, int amnt)
