@@ -173,6 +173,14 @@ public class CharacterSpam implements IReaction
                 strikeCount = strikes.get(user.getHostmask());
             }
 
+            if (reason == SpamReasons.CURSE)
+            {
+                MessageSender.instance.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
+                        + 10 + " minutes. Reason: " + reason.getText());
+                IRCUtils.timeout(bot, user, channel, "" + 10);
+                return true;
+            }
+
             if (strikeCount < 3)
             {
                 MessageSender.instance.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());

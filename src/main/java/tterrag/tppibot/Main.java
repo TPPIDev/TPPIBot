@@ -110,6 +110,7 @@ public class Main
         new Drama();
         new BanWord();
         new Nick();
+        new UUID();
         new Strikes();
 
         Timeout timeout = new Timeout();
