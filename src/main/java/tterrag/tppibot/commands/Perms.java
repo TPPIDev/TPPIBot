@@ -60,9 +60,15 @@ public class Perms extends Command
             return;
         }
         
-        PermRegistry.instance().registerUser(channel, toChange, level);
-        lines.add("Successfully set " + nick + " to the " + level.toString() + " level.");
-        IRCUtils.modeSensitiveEnqueue(bot, toChange, channel, toChange.getNick() + ", " + (level == PermLevel.CONTROLLER ? "you are now a controller for TPPIBot!" : "you are now of the level " + level.toString() + " in channel " + channel.getName() + "!"));
+        if (PermRegistry.instance().registerUser(channel, toChange, level))
+        {
+        	lines.add("Successfully set " + nick + " to the " + level.toString() + " level.");
+        	IRCUtils.modeSensitiveEnqueue(bot, toChange, channel, toChange.getNick() + ", " + (level == PermLevel.CONTROLLER ? "you are now a controller for TPPIBot!" : "you are now of the level " + level.toString() + " in channel " + channel.getName() + "!"));
+        }
+        else
+        {
+        	lines.add(args[0] + " is not logged in!");
+        }
     }
     
     @Override
