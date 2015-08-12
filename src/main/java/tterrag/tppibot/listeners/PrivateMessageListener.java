@@ -54,7 +54,7 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
                 }
                 else if (c.executeWithoutChannel())
                 {
-                    if (c.getPermLevel().equals(PermLevel.DEFAULT) || PermRegistry.instance().isController(event.getUser()))
+                    if (IRCUtils.isPermLevelAboveOrEqualTo(PermLevel.DEFAULT, c.getPermLevel()) || PermRegistry.instance().isController(event.getUser()))
                     {
                         c.onCommand(event.getBot(), event.getUser(), null, lines, ArrayUtils.remove(args, 0));
                     }
