@@ -35,18 +35,18 @@ public class FloodSpam implements IReaction
 
         private List<Message> msgs;
 
-        public MessageCount(User user, Channel channel)
+        public MessageCount(User user, Channel channel, long time)
         {
             this.user = user;
             this.channel = channel;
 
             msgs = new ArrayList<Message>();
-            msgs.add(new Message(System.currentTimeMillis()));
+            msg(time);
         }
 
-        public void msg()
+        public void msg(long time)
         {
-            msgs.add(new Message(System.currentTimeMillis()));
+            msgs.add(new Message(time));
         }
 
         public void tick()
@@ -126,7 +126,7 @@ public class FloodSpam implements IReaction
                     MessageCount count = iter.next();
                     if (count != null && count.equals(event))
                     {
-                        count.msg();
+                        count.msg(event.getTimestamp());
                         found = true;
                         if (count.breakinDaLaw())
                         {
@@ -140,7 +140,7 @@ public class FloodSpam implements IReaction
 
             if (!found)
             {
-                counts.add(new MessageCount(event.getUser(), event.getChannel()));
+                counts.add(new MessageCount(event.getUser(), event.getChannel(), event.getTimestamp()));
             }
         }
     }
