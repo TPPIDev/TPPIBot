@@ -56,7 +56,8 @@ public class WhoisCache
             acct = null;
         }
 
-        return whoisCache.put(user.getNick(), acct);
+        whoisCache.put(user.getNick(), acct);
+        return acct;
     }
 
     @Subscribe
