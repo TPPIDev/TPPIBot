@@ -175,7 +175,7 @@ public class CharacterSpam implements IReaction
 
             if (reason == SpamReasons.CURSE)
             {
-                MessageSender.instance.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
+                MessageSender.INSTANCE.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
                         + 10 + " minutes. Reason: " + reason.getText());
                 IRCUtils.timeout(bot, user, channel, "" + 10);
                 return true;
@@ -183,11 +183,11 @@ public class CharacterSpam implements IReaction
 
             if (strikeCount < 3)
             {
-                MessageSender.instance.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
+                MessageSender.INSTANCE.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
             }
             else
             {
-                MessageSender.instance.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
+                MessageSender.INSTANCE.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
                         + (5 * (strikeCount - 2)) + " minutes. Reason: " + reason.getText());
                 IRCUtils.timeout(bot, user, channel, "" + 5 * (strikeCount - 2));
             }

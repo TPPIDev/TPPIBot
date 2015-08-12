@@ -9,21 +9,23 @@ import tterrag.tppibot.commands.AddCommand;
 import tterrag.tppibot.commands.CustomCommand;
 import tterrag.tppibot.interfaces.ICommand;
 
-public class CommandRegistry
+public enum CommandRegistry
 {
-    private static ArrayList<ICommand> commands = new ArrayList<ICommand>();
+    INSTANCE;
+    
+    private ArrayList<ICommand> commands = new ArrayList<ICommand>();
 
-    public static void registerCommand(ICommand c)
+    public void registerCommand(ICommand c)
     {
         commands.add(c);
     }
 
-    public static List<ICommand> getCommands()
+    public List<ICommand> getCommands()
     {
         return commands;
     }
 
-    public static boolean isCommandRegistered(String s)
+    public boolean isCommandRegistered(String s)
     {
         for (ICommand c : commands)
         {
@@ -33,7 +35,7 @@ public class CommandRegistry
         return false;
     }
 
-    public static ICommand getCommand(String s)
+    public ICommand getCommand(String s)
     {
         for (ICommand c : commands)
         {
@@ -43,7 +45,7 @@ public class CommandRegistry
         return null;
     }
 
-    public static boolean unregisterCommand(String s, Channel channel)
+    public boolean unregisterCommand(String s, Channel channel)
     {
         for (int i = 0; i < commands.size(); i++)
         {

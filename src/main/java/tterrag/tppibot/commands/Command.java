@@ -58,10 +58,10 @@ public abstract class Command implements ICommand
     @Override
     public ICommand create()
     {
-        CommandRegistry.registerCommand(this);
+        CommandRegistry.INSTANCE.registerCommand(this);
 
         if (shouldReceiveEvents())
-            EventHandler.registerReceiver(this);
+            EventHandler.INSTANCE.registerReceiver(this);
 
         return this;
     }

@@ -29,7 +29,7 @@ public class ConsoleCommands implements Runnable
             {
                 String cmd = scan.nextLine();
 
-                for (ICommand c : CommandRegistry.getCommands())
+                for (ICommand c : CommandRegistry.INSTANCE.getCommands())
                 {
                     if (cmd.toLowerCase().startsWith(c.getIdent().toLowerCase()))
                     {

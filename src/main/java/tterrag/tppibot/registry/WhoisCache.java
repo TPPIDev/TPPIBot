@@ -15,21 +15,11 @@ import tterrag.tppibot.annotations.Subscribe;
 
 import com.google.common.collect.Maps;
 
-public class WhoisCache
+public enum WhoisCache
 {
-    private static WhoisCache instance;
-    
-    public static WhoisCache instance()
-    {
-        return instance != null ? instance : (instance = new WhoisCache());
-    }
+    INSTANCE;
 
     private Map<String, String> whoisCache = Maps.newHashMap();
-
-    private WhoisCache()
-    {
-        EventHandler.registerReceiver(this);
-    }
 
     public String getAccount(User user)
     {

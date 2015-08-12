@@ -19,11 +19,11 @@ public class Recover extends Command
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        if (PermRegistry.isDefaultController(user))
+        if (PermRegistry.INSTANCE.isDefaultController(user))
         {
-            if (PermRegistry.instance().registerUser(null, user, PermLevel.CONTROLLER)) 
+            if (PermRegistry.INSTANCE.registerUser(null, user, PermLevel.CONTROLLER)) 
             {
-            	MessageSender.instance.enqueueNotice(bot, user.getNick(), "Welcome back, " + user.getNick() + ". You are once again controller.");
+            	MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), "Welcome back, " + user.getNick() + ". You are once again controller.");
             }
             else
             {
@@ -32,7 +32,7 @@ public class Recover extends Command
         }
         else
         {
-            MessageSender.instance.enqueueNotice(bot, user.getNick(), "Nice try...");
+            MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), "Nice try...");
         }
     }
 }

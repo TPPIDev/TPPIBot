@@ -130,7 +130,7 @@ public class Timeout extends Command
             if (pastOffenders.containsKey(hostmask))
             {
                 int pastTimeouts = pastOffenders.get(hostmask);
-                MessageSender.instance.enqueueNotice(bot, user.getNick(), String.format("The user \"%s\" with hostmask \"%s\" has been timed out %s time%s before.", toTimeout.getNick(), hostmask, Colors.BOLD + pastTimeouts
+                MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), String.format("The user \"%s\" with hostmask \"%s\" has been timed out %s time%s before.", toTimeout.getNick(), hostmask, Colors.BOLD + pastTimeouts
                         + Colors.NORMAL, pastTimeouts <= 1 ? "" : "s"));
                 pastOffenders.put(hostmask, pastTimeouts + 1);
             }

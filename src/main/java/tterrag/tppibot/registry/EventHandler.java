@@ -19,9 +19,11 @@ import tterrag.tppibot.util.Logging;
  * {@link MessageEvent} due to reflection overhead
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class EventHandler
+public enum EventHandler
 {
-    private static List<ReceiverMethod> registrar = new ArrayList<ReceiverMethod>();
+    INSTANCE;
+    
+    private List<ReceiverMethod> registrar = new ArrayList<ReceiverMethod>();
 
     private static class ReceiverMethod
     {
@@ -37,7 +39,7 @@ public class EventHandler
         }
     }
 
-    public static void registerReceiver(Object o)
+    public void registerReceiver(Object o)
     {
         for (Method m : o.getClass().getDeclaredMethods())
         {
@@ -52,12 +54,12 @@ public class EventHandler
         }
     }
 
-    private static void registerReceiver(Object o, Method m, Class<? extends Event> clazz)
+    private void registerReceiver(Object o, Method m, Class<? extends Event> clazz)
     {
         registrar.add(new ReceiverMethod(o, m, clazz));
     }
 
-    public static void post(Event<PircBotX> event)
+    public void post(Event<PircBotX> event)
     {
         for (ReceiverMethod r : registrar)
         {

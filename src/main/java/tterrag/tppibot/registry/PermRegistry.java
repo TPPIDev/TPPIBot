@@ -20,8 +20,10 @@ import tterrag.tppibot.util.IRCUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class PermRegistry
+public enum PermRegistry
 {
+    INSTANCE;
+    
     /**
      * {@link Channel} -> ({@link User} -> {@link PermLevel})
      */
@@ -31,9 +33,9 @@ public class PermRegistry
 
     private Config registrarConfig, controllersConfig;
 
-    public static final String[] defaultControllers = new String[] { "tterrag", "esKaayY", "TehNut" };
+    public final String[] defaultControllers = new String[] { "tterrag", "esKaayY", "TehNut" };
 
-    public PermRegistry()
+    private PermRegistry()
     {
         registrarConfig = new Config("permRegistry.json");
         controllersConfig = new Config("controllers.json");
@@ -46,13 +48,6 @@ public class PermRegistry
 
         if (controllers.isEmpty())
             controllers.addAll(Arrays.asList(defaultControllers));
-    }
-
-    private static final PermRegistry INSTANCE = new PermRegistry();
-
-    public static PermRegistry instance()
-    {
-        return INSTANCE;
     }
 
     public boolean registerUser(Channel chan, User user, PermLevel level)
@@ -118,7 +113,7 @@ public class PermRegistry
         return controllers.contains(IRCUtils.getAccount(user));
     }
 
-    public static boolean isDefaultController(User user)
+    public boolean isDefaultController(User user)
     {
         return ArrayUtils.contains(defaultControllers, IRCUtils.getAccount(user));
     }

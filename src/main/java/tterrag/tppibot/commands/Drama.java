@@ -50,7 +50,7 @@ public class Drama extends Command
                 drama = StringUtils.join(words, " ");
             }
 
-            MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), drama);
+            MessageSender.INSTANCE.enqueue(bot, channel == null ? user.getNick() : channel.getName(), drama);
         }
         catch (Exception e)
         {

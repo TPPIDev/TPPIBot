@@ -39,7 +39,7 @@ public class AddCommand extends Command
 
         for (ICommand c : commandsAdded)
         {
-            CommandRegistry.registerCommand(c);
+            CommandRegistry.INSTANCE.registerCommand(c);
         }
     }
 
@@ -86,7 +86,7 @@ public class AddCommand extends Command
 
         CustomCommand command = null;
 
-        if (global && PermRegistry.instance().isController(user))
+        if (global && PermRegistry.INSTANCE.isController(user))
         {
             command = new CustomCommand(cmdName, level, toAdd);
         }

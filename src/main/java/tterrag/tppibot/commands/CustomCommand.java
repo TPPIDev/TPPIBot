@@ -46,11 +46,11 @@ public class CustomCommand extends Command
 
             if (this.isAction)
             {
-                MessageSender.instance.enqueueAction(bot, to, msg);
+                MessageSender.INSTANCE.enqueueAction(bot, to, msg);
             }
             else
             {
-                MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageWithArgs(user, message, args));
+                MessageSender.INSTANCE.enqueue(bot, channel == null ? user.getNick() : channel.getName(), IRCUtils.getMessageWithArgs(user, message, args));
             }
         }
     }
@@ -60,7 +60,7 @@ public class CustomCommand extends Command
     {
         AddCommand.commandsAdded.remove(this);
         PermLevel level = PermLevel.INVALID;
-        PermLevel userLevel = PermRegistry.instance().getPermLevelForUser(channel, user);
+        PermLevel userLevel = PermRegistry.INSTANCE.getPermLevelForUser(channel, user);
 
         if (args.length > 0 && args[0].startsWith("-permLevel="))
         {

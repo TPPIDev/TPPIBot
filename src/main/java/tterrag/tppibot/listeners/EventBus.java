@@ -11,6 +11,6 @@ public class EventBus extends ListenerAdapter<PircBotX>
     @Override
     public void onEvent(Event<PircBotX> event) throws Exception
     {
-        EventHandler.post(event);
+        EventHandler.INSTANCE.post(event);
     }
 }
