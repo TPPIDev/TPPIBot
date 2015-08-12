@@ -55,9 +55,13 @@ public class PermRegistry
         return INSTANCE;
     }
 
-    public void registerUser(Channel chan, User user, PermLevel level)
+    public boolean registerUser(Channel chan, User user, PermLevel level)
     {
         String acct = IRCUtils.getAccount(user);
+        if (acct == null) 
+        {
+        	return false;
+        }
         
         // controllers are global
         if (level == PermLevel.CONTROLLER)
@@ -76,6 +80,7 @@ public class PermRegistry
 
             registrar.put(chanName, register(registrar.get(chanName), acct, level));
         }
+        return true;
     }
 
     private Map<String, PermLevel> register(Map<String, PermLevel> curChanMap, String acct, PermLevel level)
