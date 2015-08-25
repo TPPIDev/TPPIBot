@@ -26,14 +26,15 @@ public class Timeout extends Command
         private long time;
 
         public final String channel;
-        public final String user;
+        public final String nick, hostmask;
 
-        public TimeoutTime(long start, long secs, String chan, String user)
+        public TimeoutTime(long start, long secs, String chan, User user)
         {
             this.init = start;
             this.time = secs * 1000;
             this.channel = chan;
-            this.user = user;
+            this.nick = user.getNick();
+            this.hostmask = user.getHostmask();
         }
 
         public boolean isTimeUp()
@@ -114,14 +115,14 @@ public class Timeout extends Command
         for (int i = 0; i < list.size(); i++)
         {
             TimeoutTime t = list.get(i);
-            if (t.user.equals(toTimeout.getNick()))
+            if (t.hostmask.equals(toTimeout.getNick()))
             {
                 list.remove(t);
                 newOffense = false;
             }
         }
 
-        this.list.add(new TimeoutTime(System.currentTimeMillis(), seconds, channel.getName(), toTimeout.getNick()));
+        this.list.add(new TimeoutTime(System.currentTimeMillis(), seconds, channel.getName(), toTimeout));
 
         String hostmask = toTimeout.getHostmask();
 
