@@ -111,6 +111,7 @@ public class Main
         new BanWord();
         new Nick();
         new UUID();
+        new Rekt();
 
         Timeout timeout = new Timeout();
         log("Commands created.");
