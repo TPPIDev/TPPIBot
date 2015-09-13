@@ -21,7 +21,7 @@ public class BanWord extends Command
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        PermLevel level = PermRegistry.instance().getPermLevelForUser(channel, user);
+        PermLevel level = PermRegistry.INSTANCE.getPermLevelForUser(channel, user);
 
         if (args.length < 2)
         {
@@ -39,7 +39,7 @@ public class BanWord extends Command
                     for (String word : Main.bannedWords.getBannedWords())
                         list += list.length() == 0 ? word : ", " + word;
 
-                    MessageSender.instance.enqueueNotice(bot, user.getNick(), list);
+                    MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), list);
                     return;
                 }
             }
@@ -64,7 +64,7 @@ public class BanWord extends Command
         }
         else
         {
-            MessageSender.instance.enqueueNotice(bot, user.getNick(), "You are not a " + PermLevel.CONTROLLER.toString());
+            MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), "You are not a " + PermLevel.CONTROLLER.toString());
         }
     }
 }
