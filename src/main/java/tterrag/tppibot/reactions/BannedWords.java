@@ -55,7 +55,7 @@ public class BannedWords implements IReaction
                     String word = matcher.group();
                     if (word.equalsIgnoreCase(s))
                     {
-                        PermLevel level = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
+                        PermLevel level = PermRegistry.INSTANCE.getPermLevelForUser(event.getChannel(), event.getUser());
                         if (!IRCUtils.isPermLevelAboveOrEqualTo(level, PermLevel.TRUSTED))
                         {
                             Main.spamFilter.finish(Main.spamFilter.timeout(event, CURSE) ? event.getUser() : null);

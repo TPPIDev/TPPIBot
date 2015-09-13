@@ -27,7 +27,7 @@ public class EditCommand extends Command
             return;
         }
 
-        for (ICommand c : CommandRegistry.getCommands())
+        for (ICommand c : CommandRegistry.INSTANCE.getCommands())
         {
             String cmdName = args[0];
 

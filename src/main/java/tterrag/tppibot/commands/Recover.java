@@ -7,6 +7,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 import tterrag.tppibot.registry.PermRegistry;
+import tterrag.tppibot.runnables.MessageSender;
 
 public class Recover extends Command
 {
@@ -18,14 +19,20 @@ public class Recover extends Command
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        if (PermRegistry.isDefaultController(user))
+        if (PermRegistry.INSTANCE.isDefaultController(user))
         {
-            PermRegistry.instance().registerUser(null, user, PermLevel.CONTROLLER);
-            user.send().notice("Welcome back, " + user.getNick() + ". You are once again controller.");
+            if (PermRegistry.INSTANCE.registerUser(null, user, PermLevel.CONTROLLER)) 
+            {
+            	MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), "Welcome back, " + user.getNick() + ". You are once again controller.");
+            }
+            else
+            {
+            	lines.add(args[0] + " is not logged in!");
+            }
         }
         else
         {
-            user.send().notice("Nice try...");
+            MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), "Nice try...");
         }
     }
 }

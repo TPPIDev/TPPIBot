@@ -37,7 +37,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
         String message = event.getMessage();
         User sender = event.getUser();
         Channel channel = event.getChannel();
-        List<ICommand> commands = CommandRegistry.getCommands();
+        List<ICommand> commands = CommandRegistry.INSTANCE.getCommands();
 
         Long lastFire = delayMap.get(event.getChannel().getName());
         if (lastFire == null)
@@ -45,7 +45,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
            lastFire = 0L;
         }
         
-        for (IReaction r : ReactionRegistry.getReactions())
+        for (IReaction r : ReactionRegistry.INSTANCE.getReactions())
         {
             r.onMessage(event);
         }
@@ -64,11 +64,11 @@ public class MessageListener extends ListenerAdapter<PircBotX>
         
         if (args.length > 0 && args[0].startsWith(controlChar))
         {
-            PermLevel perm = PermRegistry.instance().getPermLevelForUser(event.getChannel(), event.getUser());
+            PermLevel perm = PermRegistry.INSTANCE.getPermLevelForUser(event.getChannel(), event.getUser());
 
-            if (perm == PermLevel.NONE && !PermRegistry.isDefaultController(sender))
+            if (perm == PermLevel.NONE && !PermRegistry.INSTANCE.isDefaultController(sender))
             {
-                MessageSender.instance.enqueueNotice(event.getBot(), sender.getNick(), "You may not execute commands in " + channel.getName());
+                MessageSender.INSTANCE.enqueueNotice(event.getBot(), sender.getNick(), "You may not execute commands in " + channel.getName());
                 return;
             }
             
@@ -88,7 +88,7 @@ public class MessageListener extends ListenerAdapter<PircBotX>
                         }
                         else
                         {
-                            MessageSender.instance.enqueueNotice(event.getBot(), event.getUser().getNick(), "You have no permission, you must be at least: " + c.getPermLevel().toString());
+                            MessageSender.INSTANCE.enqueueNotice(event.getBot(), event.getUser().getNick(), "You have no permission, you must be at least: " + c.getPermLevel().toString());
                         }
 
                         for (String s : toSend)

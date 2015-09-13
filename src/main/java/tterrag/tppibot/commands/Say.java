@@ -37,9 +37,9 @@ public class Say extends Command
 
         String text = StringUtils.join(args, " ");
 
-        if (sayChan == null || IRCUtils.isPermLevelAboveOrEqualTo(PermRegistry.instance().getPermLevelForUser(sayChan, user), PermLevel.TRUSTED))
+        if (sayChan == null || IRCUtils.isPermLevelAboveOrEqualTo(PermRegistry.INSTANCE.getPermLevelForUser(sayChan, user), PermLevel.TRUSTED))
         {
-            MessageSender.instance.enqueue(bot, sayChan == null ? channel == null ? user.getNick() : channel.getName() : sayChan.getName(), text);
+            MessageSender.INSTANCE.enqueue(bot, sayChan == null ? channel == null ? user.getNick() : channel.getName() : sayChan.getName(), text);
         }
         else
         {

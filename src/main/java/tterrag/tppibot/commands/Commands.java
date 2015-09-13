@@ -54,12 +54,12 @@ public class Commands extends Command
             {
                 custom = true;
             }
-            else if ("length".equals(args[0]) && PermRegistry.instance().isController(user))
+            else if ("length".equals(args[0]) && PermRegistry.INSTANCE.isController(user))
             {
                 if (args.length > 1)
                 {
                     length = Integer.parseInt(args[1]);
-                    MessageSender.instance.enqueueNotice(bot, user.getNick(), "Length set.");
+                    MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), "Length set.");
                     return;
                 }
             }
@@ -68,7 +68,7 @@ public class Commands extends Command
         boolean isTooLong = false;
 
         PermLevel perms = getPerm(channel, user);
-        for (ICommand c : CommandRegistry.getCommands())
+        for (ICommand c : CommandRegistry.INSTANCE.getCommands())
         {
             if (IRCUtils.isPermLevelAboveOrEqualTo(perms, c.getPermLevel()))
             {
@@ -157,11 +157,11 @@ public class Commands extends Command
     {
         if (chan == null)
         {
-            return PermRegistry.instance().isController(user) ? PermLevel.CONTROLLER : PermLevel.DEFAULT;
+            return PermRegistry.INSTANCE.isController(user) ? PermLevel.CONTROLLER : PermLevel.DEFAULT;
         }
         else
         {
-            return PermRegistry.instance().getPermLevelForUser(chan, user);
+            return PermRegistry.INSTANCE.getPermLevelForUser(chan, user);
         }
     }
 

@@ -47,7 +47,7 @@ public class IRCUtils
         if (perm == null)
             perm = PermLevel.DEFAULT;
 
-        PermLevel userPerm = PermRegistry.instance().getPermLevelForUser(channel, user);
+        PermLevel userPerm = PermRegistry.INSTANCE.getPermLevelForUser(channel, user);
 
         return isPermLevelAboveOrEqualTo(userPerm, perm);
 
@@ -77,7 +77,7 @@ public class IRCUtils
     {
         if (!ArrayUtils.contains(PermLevel.getSettablePermLevels(), perm)) { throw new IllegalArgumentException("The perm level " + perm.toString() + " is not valid."); }
 
-        return isPermLevelAboveOrEqualTo(PermRegistry.instance().getPermLevelForUser(chan, user), perm);
+        return isPermLevelAboveOrEqualTo(PermRegistry.INSTANCE.getPermLevelForUser(chan, user), perm);
     }
 
     /**
@@ -140,7 +140,7 @@ public class IRCUtils
 
     public static String getAccount(User u)
     {
-        return WhoisCache.instance().getAccount(u);
+        return WhoisCache.INSTANCE.getAccount(u);
     }
     
     public static String fmtChan(String chan)
@@ -159,20 +159,20 @@ public class IRCUtils
         switch(mode)
         {
         case MESSAGE:
-            MessageSender.instance.enqueue(bot, channel.getName(), message);
+            MessageSender.INSTANCE.enqueue(bot, channel.getName(), message);
             break;
         case NOTICE:
-            MessageSender.instance.enqueueNotice(bot, user.getNick(), message);
+            MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), message);
             break;
         case PM:
-            MessageSender.instance.enqueue(bot, user.getNick(), message);
+            MessageSender.INSTANCE.enqueue(bot, user.getNick(), message);
             break;
         }
     }
     
     public static void timeout(PircBotX bot, User user, Channel channel, String amount)
     {
-        Command quiet = (Command) CommandRegistry.getCommand("timeout");
+        Command quiet = (Command) CommandRegistry.INSTANCE.getCommand("timeout");
         List<String> toQueue = new ArrayList<String>();
         quiet.onCommand(bot, user, channel, toQueue, user.getNick(),"" + amount);
         for (String s : toQueue)

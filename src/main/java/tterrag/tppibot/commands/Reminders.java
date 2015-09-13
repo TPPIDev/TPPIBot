@@ -91,10 +91,10 @@ public class Reminders extends Command
         }
         else if ("list".equals(args[0]))
         {
-            MessageSender.instance.enqueueNotice(bot, user.getNick(), "Current reminder list:");
+            MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), "Current reminder list:");
             for (String s : Main.reminders.getReminders())
             {
-                MessageSender.instance.enqueueNotice(bot, user.getNick(), s);
+                MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), s);
             }
         }
         else if ("remove".equals(args[0]))

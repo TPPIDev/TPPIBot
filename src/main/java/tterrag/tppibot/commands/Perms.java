@@ -37,7 +37,7 @@ public class Perms extends Command
 
         if (args.length == 1)
         {
-            lines.add("Perm level for " + nick + ": " + PermRegistry.instance().getPermLevelForUser(channel, toChange));
+            lines.add("Perm level for " + nick + ": " + PermRegistry.INSTANCE.getPermLevelForUser(channel, toChange));
             return;
         }
 
@@ -54,15 +54,21 @@ public class Perms extends Command
             return;
         }
         
-        if (level == PermLevel.CONTROLLER && PermRegistry.instance().getPermLevelForUser(channel, user) != PermLevel.CONTROLLER)
+        if (level == PermLevel.CONTROLLER && PermRegistry.INSTANCE.getPermLevelForUser(channel, user) != PermLevel.CONTROLLER)
         {
             lines.add("You must be a controller to give someone controller permissions!");
             return;
         }
         
-        PermRegistry.instance().registerUser(channel, toChange, level);
-        lines.add("Successfully set " + nick + " to the " + level.toString() + " level.");
-        IRCUtils.modeSensitiveEnqueue(bot, toChange, channel, toChange.getNick() + ", " + (level == PermLevel.CONTROLLER ? "you are now a controller for TPPIBot!" : "you are now of the level " + level.toString() + " in channel " + channel.getName() + "!"));
+        if (PermRegistry.INSTANCE.registerUser(channel, toChange, level))
+        {
+        	lines.add("Successfully set " + nick + " to the " + level.toString() + " level.");
+        	IRCUtils.modeSensitiveEnqueue(bot, toChange, channel, toChange.getNick() + ", " + (level == PermLevel.CONTROLLER ? "you are now a controller for TPPIBot!" : "you are now of the level " + level.toString() + " in channel " + channel.getName() + "!"));
+        }
+        else
+        {
+        	lines.add(args[0] + " is not logged in!");
+        }
     }
     
     @Override

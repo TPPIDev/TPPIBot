@@ -18,7 +18,7 @@ public class Topic extends Command
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
     {
-        MessageSender.instance.enqueue(bot, channel.getName(), channel.getTopic());
+        MessageSender.INSTANCE.enqueue(bot, channel.getName(), channel.getTopic());
     }
 
     @Override

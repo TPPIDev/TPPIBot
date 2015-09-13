@@ -9,9 +9,9 @@ import tterrag.tppibot.Main;
 import tterrag.tppibot.util.Message;
 import tterrag.tppibot.util.ThreadUtils;
 
-public class MessageSender implements Runnable
+public enum MessageSender implements Runnable
 {
-    public static final MessageSender instance = new MessageSender();
+    INSTANCE;
     
     public final Queue<Message> toSend = new LinkedList<Message>();
     

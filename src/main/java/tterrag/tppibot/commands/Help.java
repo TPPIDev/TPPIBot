@@ -29,7 +29,7 @@ public class Help extends Command
         {
             if (channel != null)
             {
-                user.send().notice("Your current perm level is: " + PermRegistry.instance().getPermLevelForUser(channel, user) + ".");
+                user.send().notice("Your current perm level is: " + PermRegistry.INSTANCE.getPermLevelForUser(channel, user) + ".");
             }
             
             lines.add(IRCUtils.getMessageWithArgs(user, "To get help on specific commands " + (channel == null ? helpText.replace(MessageListener.controlChar, "\"") + "\"" : helpText), args));
@@ -40,9 +40,9 @@ public class Help extends Command
 
             for (String s : args)
             {
-                if (CommandRegistry.isCommandRegistered(s))
+                if (CommandRegistry.INSTANCE.isCommandRegistered(s))
                 {
-                    ICommand c = CommandRegistry.getCommand(s);
+                    ICommand c = CommandRegistry.INSTANCE.getCommand(s);
                     lines.add(String.format("Info on %s: %s %s: %s", s, c.getDesc(), "Required perm level", c.getPermLevel().toString()));
                 }
             }

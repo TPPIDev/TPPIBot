@@ -40,7 +40,7 @@ public class Shortener extends Command
             connection.setRequestMethod("GET");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            MessageSender.instance.enqueue(bot, channel == null ? user.getNick() : channel.getName(), "> " + in.readLine());
+            MessageSender.INSTANCE.enqueue(bot, channel == null ? user.getNick() : channel.getName(), "> " + in.readLine());
         }
         catch (IOException e)
         {

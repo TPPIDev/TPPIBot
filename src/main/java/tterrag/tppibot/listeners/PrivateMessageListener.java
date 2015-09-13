@@ -25,7 +25,7 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
         if (args.length <= 0) { return; }
 
         List<String> lines = new ArrayList<String>();
-        List<ICommand> commands = CommandRegistry.getCommands();
+        List<ICommand> commands = CommandRegistry.INSTANCE.getCommands();
 
         for (int i = 0; i < commands.size(); i++)
         {
@@ -42,7 +42,7 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
                 
                 if (channel != null)
                 {
-                    PermLevel userLevel = PermRegistry.instance().getPermLevelForUser(channel, event.getUser());
+                    PermLevel userLevel = PermRegistry.INSTANCE.getPermLevelForUser(channel, event.getUser());
                     if (IRCUtils.isPermLevelAboveOrEqualTo(userLevel, c.getPermLevel()) && IRCUtils.isPermLevelAboveOrEqualTo(userLevel, PermLevel.TRUSTED))
                     {
                         c.onCommand(event.getBot(), event.getUser(), channel, lines, ArrayUtils.remove(ArrayUtils.remove(args, 0), 0));
@@ -54,7 +54,7 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
                 }
                 else if (c.executeWithoutChannel())
                 {
-                    if (c.getPermLevel().equals(PermLevel.DEFAULT) || PermRegistry.instance().isController(event.getUser()))
+                    if (IRCUtils.isPermLevelAboveOrEqualTo(PermLevel.DEFAULT, c.getPermLevel()) || PermRegistry.INSTANCE.isController(event.getUser()))
                     {
                         c.onCommand(event.getBot(), event.getUser(), null, lines, ArrayUtils.remove(args, 0));
                     }
@@ -84,7 +84,7 @@ public class PrivateMessageListener extends ListenerAdapter<PircBotX>
 
         for (String s : lines)
         {
-            MessageSender.instance.enqueue(event.getBot(), event.getUser().getNick(), s);
+            MessageSender.INSTANCE.enqueue(event.getBot(), event.getUser().getNick(), s);
         }
     }
 }

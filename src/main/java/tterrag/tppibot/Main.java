@@ -43,7 +43,7 @@ import com.google.gson.GsonBuilder;
 public class Main
 {
     public static Reminders reminderCommand;
-    
+
     public static ReminderProcess reminders;
     public static TimeoutChecker timeouts;
 
@@ -56,29 +56,29 @@ public class Main
     public static String overrideFile;
 
     public static int autoSaveRateSeconds;
-    
+
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static void main(String[] args) throws ParseException
     {
         log("Creating command line options...");
         Options options = new Options();
-        
+
         options.addOption("n", "name", true, "The nick/login of the bot");
         options.addOption("d", "dataDir", true, "The directory in which to create the .tppibot folder");
         options.addOption("p", "password", true, "Nickserv password for the bot");
         options.addOption("a", "autoSaveInterval", true, "Interval at which to save data automatically");
-        
+
         @SuppressWarnings("static-access")
         Option channels = OptionBuilder.withArgName("channel").hasArgs().withDescription("The channels to join on startup").create("channels");
         options.addOption(channels);
-        
+
         CommandLineParser parser = new BasicParser();
         CommandLine cmd = parser.parse(options, args);
         log("Command line options created.");
-        
+
         overrideFile = cmd.getOptionValue("dataDir");
-        
+
         log("Starting...");
         System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
         System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "[MM/dd HH:mm:ss]");
@@ -111,6 +111,7 @@ public class Main
         new BanWord();
         new Nick();
         new UUID();
+        new Strikes();
         new Rekt();
 
         Timeout timeout = new Timeout();
@@ -118,14 +119,14 @@ public class Main
 
         log("Creating reactions...");
         spamFilter = new CharacterSpam();
-        ReactionRegistry.registerReaction(spamFilter);
+        ReactionRegistry.INSTANCE.registerReaction(spamFilter);
         floodFilter = new FloodSpam();
-        ReactionRegistry.registerReaction(floodFilter);
+        ReactionRegistry.INSTANCE.registerReaction(floodFilter);
         bannedWords = new BannedWords();
-        ReactionRegistry.registerReaction(bannedWords);
+        ReactionRegistry.INSTANCE.registerReaction(bannedWords);
         log("Reactions created.");
-        
-        log("Configuring bot...");        
+
+        log("Configuring bot...");
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
         builder.setName(cmd.getOptionValue("name"));
         builder.setLogin(cmd.getOptionValue("name"));
@@ -159,11 +160,11 @@ public class Main
         timeouts = new TimeoutChecker(timeout);
         Thread timeoutThread = new Thread(timeouts);
         timeoutThread.start();
-        
+
         Thread consoleThread = new Thread(new ConsoleCommands());
         consoleThread.start();
 
-        Thread messageSenderThread = new Thread(MessageSender.instance);
+        Thread messageSenderThread = new Thread(MessageSender.INSTANCE);
         messageSenderThread.start();
 
         Timer timer = new Timer();
@@ -175,21 +176,20 @@ public class Main
             public void run()
             {
                 Logging.log("Sending dummy DisconnectEvent for autosave");
-                EventHandler.post(new DisconnectEvent<PircBotX>(bot, bot.getUserChannelDao().createSnapshot(), null));
+                EventHandler.INSTANCE.post(new DisconnectEvent<PircBotX>(bot, bot.getUserChannelDao().createSnapshot(), null));
             }
         }, saveRate, saveRate);
 
         log("Threads created...");
-        
+
         log("Registering extra event receivers...");
-        EventHandler.registerReceiver(reminders);
-        EventHandler.registerReceiver(PermRegistry.instance());
-        EventHandler.registerReceiver(spamFilter);
-        EventHandler.registerReceiver(bannedWords);
+        EventHandler.INSTANCE.registerReceiver(reminders);
+        EventHandler.INSTANCE.registerReceiver(PermRegistry.INSTANCE);
+        EventHandler.INSTANCE.registerReceiver(spamFilter);
+        EventHandler.INSTANCE.registerReceiver(bannedWords);
+        EventHandler.INSTANCE.registerReceiver(WhoisCache.INSTANCE);
         log("Registered extra event reveivers.");
-        
-        WhoisCache.instance();
-        
+
         // start 'er up
         try
         {
