@@ -113,6 +113,7 @@ public class Main
         new Nick();
         new UUID();
         new Strikes();
+        new Rekt();
 
         Timeout timeout = new Timeout();
         log("Commands created.");

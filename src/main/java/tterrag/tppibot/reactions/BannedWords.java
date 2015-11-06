@@ -9,6 +9,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Lists;
 import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.DisconnectEvent;
@@ -98,5 +99,14 @@ public class BannedWords implements IReaction
     public void removeWord(String string)
     {
         bannedWords.remove(string);
+    }
+
+    public List<String> getBannedWords() {
+        List<String> ret = Lists.newArrayList();
+
+        for (String word : bannedWords)
+            ret.add(word);
+
+        return ret;
     }
 }
