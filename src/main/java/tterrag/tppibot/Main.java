@@ -2,9 +2,14 @@ package tterrag.tppibot;
 
 import static tterrag.tppibot.util.Logging.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import lombok.SneakyThrows;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -13,10 +18,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.DisconnectEvent;
-import org.slf4j.impl.SimpleLogger;
 
 import tterrag.tppibot.commands.*;
 import tterrag.tppibot.listeners.EventBus;
@@ -59,9 +64,9 @@ public class Main
 
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+    @SneakyThrows
     public static void main(String[] args) throws ParseException
     {
-        log("Creating command line options...");
         Options options = new Options();
 
         options.addOption("n", "name", true, "The nick/login of the bot");
@@ -75,16 +80,12 @@ public class Main
 
         CommandLineParser parser = new BasicParser();
         CommandLine cmd = parser.parse(options, args);
-        log("Command line options created.");
 
         overrideFile = cmd.getOptionValue("dataDir");
+        
+        System.setErr(new PrintStream(new TeeOutputStream(new FileOutputStream(new File(Logging.logsDir, "pircbotx-latest.log")), System.err)));
 
         log("Starting...");
-        System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
-        System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "[MM/dd HH:mm:ss]");
-        System.setProperty(SimpleLogger.SHOW_THREAD_NAME_KEY, "false");
-        System.setProperty(SimpleLogger.LEVEL_IN_BRACKETS_KEY, "true");
-        System.setProperty(SimpleLogger.SHOW_LOG_NAME_KEY, "false");
 
         // create base commands
         log("Creating commands...");

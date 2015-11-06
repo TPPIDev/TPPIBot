@@ -12,16 +12,14 @@ import com.google.gson.GsonBuilder;
 public class Config
 {
     private File configFile;
-    private static File baseDir;
-    
+    public static final File baseDir;
+
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    
+
     static
     {
-        File userDir = new File(Main.overrideFile == null ? System.getProperty("user.home") : Main.overrideFile);
-        
-        baseDir = new File(userDir.getAbsolutePath() + "/.tppibot");
-        
+        baseDir = new File(Main.overrideFile == null ? System.getProperty("user.home") + "/.tppibot" : Main.overrideFile);
+
         if (!baseDir.exists())
         {
             baseDir.mkdirs();

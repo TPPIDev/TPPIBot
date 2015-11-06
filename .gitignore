@@ -9,6 +9,7 @@
 
 /bin
 /out
+/bot-data
 
 *.DS_Store
 *.project
