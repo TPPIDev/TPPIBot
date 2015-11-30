@@ -9,6 +9,8 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
+import tterrag.tppibot.runnables.MessageSender;
+import tterrag.tppibot.util.IRCUtils;
 
 import java.util.*;
 
@@ -58,39 +60,48 @@ public class Rekt extends Command {
 
         if (args.length == 0) {
             lines.add(String.format("%s %s", PREFIX, rektEntries.get(random.nextInt(rektEntries.size()))));
-        } else if(args.length == 1 && args[0].equals("list")) {
-            String ret = "";
-            for (String entry : rektEntries)
-                ret += (ret.length() > 0 ? ", " : "") + entry;
+            return;
+        }
 
-            lines.add(ret);
-        } else if (args.length >= 2) {
-            String rektString = "";
+        if (IRCUtils.isUserAboveOrEqualTo(channel, PermLevel.TRUSTED, user)) {
+            if (args.length == 1 && args[0].equals("list")) {
+                String ret = "";
+                for (String entry : rektEntries)
+                    ret += (ret.length() > 0 ? ", " : "") + entry;
 
-            for (int i = 1; i < args.length; i++)
-                rektString += (rektString.length() > 0 ? " " : "") + args[i];
+                MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), ret);
+                return;
+            } else if (args.length >= 2) {
+                String rektString = "";
 
-            switch (args[0]) {
-                case "add": {
-                    if (!rektEntries.contains(rektString)) {
-                        rektEntries.add(rektString);
-                        lines.add(String.format("Successfully added entry \"%s\"", rektString));
-                    }else {
-                        lines.add(String.format("Could not add entry \"%s\"", rektString));
+                for (int i = 1; i < args.length; i++)
+                    rektString += (rektString.length() > 0 ? " " : "") + args[i];
+
+                switch (args[0]) {
+                    case "add": {
+                        if (!rektEntries.contains(rektString)) {
+                            rektEntries.add(rektString);
+                            lines.add(String.format("Successfully added entry \"%s\"", rektString));
+                        } else {
+                            lines.add(String.format("Could not add entry \"%s\"", rektString));
+                        }
+                        return;
                     }
-                    break;
-                }
-                case "del": {
-                    if (rektEntries.contains(rektString)) {
-                        rektEntries.remove(rektString);
-                        lines.add(String.format("Successfully removed entry \"%s\"", rektString));
-                    } else {
-                        lines.add(String.format("Could not remove entry \"%s\"", rektString));
+                    case "del": {
+                        if (rektEntries.contains(rektString)) {
+                            rektEntries.remove(rektString);
+                            lines.add(String.format("Successfully removed entry \"%s\"", rektString));
+                        } else {
+                            lines.add(String.format("Could not remove entry \"%s\"", rektString));
+                        }
+                        return;
                     }
-                    break;
+                    default: return;
                 }
             }
         }
+
+        MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), String.format("You have no permission, you must be at least: %s", PermLevel.TRUSTED));
     }
 
     @Override
