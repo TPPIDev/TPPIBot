@@ -1,38 +1,64 @@
 package tterrag.tppibot.commands;
 
-import com.google.common.base.Strings;
-import com.google.gson.Gson;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+
 import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.runnables.MessageSender;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.base.Strings;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 public class Tell extends Command {
+    
+    public static class MultimapJson implements JsonSerializer<Multimap<?, ?>> {
+
+        @Override
+        public JsonElement serialize(Multimap<?, ?> src, Type typeOfSrc, JsonSerializationContext context) {
+            return context.serialize(src.asMap());
+        }
+    }
 
     private Config tellsConfig;
-    private Map<String, TellMessage> tells = new HashMap<>();
+    private ArrayListMultimap<String, TellMessage> tells = ArrayListMultimap.create();
 
+    @SuppressWarnings("serial")
     public Tell() {
         super("tell");
 
         tellsConfig = new Config("tells.json");
+        tellsConfig.setGson(new GsonBuilder().setPrettyPrinting().registerTypeHierarchyAdapter(Multimap.class, new MultimapJson()).create());
 
         if (Strings.isNullOrEmpty(tellsConfig.getText())) {
             tellsConfig.writeJsonToFile(tells);
         } else {
-            tells = new Gson().fromJson(tellsConfig.getText(), Map.class);
+            Map<String, Collection<TellMessage>> temp = new Gson().fromJson(tellsConfig.getText(), new TypeToken<Map<String, Collection<TellMessage>>>(){}.getType());
+            for (Entry<String, Collection<TellMessage>> entry : temp.entrySet()) {
+                tells.putAll(entry.getKey(), entry.getValue());
+            }
         }
     }
 
@@ -49,7 +75,7 @@ public class Tell extends Command {
         for (int i = 1; i < args.length; i++)
             message += (message.length() > 0 ? " " : "") + args[i];
 
-        TellMessage send = new TellMessage(args[0], message, channel, user);
+        TellMessage send = new TellMessage(args[0], message, channel.getName(), user.getNick());
 
         if (!tells.containsValue(send)) {
             tells.put(send.getSendTo(), send);
@@ -77,11 +103,15 @@ public class Tell extends Command {
     @Subscribe
     public void onMessage(MessageEvent<PircBotX> event) {
         if (tells.containsKey(event.getUser().getNick())) {
-            TellMessage toSend = tells.get(event.getUser().getNick());
-            if (toSend.getChannel() == event.getChannel()) {
-                MessageSender.INSTANCE.enqueueNotice(event.getBot(), toSend.getSendTo(), "\"" + toSend.getMessage() + "\" - " + toSend.getFrom().getNick());
-                tells.remove(toSend.getSendTo(), toSend);
+            Collection<TellMessage> messages = tells.get(event.getUser().getNick());
+            Collection<TellMessage> toRemove = Lists.newArrayList();
+            for (TellMessage toSend : messages) {
+                if (toSend.getChannel().equals(event.getChannel().getName())) {
+                    MessageSender.INSTANCE.enqueueNotice(event.getBot(), toSend.getSendTo(), "\"" + toSend.getMessage() + "\" - " + toSend.getFrom());
+                    toRemove.add(toSend);
+                }
             }
+            messages.removeAll(toRemove);
         }
     }
 
@@ -93,7 +123,7 @@ public class Tell extends Command {
 
         private final String sendTo;
         private final String message;
-        private final Channel channel;
-        private final User from;
+        private final String channel;
+        private final String from;
     }
 }

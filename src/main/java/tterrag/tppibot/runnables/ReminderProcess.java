@@ -18,6 +18,7 @@ import tterrag.tppibot.config.Config;
 import tterrag.tppibot.util.IRCUtils;
 import tterrag.tppibot.util.Logging;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class ReminderProcess implements Runnable
@@ -54,14 +55,16 @@ public class ReminderProcess implements Runnable
         remindersConfig = new Config("reminders.json");
         delayConfig = new Config("reminderDelays.json");
 
-        reminderMap = Config.gson.fromJson(mapConfig.getText(), new TypeToken<Map<String, Boolean>>() {}.getType());
+        Gson gson = new Gson();
+        
+        reminderMap = gson.fromJson(mapConfig.getText(), new TypeToken<Map<String, Boolean>>() {}.getType());
 
         if (reminderMap == null)
         {
             reminderMap = new HashMap<String, Boolean>();
         }
 
-        reminders = Config.gson.fromJson(remindersConfig.getText(), new TypeToken<List<String>>() {}.getType());
+        reminders = gson.fromJson(remindersConfig.getText(), new TypeToken<List<String>>() {}.getType());
 
         if (reminders == null)
         {
@@ -72,7 +75,7 @@ public class ReminderProcess implements Runnable
             }
         }
 
-        delayMap = Config.gson.fromJson(delayConfig.getText(), new TypeToken<Map<String, RemindTime>>() {}.getType());
+        delayMap = gson.fromJson(delayConfig.getText(), new TypeToken<Map<String, RemindTime>>() {}.getType());
 
         if (delayMap == null)
         {

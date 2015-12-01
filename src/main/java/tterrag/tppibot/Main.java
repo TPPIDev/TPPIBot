@@ -114,6 +114,7 @@ public class Main
         new UUID();
         new Strikes();
         new Rekt();
+        new Tell();
 
         Timeout timeout = new Timeout();
         log("Commands created.");
@@ -133,7 +134,7 @@ public class Main
         builder.setLogin(cmd.getOptionValue("name"));
         builder.setNickservPassword(cmd.getOptionValue("password"));
         builder.setEncoding(Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset());
-        builder.setServer("irc.esper.net", 6668);
+        builder.setServer("irc.esper.net", 6667);
         builder.setAutoReconnect(true);
 
         for (String s : cmd.getOptionValues("channels"))

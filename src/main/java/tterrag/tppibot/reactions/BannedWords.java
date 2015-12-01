@@ -9,7 +9,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Lists;
 import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.DisconnectEvent;
@@ -23,6 +22,8 @@ import tterrag.tppibot.interfaces.IReaction;
 import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class BannedWords implements IReaction
@@ -34,7 +35,7 @@ public class BannedWords implements IReaction
     {
         bannedConfig = new Config("bannedWords.json");
 
-        bannedWords = Config.gson.fromJson(bannedConfig.getText(), new TypeToken<List<String>>() {}.getType());
+        bannedWords = new Gson().fromJson(bannedConfig.getText(), new TypeToken<List<String>>() {}.getType());
 
         if (bannedWords == null)
         {

@@ -68,7 +68,7 @@ public enum EventHandler
                 try
                 {
                     r.method.invoke(r.instance, event);
-                    Logging.log("Successfully posted event " + event.getClass().getSimpleName() + " to class " + r.instance.getClass().getSimpleName());
+                    Logging.debug("Successfully posted event " + event.getClass().getSimpleName() + " to class " + r.instance.getClass().getSimpleName());
                 }
                 catch (Throwable t)
                 {

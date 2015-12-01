@@ -3,6 +3,7 @@ package tterrag.tppibot.config;
 import java.io.File;
 import java.io.IOException;
 
+import lombok.Setter;
 import tterrag.tppibot.Main;
 import tterrag.tppibot.util.SaveUtils;
 
@@ -14,7 +15,8 @@ public class Config
     private File configFile;
     public static final File baseDir;
 
-    public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    @Setter
+    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     static
     {

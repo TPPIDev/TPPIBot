@@ -44,6 +44,11 @@ public class Logging
         logger.info(message);
     }
 
+    public static void debug(String message)
+    {
+        logger.debug(message);
+    }
+
     public static void error(String message)
     {
         logger.error(message);

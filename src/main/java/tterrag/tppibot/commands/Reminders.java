@@ -15,6 +15,7 @@ import tterrag.tppibot.config.Config;
 import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class Reminders extends Command
@@ -28,7 +29,7 @@ public class Reminders extends Command
 
         delayConfig = new Config("delays.json");
 
-        delayMap = Config.gson.fromJson(delayConfig.getText(), new TypeToken<Map<String, Long>>() {}.getType());
+        delayMap = new Gson().fromJson(delayConfig.getText(), new TypeToken<Map<String, Long>>() {}.getType());
 
         if (delayMap == null)
         {
