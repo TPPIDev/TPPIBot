@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,7 +25,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.DisconnectEvent;
 
 import tterrag.tppibot.commands.*;
-import tterrag.tppibot.listeners.EventBus;
+import tterrag.tppibot.listeners.EventProxy;
 import tterrag.tppibot.listeners.JoinListener;
 import tterrag.tppibot.listeners.MessageListener;
 import tterrag.tppibot.listeners.PrivateMessageListener;
@@ -45,8 +46,8 @@ import tterrag.tppibot.util.Logging;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class Main
-{
+public class Main {
+
     public static Reminders reminderCommand;
 
     public static ReminderProcess reminders;
@@ -65,8 +66,7 @@ public class Main
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @SneakyThrows
-    public static void main(String[] args) throws ParseException
-    {
+    public static void main(String[] args) throws ParseException {
         Options options = new Options();
 
         options.addOption("n", "name", true, "The nick/login of the bot");
@@ -74,15 +74,17 @@ public class Main
         options.addOption("p", "password", true, "Nickserv password for the bot");
         options.addOption("a", "autoSaveInterval", true, "Interval at which to save data automatically");
 
-        @SuppressWarnings("static-access")
-        Option channels = OptionBuilder.withArgName("channel").hasArgs().withDescription("The channels to join on startup").create("channels");
+        OptionBuilder.withArgName("channel");
+        OptionBuilder.hasArgs();
+        OptionBuilder.withDescription("The channels to join on startup");
+        Option channels = OptionBuilder.create("channels");
         options.addOption(channels);
 
         CommandLineParser parser = new BasicParser();
         CommandLine cmd = parser.parse(options, args);
 
         overrideFile = cmd.getOptionValue("dataDir");
-        
+
         System.setErr(new PrintStream(new TeeOutputStream(new FileOutputStream(new File(Logging.logsDir, "pircbotx-latest.log")), System.err)));
 
         log("Starting...");
@@ -137,14 +139,11 @@ public class Main
         builder.setServer("irc.esper.net", 6667);
         builder.setAutoReconnect(true);
 
-        for (String s : cmd.getOptionValues("channels"))
-        {
-            builder.addAutoJoinChannel(IRCUtils.fmtChan(s));
-        }
+        Arrays.stream(cmd.getOptionValues("channels")).forEach(s -> builder.addAutoJoinChannel(IRCUtils.fmtChan(s)));
 
         builder.getListenerManager().addListener(MessageListener.instance);
         builder.getListenerManager().addListener(new JoinListener());
-        builder.getListenerManager().addListener(new EventBus());
+        builder.getListenerManager().addListener(new EventProxy());
         builder.getListenerManager().addListener(new PrivateMessageListener());
 
         bot = new PircBotX(builder.buildConfiguration());
@@ -175,8 +174,7 @@ public class Main
         timer.scheduleAtFixedRate(new TimerTask() {
 
             @Override
-            public void run()
-            {
+            public void run() {
                 Logging.log("Sending dummy DisconnectEvent for autosave");
                 EventHandler.INSTANCE.post(new DisconnectEvent<PircBotX>(bot, bot.getUserChannelDao().createSnapshot(), null));
             }
@@ -193,13 +191,10 @@ public class Main
         log("Registered extra event reveivers.");
 
         // start 'er up
-        try
-        {
+        try {
             log("Connecting bot...");
             bot.startBot();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

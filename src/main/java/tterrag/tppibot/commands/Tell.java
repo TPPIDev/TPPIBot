@@ -4,7 +4,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,14 +16,15 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.runnables.MessageSender;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.common.eventbus.Subscribe;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,7 +33,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 public class Tell extends Command {
-    
+
     public static class MultimapJson implements JsonSerializer<Multimap<?, ?>> {
 
         @Override
@@ -55,26 +55,20 @@ public class Tell extends Command {
         if (Strings.isNullOrEmpty(tellsConfig.getText())) {
             tellsConfig.writeJsonToFile(tells);
         } else {
-            Map<String, Collection<TellMessage>> temp = new Gson().fromJson(tellsConfig.getText(), new TypeToken<Map<String, Collection<TellMessage>>>(){}.getType());
-            for (Entry<String, Collection<TellMessage>> entry : temp.entrySet()) {
-                tells.putAll(entry.getKey(), entry.getValue());
-            }
+            Map<String, Collection<TellMessage>> temp = new Gson().fromJson(tellsConfig.getText(), new TypeToken<Map<String, Collection<TellMessage>>>() {
+            }.getType());
+            temp.entrySet().forEach(e -> tells.putAll(e.getKey(), e.getValue()));
         }
     }
 
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args) {
-
         if (args.length < 2) {
             lines.add("This command requires at least two args.");
             return;
         }
 
-        String message = "";
-
-        for (int i = 1; i < args.length; i++)
-            message += (message.length() > 0 ? " " : "") + args[i];
-
+        String message = Joiner.on(' ').join(args);
         TellMessage send = new TellMessage(args[0], message, channel.getName(), user.getNick());
 
         if (!tells.containsValue(send)) {

@@ -14,43 +14,36 @@ import tterrag.tppibot.config.Config;
 
 import com.google.common.base.Throwables;
 
-public class Logging
-{
+public class Logging {
+
     private static final Logger logger = LogManager.getLogger("TPPIBot");
 
     public static final File logsDir;
     private static final File logFile;
 
-    static
-    {
+    static {
         SimpleLayout layout = new SimpleLayout();
         logsDir = new File(Config.baseDir, "logs");
         logsDir.mkdir();
         logFile = new File(logsDir, "latest.log");
-        try
-        {
+        try {
             Appender appender = new FileAppender(layout, logFile.getPath(), false);
             appender.setLayout(new PatternLayout("%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"));
             logger.addAppender(appender);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             Throwables.propagate(e);
         }
     }
 
-    public static void log(String message)
-    {
+    public static void log(String message) {
         logger.info(message);
     }
 
-    public static void debug(String message)
-    {
+    public static void debug(String message) {
         logger.debug(message);
     }
 
-    public static void error(String message)
-    {
+    public static void error(String message) {
         logger.error(message);
     }
 }

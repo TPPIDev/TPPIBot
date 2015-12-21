@@ -12,18 +12,17 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
 
-import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
 import tterrag.tppibot.util.IRCUtils;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public enum PermRegistry
-{
+public enum PermRegistry {
     INSTANCE;
-    
+
     /**
      * {@link Channel} -> ({@link User} -> {@link PermLevel})
      */
@@ -35,13 +34,14 @@ public enum PermRegistry
 
     public final String[] defaultControllers = new String[] { "tterrag", "esKaayY", "TehNut" };
 
-    private PermRegistry()
-    {
+    private PermRegistry() {
         registrarConfig = new Config("permRegistry.json");
         controllersConfig = new Config("controllers.json");
 
-        registrar = new Gson().fromJson(registrarConfig.getText(), new TypeToken<Map<String, Map<String, PermLevel>>>() {}.getType());
-        controllers = new Gson().fromJson(controllersConfig.getText(), new TypeToken<Set<String>>() {}.getType());
+        registrar = new Gson().fromJson(registrarConfig.getText(), new TypeToken<Map<String, Map<String, PermLevel>>>() {
+        }.getType());
+        controllers = new Gson().fromJson(controllersConfig.getText(), new TypeToken<Set<String>>() {
+        }.getType());
 
         registrar = registrar == null ? new HashMap<String, Map<String, PermLevel>>() : registrar;
         controllers = controllers == null ? new HashSet<String>() : controllers;
@@ -50,23 +50,18 @@ public enum PermRegistry
             controllers.addAll(Arrays.asList(defaultControllers));
     }
 
-    public boolean registerUser(Channel chan, User user, PermLevel level)
-    {
+    public boolean registerUser(Channel chan, User user, PermLevel level) {
         String acct = IRCUtils.getAccount(user);
-        if (acct == null) 
-        {
-        	return false;
+        if (acct == null) {
+            return false;
         }
-        
+
         // controllers are global
-        if (level == PermLevel.CONTROLLER)
-        {
+        if (level == PermLevel.CONTROLLER) {
             controllers.add(acct);
-        }
-        else
-        {
+        } else {
             controllers.remove(acct);
-            
+
             // can't assign op/voice
             if (!ArrayUtils.contains(PermLevel.getSettablePermLevels(), level))
                 throw new IllegalArgumentException("Cannot register a user with the level " + level.toString());
@@ -78,8 +73,7 @@ public enum PermRegistry
         return true;
     }
 
-    private Map<String, PermLevel> register(Map<String, PermLevel> curChanMap, String acct, PermLevel level)
-    {
+    private Map<String, PermLevel> register(Map<String, PermLevel> curChanMap, String acct, PermLevel level) {
         if (curChanMap == null)
             curChanMap = new HashMap<String, PermLevel>();
 
@@ -87,8 +81,7 @@ public enum PermRegistry
         return curChanMap;
     }
 
-    public PermLevel getPermLevelForUser(Channel chan, User user)
-    {
+    public PermLevel getPermLevelForUser(Channel chan, User user) {
         String acct = IRCUtils.getAccount(user);
 
         if (controllers.contains(acct))
@@ -102,19 +95,16 @@ public enum PermRegistry
     }
 
     @Subscribe
-    public void onDisconnect(DisconnectEvent<PircBotX> event)
-    {
+    public void onDisconnect(DisconnectEvent<PircBotX> event) {
         registrarConfig.writeJsonToFile(registrar);
         controllersConfig.writeJsonToFile(controllers);
     }
 
-    public boolean isController(User user)
-    {
+    public boolean isController(User user) {
         return controllers.contains(IRCUtils.getAccount(user));
     }
 
-    public boolean isDefaultController(User user)
-    {
+    public boolean isDefaultController(User user) {
         return ArrayUtils.contains(defaultControllers, IRCUtils.getAccount(user));
     }
 }

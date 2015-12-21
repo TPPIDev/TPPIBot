@@ -15,7 +15,6 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import tterrag.tppibot.Main;
-import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.interfaces.ICommand.PermLevel;
 import tterrag.tppibot.interfaces.IReaction;
@@ -24,27 +23,25 @@ import tterrag.tppibot.util.IRCUtils;
 import tterrag.tppibot.util.Logging;
 
 import com.google.common.collect.Sets;
+import com.google.common.eventbus.Subscribe;
 import com.google.gson.reflect.TypeToken;
 
-public class CharacterSpam implements IReaction
-{
-    public enum SpamReasons
-    {
-        REPEATS("You had too many repeated characters."), 
-        SYMBOLS("You had too many non-alphabetic symbols."), 
-        CAPS("Too much caps!"), 
-        FLOOD("Too many messages!"), 
+public class CharacterSpam implements IReaction {
+
+    public enum SpamReasons {
+        REPEATS("You had too many repeated characters."),
+        SYMBOLS("You had too many non-alphabetic symbols."),
+        CAPS("Too much caps!"),
+        FLOOD("Too many messages!"),
         CURSE("Banned word.");
 
         private String text;
 
-        SpamReasons(String text)
-        {
+        SpamReasons(String text) {
             this.text = text;
         }
 
-        public String getText()
-        {
+        public String getText() {
             return text;
         }
     }
@@ -56,18 +53,19 @@ public class CharacterSpam implements IReaction
 
     private static Set<String> blacklistChannels = Sets.newConcurrentHashSet();
     private Config blacklistConfig;
-    
-    private static List<Character> whitelistedChars = Arrays.asList(new Character[]{' ', '.'});
 
-    public CharacterSpam()
-    {
+    private static List<Character> whitelistedChars = Arrays.asList(new Character[] { ' ', '.' });
+
+    public CharacterSpam() {
         repeated = new HashMap<Character, Integer>();
 
         strikesConfig = new Config("spamStrikes.json");
         blacklistConfig = new Config("spamChannelBlacklist.json");
 
-        strikes = Main.gson.fromJson(strikesConfig.getText(), new TypeToken<Map<String, Integer>>() {}.getType());
-        blacklistChannels = Main.gson.fromJson(blacklistConfig.getText(), new TypeToken<Set<String>>() {}.getType());
+        strikes = Main.gson.fromJson(strikesConfig.getText(), new TypeToken<Map<String, Integer>>() {
+        }.getType());
+        blacklistChannels = Main.gson.fromJson(blacklistConfig.getText(), new TypeToken<Set<String>>() {
+        }.getType());
 
         if (strikes == null)
             strikes = new HashMap<String, Integer>();
@@ -76,8 +74,7 @@ public class CharacterSpam implements IReaction
     }
 
     @Override
-    public synchronized void onMessage(MessageEvent<?> event)
-    {
+    public synchronized void onMessage(MessageEvent<?> event) {
         int symbolCount = 0;
         int caps = 0;
 
@@ -89,58 +86,48 @@ public class CharacterSpam implements IReaction
         if (blacklistChannels.contains(event.getChannel().getName().toLowerCase()))
             return;
 
-        for (char c : msg.toCharArray())
-        {
-            if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || whitelistedChars.contains(c)))
-            {
+        for (char c : msg.toCharArray()) {
+            if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || whitelistedChars.contains(c))) {
                 symbolCount++;
             }
-            
-            if (c >= 'A' && c <= 'Z')
-            {
+
+            if (c >= 'A' && c <= 'Z') {
                 caps++;
             }
 
-            if (repeated.containsKey(c))
-            {
+            if (repeated.containsKey(c)) {
                 repeated.put(c, repeated.get(c) + 1);
-            }
-            else
-            {
+            } else {
                 repeated.put(c, 1);
             }
         }
 
-        for (char c : repeated.keySet())
-        {
-            if (repeated.get(c) > msg.length() / 2)
-            {
+        for (char c : repeated.keySet()) {
+            if (repeated.get(c) > msg.length() / 2) {
                 Logging.log("too many repeated characters!");
                 finish(timeout(event, REPEATS) ? event.getUser() : null);
                 return;
             }
         }
 
-        if (symbolCount > msg.length() / 2)
-        {
+        if (symbolCount > msg.length() / 2) {
             Logging.log("too many symbols!");
             finish(timeout(event, SYMBOLS) ? event.getUser() : null);
             return;
         }
-        
-// No caps for now
-//        if (caps > (double) msg.length() / 1.75d)
-//        {
-//            Logging.log("caps!");
-//            finish(timeout(event, CAPS) ? event.getUser() : null);
-//            return;
-//        }
+
+        // No caps for now
+        // if (caps > (double) msg.length() / 1.75d)
+        // {
+        // Logging.log("caps!");
+        // finish(timeout(event, CAPS) ? event.getUser() : null);
+        // return;
+        // }
 
         finish(null);
     }
 
-    public void finish(User user)
-    {
+    public void finish(User user) {
         repeated.clear();
 
         if (user == null)
@@ -148,45 +135,34 @@ public class CharacterSpam implements IReaction
 
         String hostmask = user.getHostmask();
 
-        if (strikes.containsKey(hostmask))
-        {
+        if (strikes.containsKey(hostmask)) {
             strikes.put(hostmask, strikes.get(hostmask) + 1);
-        }
-        else
-        {
+        } else {
             strikes.put(hostmask, 1);
         }
     }
 
-    public boolean timeout(MessageEvent<?> event, SpamReasons reason)
-    {
+    public boolean timeout(MessageEvent<?> event, SpamReasons reason) {
         return timeout(event.getBot(), event.getUser(), event.getChannel(), reason);
     }
-    
-    public boolean timeout(PircBotX bot, User user, Channel channel, SpamReasons reason)
-    {
-        if (IRCUtils.userIsOp(channel, bot.getUserBot()) && !IRCUtils.isUserAboveOrEqualTo(channel, PermLevel.TRUSTED, user))
-        {
+
+    public boolean timeout(PircBotX bot, User user, Channel channel, SpamReasons reason) {
+        if (IRCUtils.userIsOp(channel, bot.getUserBot()) && !IRCUtils.isUserAboveOrEqualTo(channel, PermLevel.TRUSTED, user)) {
             int strikeCount = 0;
-            if (strikes.containsKey(user.getHostmask()))
-            {
+            if (strikes.containsKey(user.getHostmask())) {
                 strikeCount = strikes.get(user.getHostmask());
             }
 
-            if (reason == SpamReasons.CURSE)
-            {
-                MessageSender.INSTANCE.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
-                        + 10 + " minutes. Reason: " + reason.getText());
+            if (reason == SpamReasons.CURSE) {
+                MessageSender.INSTANCE.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for " + 10
+                        + " minutes. Reason: " + reason.getText());
                 IRCUtils.timeout(bot, user, channel, "" + 10);
                 return true;
             }
 
-            if (strikeCount < 3)
-            {
+            if (strikeCount < 3) {
                 MessageSender.INSTANCE.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + "! Reason: " + reason.getText());
-            }
-            else
-            {
+            } else {
                 MessageSender.INSTANCE.enqueue(bot, channel.getName(), user.getNick() + ", please do not do that! This is strike " + (strikeCount + 1) + ", you will now be timed out for "
                         + (5 * (strikeCount - 2)) + " minutes. Reason: " + reason.getText());
                 IRCUtils.timeout(bot, user, channel, "" + 5 * (strikeCount - 2));
@@ -199,62 +175,50 @@ public class CharacterSpam implements IReaction
     /**
      * @return true if added, false if removed
      */
-    public static boolean toggleBlacklistChannel(String channelname)
-    {
-        synchronized (blacklistChannels)
-        {
+    public static boolean toggleBlacklistChannel(String channelname) {
+        synchronized (blacklistChannels) {
             channelname = channelname.toLowerCase();
-            if (blacklistChannels.contains(channelname))
-            {
+            if (blacklistChannels.contains(channelname)) {
                 blacklistChannels.remove(channelname);
                 return false;
-            }
-            else
-            {
+            } else {
                 blacklistChannels.add(channelname);
                 return true;
             }
         }
     }
-    
-    public boolean filtersEnabled(String channelname)
-    {
-        synchronized (blacklistChannels)
-        {
+
+    public boolean filtersEnabled(String channelname) {
+        synchronized (blacklistChannels) {
             channelname = channelname.toLowerCase();
             return !blacklistChannels.contains(channelname);
         }
     }
-    
-    public int getStrikes(User user)
-    {
+
+    public int getStrikes(User user) {
         Integer ret = strikes.get(user.getHostmask());
         return ret == null ? 0 : ret;
     }
-    
-    public int setStrikes(User user, int amnt)
-    {
+
+    public int setStrikes(User user, int amnt) {
         amnt = Math.max(0, amnt);
         strikes.put(user.getHostmask(), amnt);
         return amnt;
     }
-    
-    public int addStrikes(User user, int amnt)
-    {
+
+    public int addStrikes(User user, int amnt) {
         if (!strikes.containsKey(user.getHostmask()))
             return setStrikes(user, amnt);
         else
             return setStrikes(user, getStrikes(user) + amnt);
     }
 
-    public int removeStrikes(User user, int amnt)
-    {
+    public int removeStrikes(User user, int amnt) {
         return addStrikes(user, -amnt);
     }
-    
+
     @Subscribe
-    public void onDisconnect(DisconnectEvent<?> event)
-    {
+    public void onDisconnect(DisconnectEvent<?> event) {
         strikesConfig.writeJsonToFile(strikes);
         blacklistConfig.writeJsonToFile(blacklistChannels);
     }

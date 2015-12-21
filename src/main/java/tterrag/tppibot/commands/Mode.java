@@ -11,89 +11,74 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
 
 import tterrag.tppibot.Main;
-import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.config.Config;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.gson.reflect.TypeToken;
 
-public class Mode extends Command
-{
-    public enum BotMode
-    {
-        MESSAGE, NOTICE, PM
+public class Mode extends Command {
+
+    public enum BotMode {
+        MESSAGE,
+        NOTICE,
+        PM
     }
 
     private static Map<String, BotMode> modes;
     private Config modeConfig;
 
-    public Mode()
-    {
+    public Mode() {
         super("mode", PermLevel.OP);
 
         modeConfig = new Config("modes.json");
-        modes = Main.gson.fromJson(modeConfig.getText(), new TypeToken<Map<String, BotMode>>() {}.getType());
+        modes = Main.gson.fromJson(modeConfig.getText(), new TypeToken<Map<String, BotMode>>() {
+        }.getType());
         if (modes == null)
             modes = new HashMap<String, BotMode>();
     }
 
     @Override
-    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
-    {
-        if (args.length >= 1)
-        {
-            try
-            {
-                synchronized (modes)
-                {
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args) {
+        if (args.length >= 1) {
+            try {
+                synchronized (modes) {
                     modes.put(channel.getName(), BotMode.valueOf(args[0].toUpperCase()));
                     lines.add("Mode set to " + modes.get(channel.getName()));
                 }
-            }
-            catch (IllegalArgumentException e)
-            {
+            } catch (IllegalArgumentException e) {
                 lines.add("No such mode " + args[0] + "! Valid modes are: " + Arrays.deepToString(BotMode.values()));
             }
-        }
-        else
-        {
+        } else {
             lines.add("Current mode is: " + modes.get(channel.getName()));
         }
     }
 
-    public static void initMode(String channel, BotMode mode)
-    {
-        if (modes.get(channel) == null)
-        {
-            synchronized (modes)
-            {
-                modes.put(channel, mode);  
+    public static void initMode(String channel, BotMode mode) {
+        if (modes.get(channel) == null) {
+            synchronized (modes) {
+                modes.put(channel, mode);
             }
         }
     }
-    
-    public static BotMode getMode(String channel)
-    {
-        synchronized (modes)
-        {
+
+    public static BotMode getMode(String channel) {
+        synchronized (modes) {
             return modes.get(channel);
         }
     }
 
     @Override
-    public boolean executeWithoutChannel()
-    {
+    public boolean executeWithoutChannel() {
         return false;
     }
-    
+
     @Override
-    public boolean shouldReceiveEvents()
-    {
+    public boolean shouldReceiveEvents() {
         return true;
     }
 
     @Subscribe
-    public void onDisconnect(DisconnectEvent<PircBotX> event)
-    {
+    public void onDisconnect(DisconnectEvent<PircBotX> event) {
         modeConfig.writeJsonToFile(modes);
     }
 }

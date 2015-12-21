@@ -14,24 +14,20 @@ import org.pircbotx.User;
 
 import tterrag.tppibot.runnables.MessageSender;
 
-public class Shortener extends Command
-{
-    public Shortener()
-    {
+public class Shortener extends Command {
+
+    public Shortener() {
         super("shorten");
     }
 
     @Override
-    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
-    {
-        if (args.length < 1)
-        {
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args) {
+        if (args.length < 1) {
             lines.add("This command requires 1 arg (url).");
             return;
         }
 
-        try
-        {
+        try {
             String link = "http://is.gd/create.php?format=simple&url=" + URLEncoder.encode(args[0], "UTF-8");
             URL url = new URL(link);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -41,9 +37,7 @@ public class Shortener extends Command
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             MessageSender.INSTANCE.enqueue(bot, channel == null ? user.getNick() : channel.getName(), "> " + in.readLine());
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             lines.add("I/O Error!");
             e.printStackTrace();
         }

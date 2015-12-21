@@ -8,9 +8,6 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.DisconnectEvent;
 
-import com.google.common.collect.Lists;
-
-import tterrag.tppibot.annotations.Subscribe;
 import tterrag.tppibot.commands.Mode.BotMode;
 import tterrag.tppibot.config.Config;
 import tterrag.tppibot.interfaces.ICommand;
@@ -19,22 +16,21 @@ import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 
-public class Commands extends Command
-{
+import com.google.common.collect.Lists;
+import com.google.common.eventbus.Subscribe;
+
+public class Commands extends Command {
+
     private Config config;
 
-    public Commands()
-    {
+    public Commands() {
         super("commands", PermLevel.DEFAULT);
 
         config = new Config("cmdsLength.txt");
 
-        try
-        {
+        try {
             length = Integer.parseInt(config.getText());
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             config.writeInt(length);
         }
     }
@@ -42,22 +38,16 @@ public class Commands extends Command
     private int length = 250;
 
     @Override
-    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
-    {
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args) {
         String s = "";
         boolean custom = false;
         List<String> listLines = new ArrayList<>();
 
-        if (args.length >= 1)
-        {
-            if ("custom".equals(args[0]))
-            {
+        if (args.length >= 1) {
+            if ("custom".equals(args[0])) {
                 custom = true;
-            }
-            else if ("length".equals(args[0]) && PermRegistry.INSTANCE.isController(user))
-            {
-                if (args.length > 1)
-                {
+            } else if ("length".equals(args[0]) && PermRegistry.INSTANCE.isController(user)) {
+                if (args.length > 1) {
                     length = Integer.parseInt(args[1]);
                     MessageSender.INSTANCE.enqueueNotice(bot, user.getNick(), "Length set.");
                     return;
@@ -68,17 +58,12 @@ public class Commands extends Command
         boolean isTooLong = false;
 
         PermLevel perms = getPerm(channel, user);
-        for (ICommand c : CommandRegistry.INSTANCE.getCommands())
-        {
-            if (IRCUtils.isPermLevelAboveOrEqualTo(perms, c.getPermLevel()))
-            {
-                if (custom == (c instanceof CustomCommand))
-                {
-                    if (!(c instanceof CustomCommand) || ((CustomCommand) c).isFor(channel))
-                    {
+        for (ICommand c : CommandRegistry.INSTANCE.getCommands()) {
+            if (IRCUtils.isPermLevelAboveOrEqualTo(perms, c.getPermLevel())) {
+                if (custom == (c instanceof CustomCommand)) {
+                    if (!(c instanceof CustomCommand) || ((CustomCommand) c).isFor(channel)) {
                         s += c.getIdent() + ", ";
-                        if (s.length() > length)
-                        {
+                        if (s.length() > length) {
                             listLines.add(s);
                             s = "";
                             isTooLong = true;
@@ -88,13 +73,11 @@ public class Commands extends Command
             }
         }
 
-        if (listLines.size() == 0 && s.isEmpty())
-        {
+        if (listLines.size() == 0 && s.isEmpty()) {
             listLines.add("None");
         }
 
-        if (!s.isEmpty())
-        {
+        if (!s.isEmpty()) {
             listLines.add(s);
         }
 
@@ -103,77 +86,60 @@ public class Commands extends Command
 
         String[] cmds = listLines.toArray(new String[] {});
         BotMode mode = Mode.getMode(channel.getName());
-        if (isTooLong && mode != BotMode.PM)
-        {
+        if (isTooLong && mode != BotMode.PM) {
             lines.add("List too long, replying privately...");
-            if (mode != BotMode.NOTICE)
-            {
+            if (mode != BotMode.NOTICE) {
                 mode = BotMode.PM;
             }
         }
 
-        if (custom)
-        {
+        if (custom) {
             addLines(cmds, "Custom Commands: " + cmds[0], bot, user, channel, mode);
-        }
-        else
-        {
+        } else {
             addLines(cmds, "Commands: " + cmds[0], bot, user, channel, mode);
             lines.add("To show custom commands for this channel, try \"~commands custom\".");
         }
     }
 
-    private void addLines(String[] cmds, String firstLine, PircBotX bot, User user, Channel channel, BotMode mode)
-    {
+    private void addLines(String[] cmds, String firstLine, PircBotX bot, User user, Channel channel, BotMode mode) {
         List<String> lines = Lists.newArrayList(firstLine);
-        for (int i = 1; i < cmds.length; i++)
-        {
+        for (int i = 1; i < cmds.length; i++) {
             String s = cmds[i];
-            if (i == cmds.length - 1)
-            {
+            if (i == cmds.length - 1) {
                 s += ".";
             }
             lines.add(s);
         }
 
-        if (cmds.length == 1)
-        {
+        if (cmds.length == 1) {
             lines.set(0, lines.get(0) + ".");
         }
 
-        for (String s : lines)
-        {
+        for (String s : lines) {
             IRCUtils.modeSensitiveEnqueue(bot, user, channel, s, mode);
         }
     }
 
     @Override
-    public String getDesc()
-    {
+    public String getDesc() {
         return "Shows all possible commands for you, perm level sensitive.";
     }
 
-    private PermLevel getPerm(Channel chan, User user)
-    {
-        if (chan == null)
-        {
+    private PermLevel getPerm(Channel chan, User user) {
+        if (chan == null) {
             return PermRegistry.INSTANCE.isController(user) ? PermLevel.CONTROLLER : PermLevel.DEFAULT;
-        }
-        else
-        {
+        } else {
             return PermRegistry.INSTANCE.getPermLevelForUser(chan, user);
         }
     }
 
     @Override
-    public boolean shouldReceiveEvents()
-    {
+    public boolean shouldReceiveEvents() {
         return true;
     }
 
     @Subscribe
-    public void onDisconnect(DisconnectEvent<PircBotX> event)
-    {
+    public void onDisconnect(DisconnectEvent<PircBotX> event) {
         config.writeInt(length);
     }
 }

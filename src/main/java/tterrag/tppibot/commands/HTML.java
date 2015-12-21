@@ -10,31 +10,25 @@ import org.pircbotx.User;
 
 import tterrag.tppibot.util.PastebinPaster;
 
-public class HTML extends Command
-{
+public class HTML extends Command {
+
     private final PastebinPaster poster = new PastebinPaster();
 
-    public HTML()
-    {
+    public HTML() {
         super("html");
     }
 
     @Override
-    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
-    {
-        if (args.length < 1)
-        {
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args) {
+        if (args.length < 1) {
             lines.add("This command requires 1 arg.");
             return;
         }
 
         String html;
-        try
-        {
+        try {
             html = Jsoup.connect(args[0]).get().html();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             lines.add(e.getClass().getName());
             return;
         }

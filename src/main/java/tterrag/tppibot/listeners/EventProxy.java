@@ -6,11 +6,10 @@ import org.pircbotx.hooks.ListenerAdapter;
 
 import tterrag.tppibot.registry.EventHandler;
 
-public class EventBus extends ListenerAdapter<PircBotX>
-{
+public class EventProxy extends ListenerAdapter<PircBotX> {
+
     @Override
-    public void onEvent(Event<PircBotX> event) throws Exception
-    {
+    public void onEvent(Event<PircBotX> event) throws Exception {
         EventHandler.INSTANCE.post(event);
     }
 }

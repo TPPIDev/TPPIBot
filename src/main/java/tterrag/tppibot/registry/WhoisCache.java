@@ -11,37 +11,30 @@ import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 
 import tterrag.tppibot.Main;
-import tterrag.tppibot.annotations.Subscribe;
 
 import com.google.common.collect.Maps;
+import com.google.common.eventbus.Subscribe;
 
-public enum WhoisCache
-{
+public enum WhoisCache {
     INSTANCE;
 
     private Map<String, String> whoisCache = Maps.newHashMap();
 
-    public String getAccount(User user)
-    {
-        String acct = whoisCache.get(user.getNick());
-        return acct != null ? acct : addOrUpdateEntry(user);
+    public String getAccount(User user) {
+        return whoisCache.getOrDefault(user.getNick(), addOrUpdateEntry(user));
     }
 
     @SuppressWarnings("unchecked")
-    public String addOrUpdateEntry(User user)
-    {
+    public String addOrUpdateEntry(User user) {
         String acct;
         WaitForQueue waitForQueue = new WaitForQueue(Main.bot);
         WhoisEvent<PircBotX> test = null;
-        try
-        {
+        try {
             Main.bot.sendRaw().rawLineNow("WHOIS " + user.getNick());
             test = waitForQueue.waitFor(WhoisEvent.class);
             waitForQueue.close();
             acct = test.getRegisteredAs();
-        }
-        catch (InterruptedException ex)
-        {
+        } catch (InterruptedException ex) {
             ex.printStackTrace();
             acct = null;
         }
@@ -51,21 +44,18 @@ public enum WhoisCache
     }
 
     @Subscribe
-    public void onJoin(JoinEvent<PircBotX> event)
-    {
+    public void onJoin(JoinEvent<PircBotX> event) {
         addOrUpdateEntry(event.getUser());
     }
 
     @Subscribe
-    public void onNickChange(NickChangeEvent<PircBotX> event)
-    {
+    public void onNickChange(NickChangeEvent<PircBotX> event) {
         whoisCache.remove(event.getUser().getNick());
         addOrUpdateEntry(event.getUser());
     }
 
     @Subscribe
-    public void onQuit(QuitEvent<PircBotX> event)
-    {
+    public void onQuit(QuitEvent<PircBotX> event) {
         whoisCache.remove(event.getUser().getNick());
     }
 }

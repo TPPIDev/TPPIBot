@@ -9,31 +9,25 @@ import org.pircbotx.User;
 
 import tterrag.tppibot.Main;
 
-public class AddReminder extends Command
-{
-    public AddReminder()
-    {
+public class AddReminder extends Command {
+
+    public AddReminder() {
         super("addremind", PermLevel.TRUSTED);
     }
 
     @Override
-    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args)
-    {
-        if (args.length > 0)
-        {
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args) {
+        if (args.length > 0) {
             String reminder = StringUtils.join(args, ' ');
             Main.reminders.addReminder("[Reminder] " + reminder);
             lines.add("Reminder added: " + reminder);
-        }
-        else
-        {
+        } else {
             lines.add("This requires a string argument!");
         }
     }
 
     @Override
-    public String getDesc()
-    {
+    public String getDesc() {
         return "Adds a reminder to the queue, automatically prepends [Reminder]";
     }
 }

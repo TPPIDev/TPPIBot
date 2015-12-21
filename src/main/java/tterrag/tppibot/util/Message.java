@@ -1,56 +1,33 @@
 package tterrag.tppibot.util;
 
+import java.util.function.Consumer;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import org.pircbotx.PircBotX;
 
-public class Message
-{    
-    public String to, message;
-    
-    private boolean sent = false;
-    private boolean notice = false;
-    private boolean action = false;
-    
-    private PircBotX bot;
-    
-    public Message(PircBotX bot, String to, String message)
-    {
-        this.bot = bot;
-        this.to = to;
-        this.message = message;
-    }
-    
-    public Message setNotice()
-    {
-        this.notice = true;
-        return this;
-    }
-    
-    public boolean hasSent()
-    {
-        return sent;
-    }
-    
-    public void send()
-    {
-        if (notice)
-        {
-            bot.sendIRC().notice(to, message);
-        }
-        else if (action)
-        {
-            bot.sendIRC().action(to, message);
-        }
-        else
-        {
-            bot.sendIRC().message(to, message);
-        }
-        
-        sent = true;
+@RequiredArgsConstructor
+public class Message {
+
+    @RequiredArgsConstructor
+    public enum MessageType {
+        MESSAGE(m -> m.bot.sendIRC().message(m.to, m.message)),
+        NOTICE(m -> m.bot.sendIRC().message(m.to, m.message)),
+        ACTION(m -> m.bot.sendIRC().message(m.to, m.message));
+
+        public final Consumer<Message> function;
     }
 
-    public Message setAction()
-    {
-        action = true;
-        return this;
+    private final PircBotX bot;
+    private final String to, message;
+    private final MessageType type;
+
+    @Getter
+    private boolean sent = false;
+
+    public void send() {
+        type.function.accept(this);
+        sent = true;
     }
 }

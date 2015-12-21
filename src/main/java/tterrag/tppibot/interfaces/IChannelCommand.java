@@ -6,8 +6,9 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
-public interface IChannelCommand extends ICommand
-{
-    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args);
-    
+public interface IChannelCommand extends ICommand {
+
+    @Override
+    void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args);
+
 }

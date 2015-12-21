@@ -17,7 +17,7 @@ public class UUID extends Command {
     }
 
     @Override
-    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String ... args) {
+    public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args) {
         if (args.length > 0) {
             try {
                 URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + args[0]);

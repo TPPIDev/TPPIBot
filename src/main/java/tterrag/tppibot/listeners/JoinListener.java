@@ -8,14 +8,13 @@ import tterrag.tppibot.Main;
 import tterrag.tppibot.commands.Mode;
 import tterrag.tppibot.commands.Mode.BotMode;
 
-public class JoinListener extends ListenerAdapter<PircBotX>
-{
+public class JoinListener extends ListenerAdapter<PircBotX> {
+
     @Override
-    public void onJoin(JoinEvent<PircBotX> event) throws Exception
-    {
+    public void onJoin(JoinEvent<PircBotX> event) throws Exception {
         if (!Main.reminders.isInReminderMap(event.getChannel().getName()))
             Main.reminders.disableRemindersFor(event.getChannel().getName().toLowerCase());
-        
+
         Mode.initMode(event.getChannel().getName(), BotMode.MESSAGE);
     }
 }
