@@ -24,7 +24,7 @@ public class Drama extends Command {
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args) {
         try {
-            URI uri = new URI("http://tterrag.com/drama.php?plain");
+            URI uri = new URI("http://tehnut.info/drama/?plain");
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
