@@ -13,8 +13,8 @@ public class Message {
     @RequiredArgsConstructor
     public enum MessageType {
         MESSAGE(m -> m.bot.sendIRC().message(m.to, m.message)),
-        NOTICE(m -> m.bot.sendIRC().message(m.to, m.message)),
-        ACTION(m -> m.bot.sendIRC().message(m.to, m.message));
+        NOTICE(m -> m.bot.sendIRC().notice(m.to, m.message)),
+        ACTION(m -> m.bot.sendIRC().action(m.to, m.message));
 
         public final Consumer<Message> function;
     }
