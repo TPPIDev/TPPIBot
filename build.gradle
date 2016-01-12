@@ -23,8 +23,8 @@ buildscript {
 archivesBaseName = "TPPIBot"
 group = 'tterrag.tppibot'
 description = "Bot for TPPI IRC channels"
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 import org.ajoberstar.grgit.Grgit
 
