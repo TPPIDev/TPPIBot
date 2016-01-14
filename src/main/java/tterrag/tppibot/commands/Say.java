@@ -25,7 +25,7 @@ public class Say extends Command {
         }
 
         String potentialChannel = IRCUtils.fmtChan(args[args.length - 1]);
-        Channel sayChan = IRCUtils.getChannelByName(bot, potentialChannel);
+        Channel sayChan = IRCUtils.getChannelByName(bot, potentialChannel).orElse(null); // meh
 
         if (sayChan != null) {
             args = ArrayUtils.remove(args, args.length - 1);

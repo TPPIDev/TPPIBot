@@ -5,6 +5,7 @@ import static tterrag.tppibot.interfaces.ICommand.PermLevel.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.pircbotx.Channel;
@@ -101,21 +102,21 @@ public class IRCUtils {
     @Deprecated
     public static void sendNoticeForUser(Channel channel, User user, String message, String... args) {
         if (args.length > 0) {
-            User to = getUserByNick(channel, args[0]);
-            if (to != null) {
-                to.send().notice(message.replace("%user%", to.getNick()));
+            Optional<User> to = getUserByNick(channel, args[0]);
+            if (to.isPresent()) {
+                to.get().send().notice(message.replace("%user%", to.get().getNick()));
                 return;
             }
         }
         user.send().notice(message.replace("%user%", user.getNick()));
     }
 
-    public static User getUserByNick(Channel channel, String nick) {
-        return channel.getUsers().stream().filter(u -> u.getNick().equalsIgnoreCase(nick)).findFirst().get();
+    public static Optional<User> getUserByNick(Channel channel, String nick) {
+        return channel.getUsers().stream().filter(u -> u.getNick().equalsIgnoreCase(nick)).findFirst();
     }
 
-    public static Channel getChannelByName(PircBotX bot, String channel) {
-        return bot.getUserBot().getChannels().stream().filter(c -> c.getName().equalsIgnoreCase(channel)).findFirst().get();
+    public static Optional<Channel> getChannelByName(PircBotX bot, String channel) {
+        return bot.getUserBot().getChannels().stream().filter(c -> c.getName().equalsIgnoreCase(channel)).findFirst();
     }
 
     public static String getAccount(User u) {

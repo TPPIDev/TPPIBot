@@ -2,6 +2,7 @@ package tterrag.tppibot.commands;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -24,15 +25,15 @@ public class Perms extends Command {
         }
 
         String nick = args[0];
-        User toChange = IRCUtils.getUserByNick(channel, nick);
+        Optional<User> toChange = IRCUtils.getUserByNick(channel, nick);
 
-        if (toChange == null) {
+        if (!toChange.isPresent()) {
             lines.add("\"" + nick + "\" is not a valid user in this channel!");
             return;
         }
 
         if (args.length == 1) {
-            lines.add("Perm level for " + nick + ": " + PermRegistry.INSTANCE.getPermLevelForUser(channel, toChange));
+            lines.add("Perm level for " + nick + ": " + PermRegistry.INSTANCE.getPermLevelForUser(channel, toChange.get()));
             return;
         }
 
@@ -48,9 +49,9 @@ public class Perms extends Command {
             return;
         }
 
-        if (PermRegistry.INSTANCE.registerUser(channel, toChange, level)) {
+        if (PermRegistry.INSTANCE.registerUser(channel, toChange.get(), level)) {
             lines.add("Successfully set " + nick + " to the " + level.toString() + " level.");
-            IRCUtils.modeSensitiveEnqueue(bot, toChange, channel, toChange.getNick() + ", "
+            IRCUtils.modeSensitiveEnqueue(bot, toChange.get(), channel, toChange.get().getNick() + ", "
                     + (level == PermLevel.CONTROLLER ? "you are now a controller for TPPIBot!" : "you are now of the level " + level.toString() + " in channel " + channel.getName() + "!"));
         } else {
             lines.add(args[0] + " is not logged in!");

@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,8 +35,8 @@ public class Drama extends Command {
                 // ping avoiding
                 String[] words = drama.split(" ");
                 for (int i = 0; i < words.length; i++) {
-                    User possibleUser = IRCUtils.getUserByNick(channel, words[i]);
-                    if (possibleUser != null) {
+                    Optional<User> possibleUser = IRCUtils.getUserByNick(channel, words[i]);
+                    if (possibleUser.isPresent()) {
                         char[] username = words[i].toCharArray();
                         username = ArrayUtils.add(username, 1, '.');
                         words[i] = new String(username);

@@ -1,6 +1,7 @@
 package tterrag.tppibot.commands;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -27,7 +28,12 @@ public class Forgive extends Command {
             return;
         }
 
-        User toChange = IRCUtils.getUserByNick(channel, args[0]);
+        Optional<User> toChange = IRCUtils.getUserByNick(channel, args[0]);
+        
+        if (!toChange.isPresent()) {
+            lines.add(args[0] + " is not a valid user in this channel!");
+            return;
+        }
 
         boolean foundType = false;
         Type type = Type.STRIKES;
@@ -48,10 +54,10 @@ public class Forgive extends Command {
 
         switch (type) {
         case STRIKES:
-            removeStrikes(toChange, amnt, lines);
+            removeStrikes(toChange.get(), amnt, lines);
             break;
         case TIMEOUTS:
-            removeTimeouts(toChange, amnt, lines);
+            removeTimeouts(toChange.get(), amnt, lines);
             break;
         }
     }

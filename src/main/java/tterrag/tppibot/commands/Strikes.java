@@ -1,6 +1,7 @@
 package tterrag.tppibot.commands;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -17,15 +18,18 @@ public class Strikes extends Command {
 
     @Override
     public void onCommand(PircBotX bot, User user, Channel channel, List<String> lines, String... args) {
-        User target = user;
+        Optional<User> target = Optional.empty();
         if (args.length > 0) {
             target = IRCUtils.getUserByNick(channel, args[0]);
-            if (target == null) {
+            if (!target.isPresent()) {
                 lines.add(args[0] + " is not a valid nick in this channel!");
                 return;
             }
+        } else {
+            lines.add("This command requires an argument!");
+            return;
         }
 
-        lines.add(target.getNick() + " has " + Main.spamFilter.getStrikes(target) + " strikes.");
+        lines.add(target.get().getNick() + " has " + Main.spamFilter.getStrikes(target.get()) + " strikes.");
     }
 }

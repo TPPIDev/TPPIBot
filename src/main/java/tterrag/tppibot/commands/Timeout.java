@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.pircbotx.Channel;
 import org.pircbotx.Colors;
@@ -83,9 +84,9 @@ public class Timeout extends Command {
             return;
         }
 
-        User toTimeout = IRCUtils.getUserByNick(channel, args[0]);
+        Optional<User> toTimeout = IRCUtils.getUserByNick(channel, args[0]);
 
-        if (toTimeout == null) {
+        if (!toTimeout.isPresent()) {
             lines.add("No such user \"" + args[0] + "\"!");
             return;
         }
@@ -99,26 +100,26 @@ public class Timeout extends Command {
             return;
         }
 
-        bot.sendRaw().rawLine("MODE " + channel.getName() + " +q " + toTimeout.getHostmask());
+        bot.sendRaw().rawLine("MODE " + channel.getName() + " +q " + toTimeout.get().getHostmask());
         boolean newOffense = true;
 
         for (int i = 0; i < list.size(); i++) {
             TimeoutTime t = list.get(i);
-            if (t.hostmask.equals(toTimeout.getNick())) {
+            if (t.hostmask.equals(toTimeout.get().getNick())) {
                 list.remove(t);
                 newOffense = false;
             }
         }
 
-        this.list.add(new TimeoutTime(System.currentTimeMillis(), seconds, channel.getName(), toTimeout));
+        this.list.add(new TimeoutTime(System.currentTimeMillis(), seconds, channel.getName(), toTimeout.get()));
 
-        String hostmask = toTimeout.getHostmask();
+        String hostmask = toTimeout.get().getHostmask();
 
         if (newOffense) {
             if (pastOffenders.containsKey(hostmask)) {
                 int pastTimeouts = pastOffenders.get(hostmask);
                 MessageSender.INSTANCE
-                        .enqueueNotice(bot, user.getNick(), String.format("The user \"%s\" with hostmask \"%s\" has been timed out %s time%s before.", toTimeout.getNick(), hostmask, Colors.BOLD
+                        .enqueueNotice(bot, user.getNick(), String.format("The user \"%s\" with hostmask \"%s\" has been timed out %s time%s before.", toTimeout.get().getNick(), hostmask, Colors.BOLD
                                 + pastTimeouts + Colors.NORMAL, pastTimeouts <= 1 ? "" : "s"));
                 pastOffenders.put(hostmask, pastTimeouts + 1);
             } else {

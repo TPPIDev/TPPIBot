@@ -32,14 +32,14 @@ public class TimeoutChecker implements Runnable {
                         continue;
 
                     if (time.isTimeUp()) {
-                        Channel channel = IRCUtils.getChannelByName(Main.bot, time.channel);
+                        Channel channel = IRCUtils.getChannelByName(Main.bot, time.channel).get();
 
                         if (IRCUtils.userIsOp(channel, Main.bot.getUserBot())) {
                             if (channel == null) {
                                 Logging.log("Bot is not connected to " + time.channel + ", adding " + (retry / 60) + " minutes to the timeout on user " + time.nick + ".");
                                 time.addTime(retry);
                             } else {
-                                User user = IRCUtils.getUserByNick(channel, time.nick);
+                                User user = IRCUtils.getUserByNick(channel, time.nick).get();
 
                                 Main.bot.sendRaw().rawLine("MODE " + time.channel + " -q " + time.hostmask);
                                 if (user != null) {
