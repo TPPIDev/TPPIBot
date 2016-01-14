@@ -73,16 +73,18 @@ public class Commands extends Command {
             }
         }
 
-        if (listLines.size() == 0 && s.isEmpty()) {
-            listLines.add("None");
-        }
-
         if (!s.isEmpty()) {
             listLines.add(s);
         }
 
-        String last = listLines.remove(listLines.size() - 1);
-        listLines.add(last.substring(0, last.length() - 2));
+        if (!listLines.isEmpty()) {
+            String last = listLines.remove(listLines.size() - 1);
+            listLines.add(last.substring(0, last.length() - 2));
+        }
+
+        if (listLines.size() == 0 && s.isEmpty()) {
+            listLines.add("None");
+        }
 
         String[] cmds = listLines.toArray(new String[] {});
         BotMode mode = Mode.getMode(channel.getName());

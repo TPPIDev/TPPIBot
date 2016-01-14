@@ -187,6 +187,6 @@ public class IRCUtils {
      * Removes "invisible" arguments
      */
     public static String[] trim(String[] args) {
-        return Arrays.stream(args).map(s -> Colors.removeFormattingAndColors(s).trim()).filter(String::isEmpty).toArray(String[]::new);
+        return Arrays.stream(args).map(s -> Colors.removeFormattingAndColors(s).trim()).filter(s -> !s.isEmpty()).toArray(String[]::new);
     }
 }
