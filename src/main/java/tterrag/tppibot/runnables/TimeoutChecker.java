@@ -1,5 +1,7 @@
 package tterrag.tppibot.runnables;
 
+import java.util.Optional;
+
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 
@@ -32,24 +34,26 @@ public class TimeoutChecker implements Runnable {
                         continue;
 
                     if (time.isTimeUp()) {
-                        Channel channel = IRCUtils.getChannelByName(Main.bot, time.channel).get();
+                        Optional<Channel> channel = IRCUtils.getChannelByName(Main.bot, time.channel);
+                        
+                        if (!channel.isPresent()) {
+                            Logging.log("Bot is not connected to " + time.channel + ", adding " + (retry / 60) + " minutes to the timeout on user " + time.nick + ".");
+                            time.addTime(retry);
+                            continue;
+                        }
 
-                        if (IRCUtils.userIsOp(channel, Main.bot.getUserBot())) {
-                            if (channel == null) {
-                                Logging.log("Bot is not connected to " + time.channel + ", adding " + (retry / 60) + " minutes to the timeout on user " + time.nick + ".");
-                                time.addTime(retry);
-                            } else {
-                                User user = IRCUtils.getUserByNick(channel, time.nick).get();
+                        if (IRCUtils.userIsOp(channel.get(), Main.bot.getUserBot())) {
+                            Optional<User> user = IRCUtils.getUserByNick(channel.get(), time.nick);
 
-                                Main.bot.sendRaw().rawLine("MODE " + time.channel + " -q " + time.hostmask);
-                                if (user != null) {
-                                    IRCUtils.modeSensitiveEnqueue(Main.bot, user, channel, user.getNick() + ", you are no longer timed out. Be warned, repeat offenses could result in a ban.");
-                                }
-                                this.instance.list.remove(i);
+                            Main.bot.sendRaw().rawLine("MODE " + time.channel + " -q " + time.hostmask);
+                            if (user.isPresent()) {
+                                IRCUtils.modeSensitiveEnqueue(Main.bot, user.get(), channel.get(), user.get().getNick()
+                                        + ", you are no longer timed out. Be warned, repeat offenses could result in a ban.");
                             }
+                            this.instance.list.remove(i);
                         } else {
                             try {
-                                Main.bot.sendIRC().message(channel.getName(), "Please op me so I may remove the timeout on " + time.nick + "!");
+                                Main.bot.sendIRC().message(channel.get().getName(), "Please op me so I may remove the timeout on " + time.nick + "!");
                             } catch (Exception e) {
                                 // what do I do now??
                             } finally {
