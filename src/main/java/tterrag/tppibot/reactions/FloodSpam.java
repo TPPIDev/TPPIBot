@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import lombok.Value;
+
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
+
+import com.google.common.base.Joiner;
 
 import tterrag.tppibot.Main;
 import tterrag.tppibot.interfaces.IReaction;
@@ -20,12 +24,15 @@ public class FloodSpam implements IReaction {
 
     public static class MessageCount {
 
+        @Value
         private class Message {
 
+            private String msg;
             private long time;
 
-            private Message(long time) {
-                this.time = time;
+            @Override
+            public String toString() {
+                return msg;
             }
         }
 
@@ -34,16 +41,16 @@ public class FloodSpam implements IReaction {
 
         private List<Message> msgs;
 
-        public MessageCount(User user, Channel channel, long time) {
+        public MessageCount(User user, Channel channel, String msg, long time) {
             this.user = user;
             this.channel = channel;
 
             msgs = new ArrayList<Message>();
-            msg(time);
+            msg(msg, time);
         }
 
-        public void msg(long time) {
-            msgs.add(new Message(time));
+        public void msg(String msg, long time) {
+            msgs.add(new Message(msg, time));
         }
 
         public void tick() {
@@ -106,7 +113,7 @@ public class FloodSpam implements IReaction {
                 while (iter.hasNext()) {
                     MessageCount count = iter.next();
                     if (count != null && count.equals(event)) {
-                        count.msg(event.getTimestamp());
+                        count.msg(event.getMessage(), event.getTimestamp());
                         found = true;
                         if (count.breakinDaLaw()) {
                             timeout(count);
@@ -118,12 +125,12 @@ public class FloodSpam implements IReaction {
             }
 
             if (!found) {
-                counts.add(new MessageCount(event.getUser(), event.getChannel(), event.getTimestamp()));
+                counts.add(new MessageCount(event.getUser(), event.getChannel(), event.getMessage(), event.getTimestamp()));
             }
         }
     }
 
     private void timeout(MessageCount msg) {
-        Main.spamFilter.finish(Main.spamFilter.timeout(Main.bot, msg.user, msg.channel, SpamReasons.FLOOD) ? msg.user : null);
+        Main.spamFilter.finish(Main.spamFilter.timeout(Main.bot, msg.user, msg.channel, SpamReasons.FLOOD) ? msg.user : null, SpamReasons.FLOOD, "\"" + Joiner.on("\", \"").join(msg.msgs) + "\"");
     }
 }

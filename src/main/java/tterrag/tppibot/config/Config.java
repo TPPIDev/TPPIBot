@@ -48,7 +48,11 @@ public class Config {
      */
     public void writeJsonToFile(Object o) {
         String json = gson.toJson(o);
-        SaveUtils.saveAllToFile(configFile, json + "\n");
+        writeTextToFile(json);
+    }
+    
+    public void writeTextToFile(String s) {
+        SaveUtils.saveAllToFile(configFile, s + "\n");
     }
 
     public String getText() {

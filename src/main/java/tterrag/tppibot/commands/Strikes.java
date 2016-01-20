@@ -8,6 +8,9 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 import tterrag.tppibot.Main;
+import tterrag.tppibot.commands.Mode.BotMode;
+import tterrag.tppibot.reactions.CharacterSpam.Strike;
+import tterrag.tppibot.registry.PermRegistry;
 import tterrag.tppibot.util.IRCUtils;
 
 public class Strikes extends Command {
@@ -30,6 +33,18 @@ public class Strikes extends Command {
             return;
         }
 
-        lines.add(target.get().getNick() + " has " + Main.spamFilter.getStrikes(target.get()) + " strikes.");
+        lines.add(target.get().getNick() + " has " + Main.spamFilter.getStrikeCount(target.get()) + " strikes.");
+        
+        if (IRCUtils.isPermLevelAboveOrEqualTo(PermRegistry.INSTANCE.getPermLevelForUser(channel, user), PermLevel.OP)) {
+            List<Strike> strikes = Main.spamFilter.getStrikes(user);
+            BotMode mode = BotMode.NOTICE;
+            if (strikes.size() > 5) {
+                mode = BotMode.PM;
+            }
+            for (int i = 0; i < strikes.size(); i++) {
+                Strike s = strikes.get(i);
+                IRCUtils.modeSensitiveEnqueue(bot, user, channel, (i + 1) + " - Reason: " + s.getReason() + " - Message: " + s.getMessage(), mode);
+            }
+        }
     }
 }

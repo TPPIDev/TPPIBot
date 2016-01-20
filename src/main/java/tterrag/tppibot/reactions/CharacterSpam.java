@@ -2,11 +2,15 @@ package tterrag.tppibot.reactions;
 
 import static tterrag.tppibot.reactions.CharacterSpam.SpamReasons.*;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.Value;
 
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -22,8 +26,19 @@ import tterrag.tppibot.runnables.MessageSender;
 import tterrag.tppibot.util.IRCUtils;
 import tterrag.tppibot.util.Logging;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 public class CharacterSpam implements IReaction {
@@ -45,10 +60,16 @@ public class CharacterSpam implements IReaction {
             return text;
         }
     }
+    
+    @Value
+    public static class Strike {
+        private SpamReasons reason;
+        private String message;
+    }
 
     private Map<Character, Integer> repeated;
 
-    private Map<String, Integer> strikes;
+    private ListMultimap<String, Strike> strikes;
     private Config strikesConfig;
 
     private static Set<String> blacklistChannels = Sets.newConcurrentHashSet();
@@ -62,13 +83,41 @@ public class CharacterSpam implements IReaction {
         strikesConfig = new Config("spamStrikes.json");
         blacklistConfig = new Config("spamChannelBlacklist.json");
 
-        strikes = Main.gson.fromJson(strikesConfig.getText(), new TypeToken<Map<String, Integer>>() {
-        }.getType());
-        blacklistChannels = Main.gson.fromJson(blacklistConfig.getText(), new TypeToken<Set<String>>() {
+        Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<List<Strike>>(){}.getType(), new JsonDeserializer<List<Strike>>() {
+
+            @Override
+            public List<Strike> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                List<Strike> ret = new ArrayList<>();
+                if (json.isJsonPrimitive()) {
+                    for (int i = 0; i < json.getAsInt(); i++) {
+                        ret.add(new Strike(null, "Unknown"));
+                    }
+                } else {
+                    JsonArray arr = json.getAsJsonArray();
+                    for (int i = 0; i < arr.size(); i++) {
+                        ret.add(context.deserialize(arr.get(i), Strike.class));
+                    }
+                }
+                return ret;
+            }
+        }).registerTypeAdapter(new TypeToken<ListMultimap<String, Strike>>() {}.getType(), new InstanceCreator<ListMultimap<String, Strike>>() {
+
+            @Override
+            public ListMultimap<String, Strike> createInstance(Type type) {
+                return MultimapBuilder.hashKeys().arrayListValues().build();
+            }
+        }).create();
+
+        Map<String, List<Strike>> map = gson.fromJson(strikesConfig.getText(), new TypeToken<Map<String, List<Strike>>>() {
         }.getType());
 
-        if (strikes == null)
-            strikes = new HashMap<String, Integer>();
+        blacklistChannels = gson.fromJson(blacklistConfig.getText(), new TypeToken<Set<String>>() {
+        }.getType());
+
+        strikes = MultimapBuilder.hashKeys().arrayListValues().build();
+        if (map != null) {
+            map.forEach((s, l) -> strikes.putAll(s, l));
+        }
         if (blacklistChannels == null)
             blacklistChannels = Sets.newConcurrentHashSet();
     }
@@ -105,14 +154,14 @@ public class CharacterSpam implements IReaction {
         for (char c : repeated.keySet()) {
             if (repeated.get(c) > msg.length() / 2) {
                 Logging.log("too many repeated characters!");
-                finish(timeout(event, REPEATS) ? event.getUser() : null);
+                finish(timeout(event, REPEATS) ? event.getUser() : null, REPEATS, msg);
                 return;
             }
         }
 
         if (symbolCount > msg.length() / 2) {
             Logging.log("too many symbols!");
-            finish(timeout(event, SYMBOLS) ? event.getUser() : null);
+            finish(timeout(event, SYMBOLS) ? event.getUser() : null, SYMBOLS, msg);
             return;
         }
 
@@ -124,10 +173,10 @@ public class CharacterSpam implements IReaction {
         // return;
         // }
 
-        finish(null);
+        finish(null, null, null);
     }
 
-    public void finish(User user) {
+    public void finish(User user, SpamReasons reason, String message) {
         repeated.clear();
 
         if (user == null)
@@ -135,11 +184,7 @@ public class CharacterSpam implements IReaction {
 
         String hostmask = user.getHostmask();
 
-        if (strikes.containsKey(hostmask)) {
-            strikes.put(hostmask, strikes.get(hostmask) + 1);
-        } else {
-            strikes.put(hostmask, 1);
-        }
+        strikes.put(hostmask, new Strike(reason, message));
     }
 
     public boolean timeout(MessageEvent<?> event, SpamReasons reason) {
@@ -150,7 +195,7 @@ public class CharacterSpam implements IReaction {
         if (IRCUtils.userIsOp(channel, bot.getUserBot()) && !IRCUtils.isUserAboveOrEqualTo(channel, PermLevel.TRUSTED, user)) {
             int strikeCount = 0;
             if (strikes.containsKey(user.getHostmask())) {
-                strikeCount = strikes.get(user.getHostmask());
+                strikeCount = strikes.get(user.getHostmask()).size();
             }
 
             if (reason == SpamReasons.CURSE) {
@@ -195,31 +240,28 @@ public class CharacterSpam implements IReaction {
         }
     }
 
-    public int getStrikes(User user) {
-        Integer ret = strikes.get(user.getHostmask());
-        return ret == null ? 0 : ret;
-    }
-
-    public int setStrikes(User user, int amnt) {
-        amnt = Math.max(0, amnt);
-        strikes.put(user.getHostmask(), amnt);
-        return amnt;
-    }
-
-    public int addStrikes(User user, int amnt) {
-        if (!strikes.containsKey(user.getHostmask()))
-            return setStrikes(user, amnt);
-        else
-            return setStrikes(user, getStrikes(user) + amnt);
+    public int getStrikeCount(User user) {
+        return strikes.get(user.getHostmask()).size();
     }
 
     public int removeStrikes(User user, int amnt) {
-        return addStrikes(user, -amnt);
+        String hostmask = user.getHostmask();
+        while (--amnt >= 0 && !strikes.get(hostmask).isEmpty()) {
+            strikes.get(hostmask).remove(0);
+        }
+        return getStrikeCount(user);
+    }
+    
+    public List<Strike> getStrikes(User user) {
+        return ImmutableList.copyOf(strikes.get(user.getHostmask()));
     }
 
     @Subscribe
     public void onDisconnect(DisconnectEvent<?> event) {
-        strikesConfig.writeJsonToFile(strikes);
+        String text = Main.gson.toJson(strikes.asMap());
+        System.out.println(text);
+        System.out.println(strikes);
+        strikesConfig.writeTextToFile(text);
         blacklistConfig.writeJsonToFile(blacklistChannels);
     }
 }

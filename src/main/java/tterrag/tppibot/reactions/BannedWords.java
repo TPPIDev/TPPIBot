@@ -53,7 +53,7 @@ public class BannedWords implements IReaction {
                     if (word.equalsIgnoreCase(s)) {
                         PermLevel level = PermRegistry.INSTANCE.getPermLevelForUser(event.getChannel(), event.getUser());
                         if (!IRCUtils.isPermLevelAboveOrEqualTo(level, PermLevel.TRUSTED)) {
-                            Main.spamFilter.finish(Main.spamFilter.timeout(event, CURSE) ? event.getUser() : null);
+                            Main.spamFilter.finish(Main.spamFilter.timeout(event, CURSE) ? event.getUser() : null, CURSE, event.getMessage());
                         }
                     }
                 }
