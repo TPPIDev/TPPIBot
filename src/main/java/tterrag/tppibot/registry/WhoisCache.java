@@ -21,7 +21,7 @@ public enum WhoisCache {
     private Map<String, String> whoisCache = Maps.newHashMap();
 
     public String getAccount(User user) {
-        return whoisCache.getOrDefault(user.getNick(), addOrUpdateEntry(user));
+        return whoisCache.computeIfAbsent(user.getNick(), s -> addOrUpdateEntry(user));
     }
 
     @SuppressWarnings("unchecked")
