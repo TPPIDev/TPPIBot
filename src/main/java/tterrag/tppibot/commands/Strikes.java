@@ -35,7 +35,7 @@ public class Strikes extends Command {
 
         lines.add(target.get().getNick() + " has " + Main.spamFilter.getStrikeCount(target.get()) + " strikes.");
         
-        if (IRCUtils.isPermLevelAboveOrEqualTo(PermRegistry.INSTANCE.getPermLevelForUser(channel, user), PermLevel.OP)) {
+        if (IRCUtils.isPermLevelAboveOrEqualTo(PermRegistry.INSTANCE.getPermLevelForUser(channel, user), PermLevel.TRUSTED)) {
             List<Strike> strikes = Main.spamFilter.getStrikes(user);
             BotMode mode = BotMode.NOTICE;
             if (strikes.size() > 5) {
